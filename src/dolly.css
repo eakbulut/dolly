@@ -183,3 +183,29 @@
 [data-dolly="beat"],
 [data-dolly="beat-in"],
 [data-dolly="hold"] { animation-timing-function: cubic-bezier(.22,1,.36,1) }
+
+/* ---------- the cinematic three ---------- *
+
+   These three are why the page exists. Each is a shot a film crew would
+   name, and each needs no more than a keyframe block.
+
+   iris   — the aperture opening. A circle clip growing from nothing.
+   track  — a dolly track: vertical scroll driving horizontal travel.
+            Put a row wider than the viewport inside a pinned scene.
+   mask   — footage running inside letterforms. The element must set its
+            own background-image and background-clip:text; this move
+            pushes the picture inside the type. */
+
+@keyframes dolly-iris  { from { clip-path: circle(0% at 50% 50%) }
+                         to   { clip-path: circle(85% at 50% 50%) } }
+@keyframes dolly-track { from { translate: var(--dolly-track-from, 0) 0 }
+                         to   { translate: var(--dolly-track-to, -60%) 0 } }
+@keyframes dolly-mask  { from { background-size: var(--dolly-mask-from, 150%) auto }
+                         to   { background-size: var(--dolly-mask-to, 210%) auto } }
+@keyframes dolly-letter{ from { letter-spacing: var(--dolly-letter-from, .12em); opacity: 0 }
+                         to   { letter-spacing: var(--dolly-letter-to, -.05em); opacity: 1 } }
+
+[data-dolly="iris"]   { animation-name: dolly-iris }
+[data-dolly="track"]  { animation-name: dolly-track; animation-range: contain 0% contain 100% }
+[data-dolly="mask"]   { animation-name: dolly-mask }
+[data-dolly="letter"] { animation-name: dolly-letter }
