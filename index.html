@@ -317,7 +317,8 @@ img{display:block;max-width:100%}
 
 /* ================= PAPER HALF (documentation) ================= */
 .paper{background:var(--paper);color:var(--ink);position:relative;z-index:2}
-.paper section{padding:clamp(70px,12vh,140px) 0 0}
+.paper section{padding:clamp(70px,12vh,140px) 0 0;scroll-margin-top:72px}
+.paper .head-row{padding-top:18px}
 h2{font-size:var(--t-07);line-height:.98;letter-spacing:-.036em;font-weight:800;
    margin:0;max-width:18ch}
 h2 .lit{color:var(--accent)}
@@ -343,7 +344,14 @@ h2 .lit{color:var(--accent)}
 .index th{text-align:left;font-family:var(--mono);
   text-transform:uppercase;color:var(--ink-soft);font-weight:500;padding:0 14px 10px 0;
   letter-spacing:.10em;font-size:var(--t-00);border-bottom:1px solid var(--ink)}
-.index td{padding:10px 14px 10px 0;border-bottom:1px solid var(--rule);vertical-align:baseline}
+.index td{padding:12px 14px 12px 0;border-bottom:1px solid var(--rule);vertical-align:baseline;
+  transition:background .2s cubic-bezier(.22,1,.36,1)}
+.index tbody tr{counter-increment:move}
+.index tbody tr td:first-child::before{content:counter(move,decimal-leading-zero);
+  font-size:10px;color:var(--rule-strong);margin-right:12px;letter-spacing:.08em}
+.index tbody tr:hover td{background:color-mix(in srgb,var(--accent) 7%,transparent)}
+.index tbody tr:hover td:first-child{color:var(--accent)}
+.index{counter-reset:move}
 .index td:first-child{font-family:var(--mono);font-weight:500;white-space:nowrap}
 .index td:last-child{color:var(--ink-soft)}
 .index .r{font-family:var(--mono);font-size:var(--t-01);color:var(--ink-soft);white-space:nowrap}
@@ -374,7 +382,16 @@ pre .c{color:#8B8B85}pre .k{color:#9DB4F5}pre .s{color:#C6E1A6}
 .band-dark .wrap{max-width:1320px}
 .install .dim{color:#8B8B85}
 
-.ded{margin-top:clamp(70px,12vh,140px);border-top:1px solid var(--ink);padding:28px 0 0;
+/* The page signs off the way a film does: one line, held, then the credits.
+   The tracking closing from .26em to -.02em is the `letter` move earning
+   its place — it is the only move on the page that animates type itself. */
+.sign-off{margin-top:clamp(80px,14vh,170px);padding:clamp(50px,9vh,110px) 0;
+  border-top:1px solid var(--ink);text-align:center;display:grid;gap:18px;justify-items:center}
+.sign-off-line{margin:0;font-size:clamp(1.6rem,4.4vw,3.4rem);font-weight:700;
+  letter-spacing:-.02em;line-height:1.05;color:var(--ink);max-width:22ch}
+.sign-off .m{color:var(--ink-soft)}
+
+.ded{margin-top:clamp(40px,6vh,70px);border-top:1px solid var(--ink);padding:28px 0 0;
   display:flex;gap:28px;justify-content:space-between;flex-wrap:wrap;align-items:baseline}
 .ded p{margin:0;max-width:58ch;color:var(--ink-soft);font-size:var(--t-03);line-height:1.6}
 .ded a{color:var(--ink);border-bottom:1px solid var(--accent);text-decoration:none}
@@ -646,9 +663,23 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
             <tr><td>reveal</td><td class="r hide-sm">—</td><td>wipes in horizontally</td></tr>
             <tr><td>wipe-up</td><td class="r hide-sm">—</td><td>wipes in vertically</td></tr>
             <tr><td>roll</td><td class="r hide-sm">—</td><td>rotates level</td></tr>
+            <tr><td>progress</td><td class="r hide-sm">normal</td><td>tracks the whole page</td></tr>
             <tr><td>parallax</td><td class="r hide-sm">cover</td><td>drifts against the scroll</td></tr>
             <tr><td>zoom</td><td class="r hide-sm">cover</td><td>slow continuous push</td></tr>
-            <tr><td>progress</td><td class="r hide-sm">scroll()</td><td>tracks the whole page</td></tr>
+            <tr><td>drop</td><td class="r hide-sm">contain 0% contain 100%</td><td>falls through the frame</td></tr>
+            <tr><td>pass</td><td class="r hide-sm">contain 0% contain 100%</td><td>tracks past, reversing its yaw</td></tr>
+            <tr><td>push</td><td class="r hide-sm">—</td><td>the camera travels toward it</td></tr>
+            <tr><td>pull</td><td class="r hide-sm">—</td><td>the camera draws back</td></tr>
+            <tr><td>swing</td><td class="r hide-sm">—</td><td>rotates in on Y</td></tr>
+            <tr><td>tumble</td><td class="r hide-sm">—</td><td>pitches in on X</td></tr>
+            <tr><td>fly</td><td class="r hide-sm">contain 0% contain 100%</td><td>travels from far, past the camera</td></tr>
+            <tr><td>beat</td><td class="r hide-sm">—</td><td>arrives, holds, leaves</td></tr>
+            <tr><td>beat-in</td><td class="r hide-sm">—</td><td>defocuses in, holds, defocuses out</td></tr>
+            <tr><td>hold</td><td class="r hide-sm">—</td><td>arrives and stays</td></tr>
+            <tr><td>iris</td><td class="r hide-sm">—</td><td>an aperture opening</td></tr>
+            <tr><td>track</td><td class="r hide-sm">contain 0% contain 100%</td><td>vertical scroll, horizontal travel</td></tr>
+            <tr><td>mask</td><td class="r hide-sm">—</td><td>footage inside letterforms</td></tr>
+            <tr><td>letter</td><td class="r hide-sm">—</td><td>tracking closes as it arrives</td></tr>
           </tbody>
         </table>
       </section>
@@ -680,6 +711,11 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
       </div>
     </div>
     <div class="wrap">
+
+      <div class="sign-off">
+        <p class="sign-off-line" data-dolly="letter" style="--dolly-letter-from:.26em;--dolly-letter-to:-.02em">that is the whole library</p>
+        <span class="m">30 moves · 0 kB of JavaScript · one attribute</span>
+      </div>
 
       <div class="ded">
         <p>Dolly is named for the camera dolly, the cart that carries a camera through a shot. The name came first and stands on its own. It is also, this year, a word that is hard to write down without thinking of someone else. <a href="https://imaginationlibrary.com">Dolly Parton's Imagination Library</a> has sent a book to a child every month since 1995, and still sends them. It takes donations. This library does not.</p>

@@ -232,3 +232,21 @@ test('the README documents exactly the moves that ship', () => {
   const undocumented = [...moves.keys()].filter((name) => !movesSection.includes(`| \`${name}\` |`));
   assert.deepEqual(undocumented, [], 'missing from the README move tables');
 });
+
+/* The README guard exists; the PAGE had no equivalent, and drifted to
+   documenting 16 of 30 while demonstrating all of them. */
+test('the demo page documents every move that ships', () => {
+  const page = read('../index.html');
+  const shipped = rules
+    .filter((r) => decls(r.body).some(([p]) => p === 'animation-name'))
+    .flatMap((r) => [...r.selector.matchAll(/\[data-dolly="([^"]+)"\]/g)].map((m) => m[1]));
+
+  const body = page.slice(page.indexOf('<tbody>'), page.indexOf('</tbody>'));
+  const documented = [...body.matchAll(/<tr><td>([^<]+)<\/td>/g)].map((m) => m[1].trim());
+
+  assert.deepEqual(
+    [...new Set(shipped)].filter((m) => !documented.includes(m)),
+    [],
+    'the reference table on the page is missing moves the library ships'
+  );
+});
