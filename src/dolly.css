@@ -1,5 +1,5 @@
 /* Dolly — scroll-driven motion, in CSS.
-   https://usedolly.dev
+   https://usedolly.dev · MIT
 
    Three rules govern everything in this file:
 
@@ -17,10 +17,34 @@
    3. Unknown attribute value = no animation = visible. `animation-name`
       defaults to `none`; only a preset we actually ship turns it on. */
 
-@keyframes dolly-fade-up   { from { opacity: 0; translate: 0 2rem } }
-@keyframes dolly-fade-in   { from { opacity: 0 } }
-@keyframes dolly-dolly-in  { from { opacity: 0; scale: 0.92 } }
+/* ---------- moves ---------- *
+
+   Named for what a camera does, because that is the vocabulary the moves
+   already have. `from` only: the `to` state is the element as authored, so
+   every keyframe block describes where the shot starts, never where the
+   page ends up. */
+
+@keyframes dolly-fade      { from { opacity: 0 } }
+@keyframes dolly-tilt-up   { from { opacity: 0; translate: 0 2.5rem } }
+@keyframes dolly-tilt-down { from { opacity: 0; translate: 0 -2.5rem } }
+@keyframes dolly-pan-left  { from { opacity: 0; translate: 3rem 0 } }
+@keyframes dolly-pan-right { from { opacity: 0; translate: -3rem 0 } }
+@keyframes dolly-in        { from { opacity: 0; scale: 0.9 } }
+@keyframes dolly-out       { from { opacity: 0; scale: 1.1 } }
+@keyframes dolly-crane     { from { opacity: 0; translate: 0 5rem; scale: 0.94 } }
+@keyframes dolly-rack      { from { opacity: 0; filter: blur(14px) } }
+@keyframes dolly-whip      { from { opacity: 0; translate: 4rem 0; filter: blur(8px) } }
+@keyframes dolly-reveal    { from { clip-path: inset(0 100% 0 0) } }
+@keyframes dolly-wipe-up   { from { clip-path: inset(100% 0 0 0) } }
+@keyframes dolly-roll      { from { opacity: 0; rotate: -5deg; scale: 0.96 } }
+
+/* Continuous, not an entrance: these read the whole scrollport. */
 @keyframes dolly-progress  { from { transform: scaleX(0) } to { transform: scaleX(1) } }
+@keyframes dolly-parallax  { from { translate: 0 var(--dolly-depth, 4rem) }
+                             to   { translate: 0 calc(-1 * var(--dolly-depth, 4rem)) } }
+@keyframes dolly-zoom      { from { scale: 1 } to { scale: var(--dolly-zoom, 1.12) } }
+
+/* ---------- the engine ---------- */
 
 [data-dolly] {
   animation-name: none;
@@ -30,11 +54,23 @@
   animation-range: entry 0% cover 35%;
 }
 
-[data-dolly="fade-up"]  { animation-name: dolly-fade-up }
-[data-dolly="fade-in"]  { animation-name: dolly-fade-in }
-[data-dolly="dolly-in"] { animation-name: dolly-dolly-in }
+[data-dolly="fade"]      { animation-name: dolly-fade }
+[data-dolly="tilt-up"]   { animation-name: dolly-tilt-up }
+[data-dolly="tilt-down"] { animation-name: dolly-tilt-down }
+[data-dolly="pan-left"]  { animation-name: dolly-pan-left }
+[data-dolly="pan-right"] { animation-name: dolly-pan-right }
+[data-dolly="dolly-in"]  { animation-name: dolly-in }
+[data-dolly="dolly-out"] { animation-name: dolly-out }
+[data-dolly="crane"]     { animation-name: dolly-crane }
+[data-dolly="rack"]      { animation-name: dolly-rack }
+[data-dolly="whip"]      { animation-name: dolly-whip }
+[data-dolly="reveal"]    { animation-name: dolly-reveal }
+[data-dolly="wipe-up"]   { animation-name: dolly-wipe-up }
+[data-dolly="roll"]      { animation-name: dolly-roll }
 
-/* Scroll-linked rather than element-linked: tracks the scrollport itself. */
+/* Scroll-linked rather than element-linked: these track the scrollport
+   itself, so they run the whole length of the page instead of resolving
+   once on entry. */
 [data-dolly="progress"] {
   animation-name: dolly-progress;
   animation-timeline: scroll();
@@ -42,7 +78,32 @@
   transform-origin: 0 50%;
 }
 
-/* Someone who asked for less motion gets none of it, and still gets the page. */
+[data-dolly="parallax"] {
+  animation-name: dolly-parallax;
+  animation-range: cover;
+  will-change: translate;
+}
+
+/* Ken Burns: a slow push that runs the whole time the element is on screen,
+   rather than resolving on entry. Pair with overflow:clip on the parent —
+   never overflow:hidden, which would make it its own scrollport. */
+[data-dolly="zoom"] {
+  animation-name: dolly-zoom;
+  animation-range: cover;
+  will-change: scale;
+}
+
+/* ---------- authoring knobs ---------- */
+
+[data-dolly-range] { animation-range: var(--dolly-range) }
+[data-dolly-ease="out"]      { animation-timing-function: cubic-bezier(.22,1,.36,1) }
+[data-dolly-ease="in-out"]   { animation-timing-function: cubic-bezier(.65,0,.35,1) }
+
+/* ---------- reduced motion ---------- *
+
+   Not a suppression hack: the element renders exactly as authored, because
+   the authored state was never the hidden one. */
+
 @media (prefers-reduced-motion: reduce) {
   [data-dolly] { animation-name: none !important }
 }
