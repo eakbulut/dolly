@@ -4,66 +4,53 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dolly — scroll-driven motion, in CSS</title>
-<meta name="description" content="Dolly is a CSS library of 16 scroll-driven camera moves. No JavaScript, no IntersectionObserver, no runtime. Add one attribute.">
+<meta name="description" content="Dolly is a CSS library of 16 scroll-driven camera moves, with pinned scenes. No JavaScript, no IntersectionObserver, no runtime. Add one attribute.">
 <meta property="og:title" content="Dolly — scroll-driven motion, in CSS">
-<meta property="og:description" content="Every element that moves on this page was moved by the library. Nothing on it runs JavaScript.">
+<meta property="og:description" content="Everything that moves on this page was moved by the library. Nothing on it runs JavaScript.">
 <meta property="og:url" content="https://usedolly.dev/">
 <link rel="canonical" href="https://usedolly.dev/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Azeret+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://images.unsplash.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="src/dolly.css">
 <style>
 /* ================================================================
-   The page is the demo. Every moving thing below is moved by
-   src/dolly.css through a data-dolly attribute — nothing in this
-   sheet animates anything. This file only sets type and space.
+   The page is the demo. Every moving thing is moved by src/dolly.css
+   through a data-dolly attribute. This sheet sets type, space and
+   colour — it animates nothing.
    ================================================================ */
 
 :root{
-  --paper:#FAFAF8; --ink:#0D0D0D; --ink-soft:#57574F;
-  --accent:#1E40AF; --surface:#EFEFEC; --rule:#D7D7D3; --rule-strong:#BDBDB7;
+  --paper:#FAFAF8; --ink:#0B0B0C; --ink-soft:#57574F;
+  --accent:#2B4BE8; --surface:#EFEFEC; --rule:#D7D7D3;
+  --film:#0B0B0C; --film-soft:#9A9A93;
   --mono:"Azeret Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   --sans:"Archivo",system-ui,-apple-system,sans-serif;
   --gutter:clamp(20px,4vw,56px);
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;scroll-padding-top:60px;
-     scrollbar-color:var(--rule-strong) var(--paper);scrollbar-width:thin;caret-color:var(--accent)}
-/* NO overflow on <body>. When <html> is `visible`, the body's overflow
-   propagates to the viewport, so body{overflow-x:clip} makes the VIEWPORT
-   clip and every view() timeline on the page goes inactive — silently, and
-   scroll() keeps working, so the readout still counts while nothing else
-   moves. Clip locally instead (.band). */
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+html{-webkit-text-size-adjust:100%;scroll-padding-top:56px;
+     scrollbar-color:#8A8A84 var(--paper);scrollbar-width:thin;caret-color:var(--accent)}
+body{margin:0;background:var(--film);color:var(--ink);font-family:var(--sans);
      font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
 ::selection{background:var(--accent);color:#fff}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-::-webkit-scrollbar{width:11px}::-webkit-scrollbar-track{background:var(--paper)}
-::-webkit-scrollbar-thumb{background:var(--rule-strong);border:3px solid var(--paper)}
-
+img{display:block;max-width:100%}
 .m{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:11px;
-   letter-spacing:.06em;text-transform:uppercase}
+   letter-spacing:.07em;text-transform:uppercase}
 .wrap{max-width:1320px;margin:0 auto;padding:0 var(--gutter)}
 
-/* --- the annotation: every animated element says what moved it --- */
-.tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--accent);
-     background:color-mix(in srgb,var(--accent) 10%,transparent);padding:3px 8px;
-     white-space:nowrap;display:inline-block}
-.tag::before{content:"data-dolly="}
-.tag-on-dark{color:#fff;background:rgba(255,255,255,.18)}
-
 /* ================= MASTHEAD ================= */
-.mast{position:fixed;inset:0 0 auto;z-index:50;background:color-mix(in srgb,var(--paper) 90%,transparent);
-      backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
-.mast-in{display:flex;align-items:center;gap:18px;height:48px}
-.mark{font-weight:900;letter-spacing:-.04em;font-size:17px;text-decoration:none;color:var(--ink)}
-.mast-spec{color:var(--ink-soft);white-space:nowrap}
+.mast{position:fixed;inset:0 0 auto;z-index:60;height:56px;display:flex;align-items:center;
+  color:#fff;mix-blend-mode:difference}
+.mast-in{display:flex;align-items:center;gap:18px;width:100%}
+.mark{font-weight:900;letter-spacing:-.04em;font-size:17px;text-decoration:none;color:inherit}
+.mast-spec{opacity:.72;white-space:nowrap}
 .mast-right{margin-left:auto;display:flex;align-items:center;gap:16px}
-.mast-link{color:var(--ink-soft);text-decoration:none;border-bottom:1px solid transparent}
-.mast-link:hover{color:var(--ink);border-bottom-color:var(--accent)}
-@media(max-width:680px){.mast-spec{display:none}}
-@media(max-width:400px){.readout-label{display:none}}
+.mast a{color:inherit;text-decoration:none}
+@media(max-width:700px){.mast-spec{display:none}}
+@media(max-width:410px){.readout-label{display:none}}
 
 @property --scroll-pct{syntax:"<integer>";initial-value:0;inherits:false}
 @keyframes read-out{from{--scroll-pct:0}to{--scroll-pct:100}}
@@ -71,246 +58,272 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
   animation-name:read-out;animation-fill-mode:both;animation-timing-function:linear;
   animation-timeline:scroll();animation-range:normal;counter-reset:pct var(--scroll-pct)}
 .readout::after{content:counter(pct) "%";font-family:var(--mono);font-size:12px;
-  font-weight:600;min-width:4ch;text-align:right;font-variant-numeric:tabular-nums}
-.readout-label{color:var(--ink-soft)}
-.mast-progress{position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--accent);transform-origin:0 50%}
+  font-weight:500;min-width:4ch;text-align:right;font-variant-numeric:tabular-nums}
+.readout-label{opacity:.72}
+.topbar{position:fixed;top:0;left:0;right:0;height:2px;background:var(--accent);
+  transform-origin:0 50%;z-index:61}
 
-/* ================= TYPE ================= */
-.hero{padding:calc(48px + 8vh) 0 clamp(50px,9vh,110px)}
-h1{font-size:clamp(3rem,10vw,7.5rem);line-height:.86;letter-spacing:-.05em;font-weight:900;
-   margin:0;max-width:14ch}
-h1 .lit{color:var(--accent)}
-.lede{max-width:54ch;margin:30px 0 0;font-size:clamp(16.5px,1.6vw,19px);color:var(--ink-soft)}
-.lede strong{color:var(--ink);font-weight:600}
-.cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:32px}
-.install{display:inline-flex;align-items:center;gap:12px;background:var(--ink);color:var(--paper);
-  font-family:var(--mono);font-size:13px;padding:13px 17px}
-.install .dim{color:#8B8B85}
-.btn-ghost{display:inline-flex;align-items:center;gap:9px;padding:13px 17px;
-  border:1px solid var(--rule-strong);color:var(--ink);text-decoration:none;font-size:14px;font-weight:500;
-  transition:border-color .18s cubic-bezier(.22,1,.36,1),background .18s cubic-bezier(.22,1,.36,1)}
-.btn-ghost:hover{border-color:var(--ink);background:var(--surface)}
+/* ================= FILM CHAPTERS (dark) ================= */
+.film{background:var(--film);color:#fff;position:relative}
+.stage{position:relative;width:100%;height:100%;display:grid;place-items:center;overflow:clip}
+.shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.shot-dim::after{content:"";position:absolute;inset:0;background:rgba(11,11,12,.52)}
+.veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,11,12,.80),rgba(11,11,12,.55) 38%,rgba(11,11,12,.92))}
+.stage-copy{position:relative;z-index:2;width:100%;max-width:1320px;padding:0 var(--gutter)}
 
-section{padding:clamp(70px,12vh,150px) 0 0}
-h2{font-size:clamp(2rem,5.5vw,4.2rem);line-height:.95;letter-spacing:-.045em;font-weight:800;
+.giant{font-size:clamp(4.2rem,20vw,17rem);line-height:.78;letter-spacing:-.06em;
+  font-weight:900;margin:0;color:#fff}
+.giant .lit{color:var(--accent)}
+.stage-lede{max-width:44ch;margin:26px 0 0;font-size:clamp(16px,1.7vw,20px);color:#E6E6E1}
+.cue{position:absolute;left:50%;translate:-50% 0;bottom:34px;z-index:3;color:#fff;opacity:.62}
+
+.chapter-h{font-size:clamp(2.2rem,7vw,5.6rem);line-height:.92;letter-spacing:-.05em;
+  font-weight:900;margin:0;max-width:16ch;color:#fff}
+.chapter-h .lit{color:var(--accent)}
+.chapter-p{max-width:46ch;margin:24px 0 0;color:#D8D8D2;font-size:clamp(15.5px,1.5vw,18px)}
+.credit{position:absolute;right:var(--gutter);bottom:20px;z-index:3;color:rgba(255,255,255,.5)}
+
+/* ================= PAPER HALF (documentation) ================= */
+.paper{background:var(--paper);color:var(--ink);position:relative;z-index:2}
+.paper section{padding:clamp(70px,12vh,140px) 0 0}
+h2{font-size:clamp(2rem,5.5vw,4rem);line-height:.95;letter-spacing:-.045em;font-weight:800;
    margin:0;max-width:18ch}
 h2 .lit{color:var(--accent)}
 .note{max-width:62ch;margin:24px 0 0;color:var(--ink-soft)}
 .head-row{display:flex;align-items:baseline;gap:20px;flex-wrap:wrap;
   border-bottom:1px solid var(--ink);padding-bottom:18px}
+.tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--accent);
+  background:color-mix(in srgb,var(--accent) 10%,transparent);padding:3px 8px;display:inline-block}
+.tag::before{content:"data-dolly="}
 
-/* ---- slabs: whole regions of colour, moved by the library ---- */
-.slab{background:var(--accent);color:#fff;padding:clamp(26px,3.6vw,50px);
-  display:flex;flex-direction:column;justify-content:space-between;gap:26px;
-  min-height:clamp(190px,26vh,300px)}
-.slab-ink{background:var(--ink)}
-.slab-line{background:var(--surface);color:var(--ink);border:1px solid var(--rule)}
-.slab h3{margin:0;font-size:clamp(1.25rem,2.4vw,1.9rem);line-height:1.1;letter-spacing:-.03em;
-  font-weight:700;max-width:20ch}
-.slab p{margin:0;font-size:14.5px;line-height:1.6;max-width:44ch}
-.slab-line p{color:var(--ink-soft)}
-.slab code{font-family:var(--mono);font-size:.92em}
 .duo{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(14px,2vw,26px);margin-top:36px}
-.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,2vw,26px);margin-top:26px}
-@media(max-width:860px){.duo,.trio{grid-template-columns:1fr}}
+@media(max-width:860px){.duo{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--rule);padding:clamp(22px,3vw,40px)}
+.card h3{margin:0 0 12px;font-size:clamp(1.15rem,2.2vw,1.6rem);letter-spacing:-.025em;font-weight:700}
+.card p{margin:0;color:var(--ink-soft);font-size:15px;line-height:1.62}
+.card code{font-family:var(--mono);font-size:.9em}
 
-.band{margin-top:clamp(34px,6vh,80px);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
-  padding:clamp(36px,7vh,96px) 0;overflow:clip}
-.band-word{font-size:clamp(3.4rem,15vw,12rem);line-height:.78;letter-spacing:-.06em;font-weight:900;
-  white-space:nowrap;color:var(--ink)}
-.band-word.lit{color:var(--accent)}
-.band-foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
-  margin-top:24px;color:var(--ink-soft);align-items:center}
-
-/* ---- index table: the reference, not the demo ---- */
 .index{width:100%;border-collapse:collapse;margin-top:34px;font-size:14.5px}
 .index th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;
   text-transform:uppercase;color:var(--ink-soft);font-weight:500;padding:0 14px 10px 0;
   border-bottom:1px solid var(--ink)}
-.index td{padding:11px 14px 11px 0;border-bottom:1px solid var(--rule);vertical-align:baseline}
-.index td:first-child{font-family:var(--mono);font-weight:600;white-space:nowrap}
+.index td{padding:10px 14px 10px 0;border-bottom:1px solid var(--rule);vertical-align:baseline}
+.index td:first-child{font-family:var(--mono);font-weight:500;white-space:nowrap}
 .index td:last-child{color:var(--ink-soft)}
 .index .r{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);white-space:nowrap}
 @media(max-width:700px){.index .hide-sm{display:none}}
 
-pre{margin:32px 0 0;background:var(--ink);color:#EDEDE9;padding:22px;overflow-x:auto;
+pre{margin:30px 0 0;background:var(--ink);color:#EDEDE9;padding:22px;overflow-x:auto;
   font-family:var(--mono);font-size:12.5px;line-height:1.75}
 pre .c{color:#8B8B85}pre .k{color:#9DB4F5}pre .s{color:#C6E1A6}
+.install{display:inline-flex;align-items:center;gap:12px;background:#fff;color:var(--ink);
+  font-family:var(--mono);font-size:13px;padding:13px 17px;margin-top:30px}
+.install .dim{color:#8B8B85}
 
-.ded{margin-top:clamp(70px,12vh,150px);border-top:1px solid var(--ink);padding:28px 0 0;
+.ded{margin-top:clamp(70px,12vh,140px);border-top:1px solid var(--ink);padding:28px 0 0;
   display:flex;gap:28px;justify-content:space-between;flex-wrap:wrap;align-items:baseline}
 .ded p{margin:0;max-width:58ch;color:var(--ink-soft);font-size:15px}
 .ded a{color:var(--ink);border-bottom:1px solid var(--accent);text-decoration:none}
-.ded a:hover{color:var(--accent)}
 footer{padding:26px 0 44px;display:flex;gap:20px;justify-content:space-between;flex-wrap:wrap;
   color:var(--ink-soft);margin-top:32px;border-top:1px solid var(--rule)}
-footer a{color:var(--ink-soft);text-decoration:none;border-bottom:1px solid transparent}
-footer a:hover{color:var(--ink);border-bottom-color:var(--accent)}
+footer a{color:var(--ink-soft);text-decoration:none}
 
 @media (prefers-reduced-motion: reduce){
-  .readout,.mast-progress{animation-name:none !important}
+  .readout,.topbar{animation-name:none !important}
+  [data-dolly-pin]{position:static;height:auto;min-height:70svh}
+  [data-dolly-scene]{min-height:0 !important}
 }
 </style>
 </head>
 <body>
 <!--
-  THESIS: The page is the demo. Every element that moves here is moved by
-  src/dolly.css through a data-dolly attribute, annotated with the move that
-  did it — refusing this category's grid of isolated demo tiles.
-  OWN-WORLD: Specimen paper #FAFAF8, ink #0D0D0D, one deep blue #1E40AF.
-  Hairline rules, Archivo to 12rem against 11px Azeret Mono carrying only
-  measurement, saturated slabs owning whole regions.
-  STORY: A developer scrolls, watches the site animate itself, reads the
-  attribute beside each moving thing, and copies it.
-  FIRST VIEWPORT: Wordmark at 7.5rem over a 54ch lede and a black install
-  block; a live CSS scroll readout in the masthead.
-  FORM: Motion specimen — challenger, beat the assigned Repertory Programme
-  on both axes. Seed ec225eca.
+  THESIS: The page is the demo, shot like film. Scroll pins and scrubs whole
+  chapters — the move this category needs a JavaScript runtime for — refusing
+  the grid of isolated demo tiles.
+  OWN-WORLD: Two halves. Cinema black #0B0B0C with full-bleed stills, Archivo
+  to 17rem reversed out, electric blue #2B4BE8. Then specimen paper #FAFAF8
+  for the reference, hairline rules, 11px Azeret Mono carrying measurement only.
+  STORY: A visitor is pinned inside a shot that moves under their scroll,
+  understands scroll is the timeline, then reads the reference and copies it.
+  FIRST VIEWPORT: A pinned full-bleed still, slowly pushing in, DOLLY at 17rem
+  reversed over it, live CSS scroll readout in the masthead.
+  FORM: Motion specimen — challenger, beat the assigned Repertory Programme on
+  both axes. Seed ec225eca.
   FINISH: unreviewed and undocumented is unfinished; this build ends with the
   finish review, the verdict, DESIGN.md, and every shipping raster carrying its
   provenance.
 -->
 
+<div class="topbar" data-dolly="progress"></div>
 <header class="mast">
   <div class="wrap mast-in">
     <a class="mark" href="#top">Dolly</a>
     <span class="m mast-spec">16 moves · 0 kB of JavaScript</span>
     <div class="mast-right">
       <div class="readout" title="Your scroll position, counted in CSS"><span class="m readout-label">scroll</span></div>
-      <a class="m mast-link" href="https://github.com/eakbulut/dolly">GitHub</a>
+      <a class="m" href="https://github.com/eakbulut/dolly">GitHub</a>
     </div>
   </div>
-  <div class="mast-progress" data-dolly="progress"></div>
 </header>
 
-<main class="wrap" id="top">
+<main id="top">
 
-  <section class="hero">
-    <h1>Scroll is the <span class="lit">timeline.</span></h1>
-    <p class="lede">Every scroll-animation library runs JavaScript sixty times a second to learn something the browser already knew. Dolly asks CSS instead. <strong>Everything that moves on this page was moved by the library</strong> — and nothing here runs JavaScript, including the counter above, which is reading your scroll in CSS.</p>
-    <div class="cta">
-      <code class="install"><span class="dim">$</span> npm i @dollyjs/core</code>
-      <a class="btn-ghost" href="#index">
-        All sixteen moves
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6.5 1v11M2 7.5l4.5 4.5L11 7.5"/></svg>
-      </a>
-    </div>
-  </section>
-
-  <section>
-    <div class="head-row">
-      <h2 data-dolly="tilt-up">Keep scrolling. <span class="lit">That is the demo.</span></h2>
-      <span class="tag">"tilt-up"</span>
-    </div>
-    <p class="note" data-dolly="fade">There is no play button on this site, because there is nothing to play. Scroll position is the transport control and it is already in your hand. Every block below carries the attribute that moved it.</p>
-
-    <div class="duo">
-      <div class="slab" data-dolly="crane">
-        <h3>A crane lifts the whole block into place as it arrives.</h3>
-        <p><span class="tag tag-on-dark">"crane"</span></p>
-      </div>
-      <div class="slab slab-ink" data-dolly="rack">
-        <h3>A rack focus arrives out of focus, then resolves.</h3>
-        <p><span class="tag tag-on-dark">"rack"</span></p>
+  <!-- ===== CHAPTER 1 — the opening shot, pinned and pushing in ===== -->
+  <div class="film" data-dolly-scene style="--dolly-scene:300vh">
+    <div data-dolly-pin>
+      <div class="stage">
+        <img class="shot" data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:1.42"
+             src="https://images.unsplash.com/photo-1619099619226-f96e319e3732?w=2000&q=72&auto=format&fit=crop"
+             alt="A film camera on a dolly track in a darkened studio">
+        <div class="veil"></div>
+        <div class="stage-copy">
+          <h1 class="giant">Scroll is the<br><span class="lit">timeline.</span></h1>
+          <p class="stage-lede">This shot is pinned to your viewport and pushing in, and the only thing driving it is how far you have scrolled. No JavaScript is running on this page.</p>
+        </div>
+        <span class="m cue">keep scrolling</span>
+        <span class="m credit">zoom · pinned scene · unsplash</span>
       </div>
     </div>
+  </div>
 
-    <div class="trio">
-      <div class="slab slab-line" data-dolly="pan-left"><h3>pan-left</h3><p><span class="tag">"pan-left"</span></p></div>
-      <div class="slab slab-line" data-dolly="reveal"><h3>reveal</h3><p><span class="tag">"reveal"</span></p></div>
-      <div class="slab slab-line" data-dolly="roll"><h3>roll</h3><p><span class="tag">"roll"</span></p></div>
-    </div>
-
-    <div class="band">
-      <div class="band-word lit" data-dolly="whip">whip</div>
-      <div class="band-foot"><span class="m">translate and motion blur, resolved on entry</span><span class="tag">"whip"</span></div>
-    </div>
-
-    <div class="band">
-      <div class="band-word" data-dolly="zoom">zoom</div>
-      <div class="band-foot"><span class="m">continuous — runs the whole time it is on screen</span><span class="tag">"zoom"</span></div>
-    </div>
-  </section>
-
-  <section>
-    <div class="head-row">
-      <h2 data-dolly="tilt-up">What it refuses <span class="lit">to do.</span></h2>
-      <span class="tag">"tilt-up"</span>
-    </div>
-    <div class="duo">
-      <div class="slab slab-line" data-dolly="dolly-in">
-        <h3>It never hides your content.</h3>
-        <p>Every other library in this category puts <code>opacity: 0</code> in a base rule and reveals it from script. When the script fails, is blocked, or the browser lacks support, the page is blank. Dolly puts the hidden state only in <code>@keyframes</code>, so no support means <em>didn't animate</em>, never <em>didn't appear</em>.</p>
-      </div>
-      <div class="slab slab-line" data-dolly="dolly-out">
-        <h3>It has no runtime to fail.</h3>
-        <p>No IntersectionObserver, no scroll listener, no rAF loop, no init call, no provider, no hydration. Nothing runs, so nothing runs late.</p>
-      </div>
-      <div class="slab slab-line" data-dolly="wipe-up">
-        <h3>Reduced motion is a real path.</h3>
-        <p>Under <code>prefers-reduced-motion</code> every move switches off and the page renders exactly as authored, because the authored state was never the hidden one.</p>
-      </div>
-      <div class="slab slab-line" data-dolly="tilt-down">
-        <h3>Firefox is fine, today.</h3>
-        <p>Scroll timelines run in Chrome 115+, Edge, Safari 26+ and Opera, about 87% of the web, with Firefox landing in 159. Everyone else reads a complete, still page. There is no shim to ship.</p>
+  <!-- ===== CHAPTER 2 — rack focus, pinned ===== -->
+  <div class="film" data-dolly-scene style="--dolly-scene:260vh">
+    <div data-dolly-pin>
+      <div class="stage">
+        <img class="shot" data-dolly="rack" data-dolly-on="scene"
+             src="https://images.unsplash.com/photo-1516961642265-531546e84af2?w=2000&q=72&auto=format&fit=crop"
+             alt="Close-up of a film camera lens barrel">
+        <div class="veil"></div>
+        <div class="stage-copy">
+          <h2 class="chapter-h" data-dolly="pan-right" data-dolly-on="scene">A rack focus is <span class="lit">one attribute.</span></h2>
+          <p class="chapter-p" data-dolly="fade" data-dolly-on="scene">Fourteen pixels of blur resolving to nothing, scrubbed by your scroll. Every library that does this today ships a runtime to watch the scrollbar for you.</p>
+        </div>
+        <span class="m credit">rack · pinned scene</span>
       </div>
     </div>
-  </section>
+  </div>
 
-  <section id="index">
-    <div class="head-row">
-      <h2 data-dolly="tilt-up">All sixteen.</h2>
-      <span class="m">the reference</span>
+  <!-- ===== CHAPTER 3 — the claim, no image, drenched ===== -->
+  <div class="film" data-dolly-scene style="--dolly-scene:240vh">
+    <div data-dolly-pin>
+      <div class="stage" style="background:var(--accent)">
+        <div class="stage-copy">
+          <p class="giant" data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:1.3;margin:0">0&nbsp;kB</p>
+          <p class="stage-lede" data-dolly="tilt-up" data-dolly-on="scene" style="color:#EDEFFF">of JavaScript. AOS ships fourteen kilobytes and was last published in 2022. Dolly ships a stylesheet, and a stylesheet cannot fail to boot.</p>
+        </div>
+      </div>
     </div>
-    <table class="index">
-      <thead><tr><th>Move</th><th class="hide-sm">Range</th><th>What it does</th></tr></thead>
-      <tbody>
-        <tr data-dolly="pan-right"><td>fade</td><td class="r hide-sm">entry 0% cover 35%</td><td>opacity only</td></tr>
-        <tr data-dolly="pan-right"><td>tilt-up</td><td class="r hide-sm">entry 0% cover 35%</td><td>rises into place</td></tr>
-        <tr data-dolly="pan-right"><td>tilt-down</td><td class="r hide-sm">entry 0% cover 35%</td><td>drops into place</td></tr>
-        <tr data-dolly="pan-right"><td>pan-left</td><td class="r hide-sm">entry 0% cover 35%</td><td>slides in from the right</td></tr>
-        <tr data-dolly="pan-right"><td>pan-right</td><td class="r hide-sm">entry 0% cover 35%</td><td>slides in from the left</td></tr>
-        <tr data-dolly="pan-right"><td>dolly-in</td><td class="r hide-sm">entry 0% cover 35%</td><td>camera pushes toward it</td></tr>
-        <tr data-dolly="pan-right"><td>dolly-out</td><td class="r hide-sm">entry 0% cover 35%</td><td>camera pulls back from it</td></tr>
-        <tr data-dolly="pan-right"><td>crane</td><td class="r hide-sm">entry 0% cover 35%</td><td>lifts and settles</td></tr>
-        <tr data-dolly="pan-right"><td>rack</td><td class="r hide-sm">entry 0% cover 35%</td><td>focus pulls from blurred</td></tr>
-        <tr data-dolly="pan-right"><td>whip</td><td class="r hide-sm">entry 0% cover 35%</td><td>fast pan with motion blur</td></tr>
-        <tr data-dolly="pan-right"><td>reveal</td><td class="r hide-sm">entry 0% cover 35%</td><td>wipes in horizontally</td></tr>
-        <tr data-dolly="pan-right"><td>wipe-up</td><td class="r hide-sm">entry 0% cover 35%</td><td>wipes in vertically</td></tr>
-        <tr data-dolly="pan-right"><td>roll</td><td class="r hide-sm">entry 0% cover 35%</td><td>rotates level</td></tr>
-        <tr data-dolly="pan-right"><td>parallax</td><td class="r hide-sm">cover</td><td>drifts against the scroll</td></tr>
-        <tr data-dolly="pan-right"><td>zoom</td><td class="r hide-sm">cover</td><td>slow continuous push</td></tr>
-        <tr data-dolly="pan-right"><td>progress</td><td class="r hide-sm">scroll()</td><td>tracks the whole page</td></tr>
-      </tbody>
-    </table>
-  </section>
+  </div>
 
-  <section>
-    <div class="head-row">
-      <h2 data-dolly="tilt-up">The entire API.</h2>
-      <span class="m">one attribute</span>
+  <!-- ===== CHAPTER 4 — parallax layers ===== -->
+  <div class="film" data-dolly-scene style="--dolly-scene:280vh">
+    <div data-dolly-pin>
+      <div class="stage">
+        <img class="shot" data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:1.25;filter:grayscale(1)"
+             src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=2000&q=72&auto=format&fit=crop"
+             alt="Strips of developed film on a light table">
+        <div class="veil"></div>
+        <div class="stage-copy">
+          <h2 class="chapter-h" data-dolly="crane" data-dolly-on="scene">Sixteen moves,<br><span class="lit">named for camera.</span></h2>
+          <p class="chapter-p" data-dolly="fade" data-dolly-on="scene">tilt, pan, crane, rack, whip, roll, dolly in and out. The vocabulary already existed and it is better than <em>fadeInUp</em>.</p>
+        </div>
+        <span class="m credit">zoom · pinned scene</span>
+      </div>
     </div>
-    <p class="note" data-dolly="fade">Link the stylesheet, then annotate markup you already have. No init call, no wrapper component, no configuration object, because nothing is running that could read one.</p>
+  </div>
+
+  <!-- ===== PAPER HALF — the reference ===== -->
+  <div class="paper">
+    <div class="wrap">
+
+      <section>
+        <div class="head-row">
+          <h2 data-dolly="tilt-up">What it refuses <span class="lit">to do.</span></h2>
+          <span class="tag">"tilt-up"</span>
+        </div>
+        <div class="duo">
+          <div class="card" data-dolly="dolly-in">
+            <h3>It never hides your content.</h3>
+            <p>Every other library in this category puts <code>opacity: 0</code> in a base rule and reveals it from script. When the script fails, is blocked, or the browser lacks support, the page is blank. Dolly puts the hidden state only in <code>@keyframes</code>, so no support means <em>didn't animate</em>, never <em>didn't appear</em>.</p>
+          </div>
+          <div class="card" data-dolly="dolly-out">
+            <h3>It has no runtime to fail.</h3>
+            <p>No IntersectionObserver, no scroll listener, no rAF loop, no init call, no provider, no hydration. Nothing runs, so nothing runs late — including the pinned chapters you just scrolled through.</p>
+          </div>
+          <div class="card" data-dolly="wipe-up">
+            <h3>Reduced motion is a real path.</h3>
+            <p>Under <code>prefers-reduced-motion</code> every move switches off, scenes stop pinning, and the page renders exactly as authored — because the authored state was never the hidden one.</p>
+          </div>
+          <div class="card" data-dolly="tilt-down">
+            <h3>Firefox is fine, today.</h3>
+            <p>Scroll timelines run in Chrome 115+, Edge, Safari 26+ and Opera, about 87% of the web, with Firefox landing in 159. Everyone else reads a complete, still page. There is no shim to ship.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="index">
+        <div class="head-row">
+          <h2 data-dolly="tilt-up">All sixteen.</h2>
+          <span class="m">the reference</span>
+        </div>
+        <table class="index">
+          <thead><tr><th>Move</th><th class="hide-sm">Range</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr data-dolly="pan-right"><td>fade</td><td class="r hide-sm">entry 0% cover 35%</td><td>opacity only</td></tr>
+            <tr data-dolly="pan-right"><td>tilt-up</td><td class="r hide-sm">entry 0% cover 35%</td><td>rises into place</td></tr>
+            <tr data-dolly="pan-right"><td>tilt-down</td><td class="r hide-sm">entry 0% cover 35%</td><td>drops into place</td></tr>
+            <tr data-dolly="pan-right"><td>pan-left</td><td class="r hide-sm">entry 0% cover 35%</td><td>slides in from the right</td></tr>
+            <tr data-dolly="pan-right"><td>pan-right</td><td class="r hide-sm">entry 0% cover 35%</td><td>slides in from the left</td></tr>
+            <tr data-dolly="pan-right"><td>dolly-in</td><td class="r hide-sm">entry 0% cover 35%</td><td>camera pushes toward it</td></tr>
+            <tr data-dolly="pan-right"><td>dolly-out</td><td class="r hide-sm">entry 0% cover 35%</td><td>camera pulls back from it</td></tr>
+            <tr data-dolly="pan-right"><td>crane</td><td class="r hide-sm">entry 0% cover 35%</td><td>lifts and settles</td></tr>
+            <tr data-dolly="pan-right"><td>rack</td><td class="r hide-sm">entry 0% cover 35%</td><td>focus pulls from blurred</td></tr>
+            <tr data-dolly="pan-right"><td>whip</td><td class="r hide-sm">entry 0% cover 35%</td><td>fast pan with motion blur</td></tr>
+            <tr data-dolly="pan-right"><td>reveal</td><td class="r hide-sm">entry 0% cover 35%</td><td>wipes in horizontally</td></tr>
+            <tr data-dolly="pan-right"><td>wipe-up</td><td class="r hide-sm">entry 0% cover 35%</td><td>wipes in vertically</td></tr>
+            <tr data-dolly="pan-right"><td>roll</td><td class="r hide-sm">entry 0% cover 35%</td><td>rotates level</td></tr>
+            <tr data-dolly="pan-right"><td>parallax</td><td class="r hide-sm">cover</td><td>drifts against the scroll</td></tr>
+            <tr data-dolly="pan-right"><td>zoom</td><td class="r hide-sm">cover</td><td>slow continuous push</td></tr>
+            <tr data-dolly="pan-right"><td>progress</td><td class="r hide-sm">scroll()</td><td>tracks the whole page</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <div class="head-row">
+          <h2 data-dolly="tilt-up">The entire API.</h2>
+          <span class="m">one attribute, plus scenes</span>
+        </div>
+        <p class="note" data-dolly="fade">Link the stylesheet, then annotate markup you already have. No init call, no wrapper component, no configuration object, because nothing is running that could read one.</p>
 <pre data-dolly="reveal"><code><span class="k">&lt;link</span> rel=<span class="s">"stylesheet"</span> href=<span class="s">"dolly.css"</span><span class="k">&gt;</span>
 
 <span class="k">&lt;h1</span> data-dolly=<span class="s">"tilt-up"</span><span class="k">&gt;</span>Arrives as you reach it<span class="k">&lt;/h1&gt;</span>
 <span class="k">&lt;img</span> data-dolly=<span class="s">"rack"</span> src=<span class="s">"still.jpg"</span> alt=<span class="s">""</span><span class="k">&gt;</span>
-<span class="k">&lt;div</span> data-dolly=<span class="s">"progress"</span> class=<span class="s">"reading-bar"</span><span class="k">&gt;&lt;/div&gt;</span>
 
-<span class="c">/* one caveat worth knowing: a parent with overflow:hidden becomes its
-   own scroll container and pins the move. Use overflow:clip. */</span>
+<span class="c">&lt;!-- a pinned scene: the chapters above are all this --&gt;</span>
+<span class="k">&lt;div</span> data-dolly-scene<span class="k">&gt;</span>
+  <span class="k">&lt;div</span> data-dolly-pin<span class="k">&gt;</span>
+    <span class="k">&lt;img</span> data-dolly=<span class="s">"zoom"</span> data-dolly-on=<span class="s">"scene"</span> src=<span class="s">"shot.jpg"</span> alt=<span class="s">""</span><span class="k">&gt;</span>
+  <span class="k">&lt;/div&gt;</span>
+<span class="k">&lt;/div&gt;</span>
+
+<span class="c">/* one caveat: a parent with overflow:hidden becomes its own scroll
+   container and pins the move at its end state. Use overflow:clip. */</span>
 </code></pre>
-  </section>
+        <code class="install"><span class="dim">$</span> npm i @dollyjs/core</code>
+      </section>
 
-  <div class="ded">
-    <p>Dolly is named for the camera dolly, the cart that carries a camera through a shot. It is also, this year, hard to write down without thinking of someone else. <a href="https://imaginationlibrary.com">Dolly Parton's Imagination Library</a> has posted a book to a child every month since 1995. If this saved you a dependency, it is a good place to send five dollars.</p>
-    <span class="m">1946–2026</span>
+      <div class="ded">
+        <p>Dolly is named for the camera dolly, the cart that carries a camera through a shot. It is also, this year, hard to write down without thinking of someone else. <a href="https://imaginationlibrary.com">Dolly Parton's Imagination Library</a> has posted a book to a child every month since 1995. If this saved you a dependency, it is a good place to send five dollars.</p>
+        <span class="m">1946–2026</span>
+      </div>
+
+      <footer>
+        <span class="m">Dolly · MIT · no dependencies</span>
+        <span class="m"><a href="https://github.com/eakbulut/dolly">GitHub</a> · <a href="https://www.npmjs.com/package/@dollyjs/core">npm</a> · <a href="https://usefoley.dev">Foley</a></span>
+      </footer>
+    </div>
   </div>
-
-  <footer>
-    <span class="m">Dolly · MIT · no dependencies</span>
-    <span class="m"><a href="https://github.com/eakbulut/dolly">GitHub</a> · <a href="https://www.npmjs.com/package/@dollyjs/core">npm</a> · <a href="https://usefoley.dev">Foley</a></span>
-  </footer>
 </main>
 </body>
 </html>
