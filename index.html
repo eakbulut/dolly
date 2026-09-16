@@ -104,8 +104,6 @@ img{display:block;max-width:100%}
 
 @property --scroll-pct{syntax:"<integer>";initial-value:0;inherits:false}
 @keyframes read-out{from{--scroll-pct:0}to{--scroll-pct:100}}
-/* The opening line must be readable before anyone scrolls. */
-.quiet p:first-of-type{animation-timing-function:linear(0,1 4%,1 72%,0)}
 .readout{display:flex;align-items:baseline;gap:7px;
   animation-name:read-out;animation-fill-mode:both;animation-timing-function:linear;
   animation-timeline:scroll();animation-range:normal;counter-reset:pct var(--scroll-pct)}
@@ -186,21 +184,6 @@ img{display:block;max-width:100%}
 
 /* The dolly track: a row wider than the viewport, pulled sideways by
    vertical scroll. */
-.rail{display:flex;align-items:center;width:max-content;will-change:translate}
-.rail-fore{gap:clamp(18px,2.4vw,40px);position:relative;z-index:3}
-.rail-back{gap:clamp(30px,5vw,86px);position:absolute;top:30%;left:0;z-index:1;
-  opacity:.22;font-family:var(--mono);font-size:clamp(1.4rem,3.4vw,2.8rem);
-  letter-spacing:-.02em;color:#fff;white-space:nowrap}
-.rail-card{width:clamp(280px,34vw,480px);flex:0 0 auto;border:1px solid rgba(255,255,255,.14);
-  background:rgba(255,255,255,.06);padding:clamp(24px,2.6vw,40px);min-height:clamp(240px,52vh,560px);
-  display:flex;flex-direction:column;gap:16px;justify-content:flex-start;backdrop-filter:blur(2px)}
-.rail-card-lit{border-color:var(--accent);background:rgba(43,75,232,.2)}
-.rail-card h4{margin:0;font-family:var(--mono);font-size:var(--t-05);
-  font-weight:500;letter-spacing:0;line-height:1.2;color:var(--film-fg)}
-.rail-card p{margin:0;color:var(--film-body);font-size:var(--t-02);line-height:1.5;
-  letter-spacing:.002em;max-width:30ch}
-.rail-head{position:absolute;top:clamp(70px,11vh,140px);left:0;right:0;z-index:4;
-  padding:0 var(--edge);pointer-events:none}
 
 /* The iris: the aperture opening onto the next shot. */
 .iris-layer{position:absolute;inset:0;overflow:clip}
@@ -254,6 +237,19 @@ img{display:block;max-width:100%}
   margin:0;color:#F5F5F7;text-align:center}
 .figure .unit{font-size:.3em;letter-spacing:-.02em;margin-left:.06em;color:#8A8A90}
 
+/* The vocabulary, carried past on a track. One line, legible, sitting
+   below the copy instead of fighting it — the previous version put an
+   absolutely-positioned heading on top of a row of 420px cards. */
+.marquee{position:absolute;left:0;right:0;bottom:clamp(96px,17vh,190px);
+  overflow:clip;pointer-events:none;z-index:3;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.rail{display:flex;width:max-content;gap:clamp(26px,4vw,64px);align-items:baseline;
+  font-family:var(--mono);font-size:clamp(1.6rem,4vw,3.4rem);letter-spacing:-.01em;
+  color:#6E6E76;white-space:nowrap}
+.rail span:nth-child(3n+1){color:#F5F5F7}
+.rail span:nth-child(5n+3){color:var(--accent)}
+
 /* ===== THE SUBJECT =====
    The product here is motion, so the hero has to be a thing that moves,
    not a photograph with type over it. This is a film frame: seamless
@@ -279,9 +275,7 @@ img{display:block;max-width:100%}
 .quiet h1,.quiet h2{font-size:clamp(2.4rem,4.6vw,4.6rem);line-height:1.04;
   letter-spacing:-.032em;font-weight:700;margin:0;color:#F5F5F7}
 .quiet h1 .lit,.quiet h2 .lit{color:#8FA6FF}
-.quiet{display:grid}
-.quiet h1{grid-area:1/1}
-.quiet p{grid-area:2/1;max-width:54ch;margin:clamp(18px,1.8vw,26px) auto 0;
+.quiet p{max-width:54ch;margin:clamp(18px,1.8vw,26px) auto 0;
   font-size:var(--t-04);line-height:1.45;color:#A1A1A6;letter-spacing:.002em}
 .stack{display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:clamp(20px,3.4vh,44px);width:100%;height:100%;
@@ -394,10 +388,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
         <div class="stack">
           <div class="quiet">
             <h1>Nobody is filming <span class="lit">your page.</span></h1>
-            <p data-dolly="beat" data-dolly-on="scene" data-dolly-range
-               style="--dolly-range: contain 0% contain 56%">There is no camera, so every camera move on the web had to be invented. Dolly invents 23 of them in CSS, with no JavaScript anywhere.</p>
-            <p data-dolly="beat" data-dolly-on="scene" data-dolly-range
-               style="--dolly-range: contain 56% contain 98%">Scroll drives the shot. Scrolling back up rewinds it, because scroll position is the timeline itself.</p>
+            <p>There is no camera, so every camera move on the web had to be invented. Dolly invents 23 of them in CSS, and scrolling back up rewinds them.</p>
           </div>
           <div class="subject" data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:1.14">
             <img src="https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=2000&q=78&auto=format&fit=crop"
@@ -417,10 +408,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
         <div class="stack">
           <div class="quiet">
             <h2>Fourteen kilobytes, <span class="lit">watching a scrollbar.</span></h2>
-            <p data-dolly="beat" data-dolly-on="scene" data-dolly-range
-               style="--dolly-range: contain 0% contain 52%">That is what AOS ships to notice where you are: 14 kB of JavaScript, 4.7 kB gzipped, last published in 2022 and still downloaded 196,000 times a week.</p>
-            <p data-dolly="beat" data-dolly-on="scene" data-dolly-range
-               style="--dolly-range: contain 50% contain 98%">Dolly ships a stylesheet. A stylesheet cannot fail to boot.</p>
+            <p>AOS ships 14 kB of JavaScript to notice where you are. Dolly ships a stylesheet, and a stylesheet cannot fail to boot.</p>
           </div>
           <p class="figure kb"><span class="unit">kB</span></p>
         </div>
@@ -437,8 +425,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
           <p class="masked" data-dolly="mask" data-dolly-on="scene"
              style="background-image:url('https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=2200&q=78&auto=format&fit=crop');--dolly-mask-from:135%;--dolly-mask-to:200%">DOLLY</p>
           <div class="quiet">
-            <p data-dolly="beat" data-dolly-on="scene" data-dolly-range
-               style="--dolly-range: contain 8% contain 92%">It is named after a cart. A dolly carries a camera through a shot and never appears in one. Sibling to Foley, which does the sound.</p>
+            <p>It is named after a cart. A dolly carries a camera through a shot and never appears in one. Sibling to Foley, which does the sound.</p>
           </div>
         </div>
         <span class="m credit">mask · background-clip: text</span>
@@ -446,27 +433,24 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
     </div>
   </div>
 
-  <!-- ===== ACT IV — the dolly track: sideways, driven by down ===== -->
-  <div class="film" data-dolly-scene style="--dolly-scene:420vh">
+  <!-- ===== ACT IV — the vocabulary, carried past on a track ===== -->
+  <div class="film" data-dolly-scene style="--dolly-scene:360vh">
     <div data-dolly-pin>
-      <div class="stage" style="background:#0B0B0C;place-items:center start">
-        <div class="rail-head">
-          <h2 class="chapter-h" style="font-size:clamp(1.8rem,4.4vw,3.4rem)">Twenty-three moves,<br><span class="lit">named for camera.</span></h2>
+      <div class="stage seamless">
+        <div class="stack">
+          <div class="quiet">
+            <h2>You already know <span class="lit">these words.</span></h2>
+            <p>Cinema named these moves before the web existed. Knowing what they do is most of the documentation.</p>
+          </div>
         </div>
-        <div class="rail rail-back" data-dolly="track" data-dolly-on="scene"
-             style="--dolly-track-from:0;--dolly-track-to:calc(-100% + 96vw)">
-          <span>fade</span><span>tilt-up</span><span>tilt-down</span><span>pan-left</span>
-          <span>pan-right</span><span>dolly-in</span><span>dolly-out</span><span>reveal</span>
-          <span>wipe-up</span><span>hold</span><span>beat</span><span>beat-in</span>
-          <span>letter</span><span>iris</span><span>mask</span><span>track</span>
-        </div>
-        <div class="rail rail-fore" data-dolly="track" data-dolly-on="scene"
-             style="--dolly-track-from:6vw;--dolly-track-to:calc(-100% + 74vw)">
-          <div class="rail-card"><h4>crane</h4><p>Lifts and settles. Heavier than a tilt, for whole sections.</p></div>
-          <div class="rail-card"><h4>rack</h4><p>Fourteen pixels of blur resolving to none. A focus pull.</p></div>
-          <div class="rail-card"><h4>whip</h4><p>A fast pan, motion blur trailing behind it.</p></div>
-          <div class="rail-card"><h4>parallax</h4><p>Drifts against the scroll to open depth behind the page.</p></div>
-          <div class="rail-card rail-card-lit"><h4>zoom</h4><p>A slow continuous push that runs the whole time it is on screen.</p></div>
+        <!-- one line of names, carried sideways by scrolling down -->
+        <div class="marquee">
+          <div class="rail" data-dolly="track" data-dolly-on="scene"
+               style="--dolly-track-from:12vw;--dolly-track-to:calc(-100% + 88vw)">
+            <span>tilt</span><span>pan</span><span>crane</span><span>rack</span><span>whip</span>
+            <span>roll</span><span>iris</span><span>track</span><span>matte</span><span>zoom</span>
+            <span>parallax</span><span>dolly in</span><span>dolly out</span><span>wipe</span>
+          </div>
         </div>
         <span class="m credit">track · vertical scroll, horizontal travel</span>
       </div>
@@ -507,25 +491,25 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
           <h2 data-dolly="tilt-up">The full set.</h2>
           <span class="label">the reference</span>
         </div>
-        <table class="index">
+        <table class="index" data-dolly="fade">
           <thead><tr><th>Move</th><th class="hide-sm">Range</th><th>What it does</th></tr></thead>
           <tbody>
-            <tr data-dolly="fade"><td>fade</td><td class="r hide-sm">—</td><td>opacity only</td></tr>
-            <tr data-dolly="tilt-up"><td>tilt-up</td><td class="r hide-sm">—</td><td>rises into place</td></tr>
-            <tr data-dolly="tilt-down"><td>tilt-down</td><td class="r hide-sm">—</td><td>drops into place</td></tr>
-            <tr data-dolly="pan-left"><td>pan-left</td><td class="r hide-sm">—</td><td>slides in from the right</td></tr>
-            <tr data-dolly="pan-right"><td>pan-right</td><td class="r hide-sm">—</td><td>slides in from the left</td></tr>
-            <tr data-dolly="dolly-in"><td>dolly-in</td><td class="r hide-sm">—</td><td>camera pushes toward it</td></tr>
-            <tr data-dolly="dolly-out"><td>dolly-out</td><td class="r hide-sm">—</td><td>camera pulls back from it</td></tr>
-            <tr data-dolly="crane"><td>crane</td><td class="r hide-sm">—</td><td>lifts and settles</td></tr>
-            <tr data-dolly="rack"><td>rack</td><td class="r hide-sm">—</td><td>focus pulls from blurred</td></tr>
-            <tr data-dolly="whip"><td>whip</td><td class="r hide-sm">—</td><td>fast pan with motion blur</td></tr>
-            <tr data-dolly="reveal"><td>reveal</td><td class="r hide-sm">—</td><td>wipes in horizontally</td></tr>
-            <tr data-dolly="wipe-up"><td>wipe-up</td><td class="r hide-sm">—</td><td>wipes in vertically</td></tr>
-            <tr data-dolly="roll"><td>roll</td><td class="r hide-sm">—</td><td>rotates level</td></tr>
-            <tr data-dolly="parallax"><td>parallax</td><td class="r hide-sm">cover</td><td>drifts against the scroll</td></tr>
-            <tr data-dolly="zoom"><td>zoom</td><td class="r hide-sm">cover</td><td>slow continuous push</td></tr>
-            <tr data-dolly="progress"><td>progress</td><td class="r hide-sm">scroll()</td><td>tracks the whole page</td></tr>
+            <tr><td>fade</td><td class="r hide-sm">—</td><td>opacity only</td></tr>
+            <tr><td>tilt-up</td><td class="r hide-sm">—</td><td>rises into place</td></tr>
+            <tr><td>tilt-down</td><td class="r hide-sm">—</td><td>drops into place</td></tr>
+            <tr><td>pan-left</td><td class="r hide-sm">—</td><td>slides in from the right</td></tr>
+            <tr><td>pan-right</td><td class="r hide-sm">—</td><td>slides in from the left</td></tr>
+            <tr><td>dolly-in</td><td class="r hide-sm">—</td><td>camera pushes toward it</td></tr>
+            <tr><td>dolly-out</td><td class="r hide-sm">—</td><td>camera pulls back from it</td></tr>
+            <tr><td>crane</td><td class="r hide-sm">—</td><td>lifts and settles</td></tr>
+            <tr><td>rack</td><td class="r hide-sm">—</td><td>focus pulls from blurred</td></tr>
+            <tr><td>whip</td><td class="r hide-sm">—</td><td>fast pan with motion blur</td></tr>
+            <tr><td>reveal</td><td class="r hide-sm">—</td><td>wipes in horizontally</td></tr>
+            <tr><td>wipe-up</td><td class="r hide-sm">—</td><td>wipes in vertically</td></tr>
+            <tr><td>roll</td><td class="r hide-sm">—</td><td>rotates level</td></tr>
+            <tr><td>parallax</td><td class="r hide-sm">cover</td><td>drifts against the scroll</td></tr>
+            <tr><td>zoom</td><td class="r hide-sm">cover</td><td>slow continuous push</td></tr>
+            <tr><td>progress</td><td class="r hide-sm">scroll()</td><td>tracks the whole page</td></tr>
           </tbody>
         </table>
       </section>
