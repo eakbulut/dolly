@@ -100,6 +100,11 @@
 
 @media (prefers-reduced-motion: reduce) {
   [data-dolly] { animation-name: none !important }
+  /* `track` parks at its untranslated state — a row wider than the
+     viewport. Inside overflow:clip that content is unreachable, and clip
+     makes no scrollbar. The library promises it never hides content, so
+     the pin has to release its clip when the motion is off. */
+  [data-dolly-pin] { overflow: visible }
 }
 
 /* ---------- scenes: pinned, scrubbed sequences ---------- *
@@ -123,10 +128,12 @@
   min-height: var(--dolly-scene, 300vh);
   view-timeline-name: --dolly-scene;
   view-timeline-axis: block;
-  /* Default view() ranges begin the instant 1px crosses the viewport edge,
-     so things start moving while still off-frame and the page reads as
-     permanently in motion. Pull the trigger inward. */
-  view-timeline-inset: 8% 8%;
+  /* No view-timeline-inset here. It was tried and reverted: it only
+     configures THIS named timeline (not the anonymous view() timelines the
+     entrance moves use), its sign inverts for `contain`, and a positive
+     inset desyncs the scrub from the pin — the scene starts before the
+     element sticks and is still unfinished when it releases. Every staged
+     --dolly-range is authored against the pin-synced mapping. */
 }
 
 [data-dolly-pin] {

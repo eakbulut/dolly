@@ -53,7 +53,6 @@
    light and grain are a continuous function of scroll position instead of
    a per-section animation. This is what stops four acts reading as four
    slides: there is no boundary to see, because nothing restarts at one. */
-@property --p    { syntax:"<number>"; inherits:true; initial-value:0 }
 @property --bg   { syntax:"<color>";  inherits:true; initial-value:#0B0B0C }
 @property --glow { syntax:"<color>";  inherits:true; initial-value:#0B0B0C }
 @property --grain{ syntax:"<number>"; inherits:true; initial-value:.06 }
@@ -63,12 +62,12 @@
   animation-timeline:scroll(root block);animation-range:normal;
 }
 @keyframes world{
-  0%   { --p:0;    --bg:#0B0B0C; --glow:#191922; --grain:.075 }
-  20%  { --p:.20;  --bg:#0A0E1C; --glow:#1B2B52; --grain:.055 }
-  38%  { --p:.38;  --bg:#101A3A; --glow:#2B4BE8; --grain:.045 }
-  52%  { --p:.52;  --bg:#0B0B0C; --glow:#241E3A; --grain:.065 }
-  70%  { --p:.70;  --bg:#0B0B0C; --glow:#14141C; --grain:.08 }
-  100% { --p:1;    --bg:#0B0B0C; --glow:#14141C; --grain:.08 }
+  0%   { --bg:#0B0B0C; --glow:#191922; --grain:.075 }
+  20%  { --bg:#0A0E1C; --glow:#1B2B52; --grain:.055 }
+  38%  { --bg:#101A3A; --glow:#2B4BE8; --grain:.045 }
+  52%  { --bg:#0B0B0C; --glow:#241E3A; --grain:.065 }
+  70%  { --bg:#0B0B0C; --glow:#14141C; --grain:.08 }
+  100% { --bg:#0B0B0C; --glow:#14141C; --grain:.08 }
 }
 
 /* Grain. Opacity only — feTurbulence is CPU-computed at paint, so animating
@@ -207,9 +206,12 @@ img{display:block;max-width:100%}
 /* Act I takes a diagonal: title anchored to the bottom-left of the VIEWPORT,
    beats stacked in the upper right. The first varied composition in the set. */
 .act1-title{position:absolute;left:0;right:0;bottom:clamp(34px,7vh,86px);z-index:4;overflow:clip}
-/* Reading order is the DOM's job; the diagonal is the stage's. */
-.film .stage{grid-template-areas:"a"}
-.film .stage > *{grid-area:a}
+/* Reading order is the DOM's job; the diagonal is the stage's. Only the
+   absolutely-positioned layers share the cell — never the flow content,
+   or it collides the moment those layers go static on a small screen. */
+.film .stage{grid-template-areas:"a";grid-template-rows:1fr}
+.film .stage > .shot-frame,.film .stage > .veil,.film .stage > .vignette,
+.film .stage > .iris-layer{grid-area:a}
 .act1-beats{position:absolute;top:clamp(72px,13vh,150px);right:var(--edge);
   width:min(34ch,38vw);z-index:4;display:grid;
   padding:clamp(16px,1.6vw,22px) clamp(18px,1.8vw,26px);
@@ -220,10 +222,21 @@ img{display:block;max-width:100%}
   mask-image:linear-gradient(90deg,#000 62%,rgba(0,0,0,.72))}
 .act1-beats > *{grid-area:1/1;margin:0}
 @media(max-width:820px){
-  .act1-beats{position:static;width:auto;margin:20px var(--gutter) 0;
-    background:rgba(11,11,12,.62);backdrop-filter:blur(10px);align-self:end}
-  .act1-title{position:static;bottom:auto;align-self:end}
-  .film .stage{align-content:center;row-gap:0}
+  .giant{font-size:min(13.5vw,calc((100vw - 2*var(--gutter))/4.6));line-height:.92}
+  .masked{font-size:min(22vw,calc((100vw - 2*var(--gutter))/3.3))}
+  .kb{font-size:min(28vw,calc((100vw - 2*var(--gutter))/2.4))}
+  /* One column, bottom-weighted, copy in reading order. The diagonal is a
+     desktop affordance and does not survive a 390px frame. */
+  .film .stage{display:flex;flex-direction:column;justify-content:flex-end;
+    padding:0 0 clamp(64px,13vh,104px);gap:14px;overflow:clip}
+  .act1-title{position:static;bottom:auto;padding:0 var(--gutter);
+    overflow:visible;flex:none}
+  .act1-beats{position:static;width:auto;margin:0 var(--gutter);flex:none;
+    border-left:2px solid var(--accent);mask-image:none;-webkit-mask-image:none;
+    background:rgba(11,11,12,.72);backdrop-filter:blur(12px)}
+  .act2-beats,.stage-copy{position:static}
+  /* the slate and the cue each get their own half of the matte */
+  .cue,.credit{font-size:11px}
   .act1-title{position:static;bottom:auto}
 }
 
@@ -291,7 +304,11 @@ footer{padding:26px 0 44px;display:flex;gap:20px;justify-content:space-between;f
 footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--accent)}
 
 @media (prefers-reduced-motion: reduce){
-  .readout,.topbar{animation-name:none !important}
+  .readout,.topbar,.kb{animation-name:none !important}
+  /* The clock only interpolates colour and grain, but the countdown is a
+     number ticking on scroll — that is motion, and it has to stop. */
+  :root{animation-name:none !important}
+  .kb::before{content:"0"}
   [data-dolly-pin]{position:static;height:auto;min-height:70svh}
   [data-dolly-scene]{min-height:0 !important}
 }
