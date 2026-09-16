@@ -335,8 +335,12 @@ img{display:block;max-width:100%}
 
 /* Calm, centred, with air. Not a poster. */
 .quiet{max-width:min(90vw,1100px);margin:0 auto;text-align:center}
+/* The global h1/h2 rules cap width and set margin:0, so inside a centred
+   block the narrower heading box hugs the left while text-align:center
+   centres the text within it — the type looks centred against itself and
+   sits off-centre against the page. Auto margins centre the BOX. */
 .quiet h1,.quiet h2{font-size:clamp(2.4rem,4.6vw,4.6rem);line-height:1.04;
-  letter-spacing:-.032em;font-weight:700;margin:0;color:#F5F5F7}
+  letter-spacing:-.032em;font-weight:700;margin:0 auto;max-width:20ch;color:#F5F5F7}
 .quiet h1 .lit,.quiet h2 .lit{color:#8FA6FF}
 .quiet p{max-width:54ch;margin:clamp(18px,1.8vw,26px) auto 0;
   font-size:var(--t-04);line-height:1.45;color:#A1A1A6;letter-spacing:.002em}
