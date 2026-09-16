@@ -407,7 +407,17 @@ pre .c{color:#8B8B85}pre .k{color:#9DB4F5}pre .s{color:#C6E1A6}
 .band-dark .wrap{position:relative}
 .band-dark h2{color:#F5F5F7;max-width:16ch}
 .band-dark .note{color:#A9A9A2}
-.band-dark pre{margin:0;background:transparent;padding:0}
+/* The code sat transparent on the band with nothing holding it. A panel
+   gives it an edge to sit inside, and the header is a slate: the thing a
+   film crew writes the shot on. */
+.editor{margin:clamp(26px,3.4vw,44px) 0 0;border:1px solid #33333A;border-radius:10px;
+  background:#101014;overflow:clip;
+  box-shadow:0 30px 80px -40px #000,0 0 0 1px rgba(255,255,255,.03)}
+.editor-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:11px 16px;border-bottom:1px solid #26262C;background:#16161B;color:#8A8A93}
+.editor-note{color:#5E5E67}
+@media(max-width:560px){.editor-note{display:none}}
+.band-dark .editor pre{margin:0;background:transparent;padding:clamp(18px,2.2vw,28px)}
 .band-dark .wrap{max-width:1320px}
 .install .dim{color:#8B8B85}
 
@@ -736,7 +746,12 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
           <span class="label">one attribute, plus scenes</span>
         </div>
         <p class="note" data-dolly="fade">Link the stylesheet, then annotate markup you already have. No init call, no wrapper component, no configuration object, because nothing is running that could read one.</p>
-<pre data-dolly="reveal"><code><span class="k">&lt;link</span> rel=<span class="s">"stylesheet"</span> href=<span class="s">"dolly.css"</span><span class="k">&gt;</span>
+<figure class="editor" data-dolly="reveal">
+  <figcaption class="editor-bar">
+    <span class="m">index.html</span>
+    <span class="m editor-note">nothing else to install</span>
+  </figcaption>
+<pre><code><span class="k">&lt;link</span> rel=<span class="s">"stylesheet"</span> href=<span class="s">"dolly.css"</span><span class="k">&gt;</span>
 
 <span class="k">&lt;h1</span> data-dolly=<span class="s">"tilt-up"</span><span class="k">&gt;</span>Arrives as you reach it<span class="k">&lt;/h1&gt;</span>
 <span class="k">&lt;img</span> data-dolly=<span class="s">"rack"</span> src=<span class="s">"still.jpg"</span> alt=<span class="s">""</span><span class="k">&gt;</span>
@@ -751,6 +766,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
 <span class="c">/* one caveat: a parent with overflow:hidden becomes its own scroll
    container and pins the move at its end state. Use overflow:clip. */</span>
 </code></pre>
+</figure>
         <code class="install"><span class="dim">$</span> npm i @dollyjs/core</code>
       </div>
     </div>
