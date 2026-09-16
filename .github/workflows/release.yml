@@ -1,0 +1,34 @@
+name: Publish to npm (trusted publishing)
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: read
+  id-token: write   # the OIDC handshake npm's trusted publishing verifies
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24   # bundles npm 11.x; trusted publishing needs npm >= 11.5
+          registry-url: "https://registry.npmjs.org"
+      - name: Assert npm supports trusted publishing
+        run: |
+          npm --version
+          node -e "const [m,n]=require('child_process').execSync('npm -v').toString().split('.'); if (+m<11||(+m===11&&+n<5)) { console.error('npm too old for trusted publishing'); process.exit(1); }"
+      - name: Tag must match the package version
+        run: |
+          PKG=$(node -p "require('./package.json').version")
+          TAG="${GITHUB_REF_NAME#v}"
+          if [ "$PKG" != "$TAG" ]; then
+            echo "::error::Tag v$TAG but package.json says $PKG - bump and re-tag (see RELEASING.md)"
+            exit 1
+          fi
+      - name: Tests gate the release
+        run: npm test
+      # No tokens anywhere: the publish authenticates via this workflow's own
+      # OIDC identity, which must match the Trusted Publisher configured on
+      # the npm package. Provenance is attached automatically.
+      - run: npm publish

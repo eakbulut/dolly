@@ -1,0 +1,38 @@
+name: Deploy demo to GitHub Pages
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Tests must pass before deploy
+        run: npm test
+      - name: Assemble site
+        run: |
+          mkdir -p _site/src
+          cp index.html _site/
+          cp src/dolly.css _site/src/
+          echo "usedolly.dev" > _site/CNAME
+          printf 'User-agent: *\nAllow: /\nSitemap: https://usedolly.dev/sitemap.xml\n' > _site/robots.txt
+          printf '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n<url><loc>https://usedolly.dev/</loc></url>\n</urlset>\n' > _site/sitemap.xml
+      - uses: actions/configure-pages@v4
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: "_site"
+      - id: deployment
+        uses: actions/deploy-pages@v4
