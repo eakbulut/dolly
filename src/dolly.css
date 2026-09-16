@@ -354,6 +354,10 @@
                          to   { translate: var(--dolly-track-to, -60%) 0 } }
 @keyframes dolly-mask  { from { background-size: var(--dolly-mask-from, 150%) auto }
                          to   { background-size: var(--dolly-mask-to, 210%) auto } }
+/* letter-spacing changes the element's WIDTH. On a line that can wrap,
+   that reflows mid-scrub — two lines snapping to one — which reads as a
+   jerk and is layout work on every frame. Apply this to a `white-space:
+   nowrap` line sized to fit at its widest tracking. */
 @keyframes dolly-letter{ from { letter-spacing: var(--dolly-letter-from, .12em); opacity: 0 }
                          to   { letter-spacing: var(--dolly-letter-to, -.05em); opacity: 1 } }
 

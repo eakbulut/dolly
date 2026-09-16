@@ -210,6 +210,12 @@ nothing to un-hide.
 
 ## Gotchas
 
+### `letter` reflows unless the line cannot wrap
+
+It animates `letter-spacing`, which changes the text's width. On a line that
+can wrap, the line count changes mid-scrub and the layout jumps. Give it
+`white-space: nowrap` and size the type to fit at the widest tracking value.
+
 ### `loading="lazy"` does not work on a depth layer
 
 A plate pushed back on Z inside a clipped container is, as far as the

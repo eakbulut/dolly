@@ -256,6 +256,7 @@ img{display:block;max-width:100%}
 .wordmark{display:flex;justify-content:center;align-items:baseline;margin:0;
   font-size:min(24vh,min(23vw,calc((100vw - 2*var(--edge))/3.4)));
   line-height:.9;letter-spacing:-.055em;font-weight:900}
+.glyph-z{display:inline-block}
 .glyph{display:inline-block;background-image:var(--plate);background-size:cover;
   -webkit-background-clip:text;background-clip:text;color:transparent;
   filter:brightness(1.5) contrast(1.25) saturate(1.15)}
@@ -387,8 +388,13 @@ pre .c{color:#8B8B85}pre .k{color:#9DB4F5}pre .s{color:#C6E1A6}
    its place — it is the only move on the page that animates type itself. */
 .sign-off{margin-top:clamp(80px,14vh,170px);padding:clamp(50px,9vh,110px) 0;
   border-top:1px solid var(--ink);text-align:center;display:grid;gap:18px;justify-items:center}
-.sign-off-line{margin:0;font-size:clamp(1.6rem,4.4vw,3.4rem);font-weight:700;
-  letter-spacing:-.02em;line-height:1.05;color:var(--ink);max-width:22ch}
+/* `letter` animates letter-spacing, which changes the text's WIDTH — so a
+   wrapping line reflows from two lines to one mid-scrub and reads as a
+   jerk. The line is nowrap and sized to fit at its WIDEST tracking, so the
+   box never changes. */
+.sign-off-line{margin:0;font-weight:700;line-height:1.05;color:var(--ink);
+  white-space:nowrap;letter-spacing:-.02em;
+  font-size:min(3.2rem,calc((100vw - 2*var(--gutter))/17))}
 .sign-off .m{color:var(--ink-soft)}
 
 .ded{margin-top:clamp(40px,6vh,70px);border-top:1px solid var(--ink);padding:28px 0 0;
@@ -544,16 +550,26 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
       <div class="stage seamless" data-dolly-space style="--dolly-perspective:1500px">
         <div class="stack">
           <p class="wordmark" style="--plate:url('https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1600&q=78&auto=format&fit=crop')">
-            <span class="glyph" data-dolly="push" data-dolly-on="scene" data-dolly-range
-                  style="--dolly-z-from:-1600px;--dolly-z-to:0px;background-position:8% 50%;--dolly-range: contain 0% contain 58%">D</span>
-            <span class="glyph" data-dolly="push" data-dolly-on="scene" data-dolly-range
-                  style="--dolly-z-from:-1150px;--dolly-z-to:0px;background-position:28% 50%;--dolly-range: contain 8% contain 62%">O</span>
-            <span class="glyph" data-dolly="push" data-dolly-on="scene" data-dolly-range
-                  style="--dolly-z-from:-760px;--dolly-z-to:0px;background-position:48% 50%;--dolly-range: contain 16% contain 66%">L</span>
-            <span class="glyph" data-dolly="push" data-dolly-on="scene" data-dolly-range
-                  style="--dolly-z-from:-430px;--dolly-z-to:0px;background-position:68% 50%;--dolly-range: contain 24% contain 70%">L</span>
-            <span class="glyph" data-dolly="push" data-dolly-on="scene" data-dolly-range
-                  style="--dolly-z-from:-150px;--dolly-z-to:0px;background-position:88% 50%;--dolly-range: contain 32% contain 74%">Y</span>
+            <span class="glyph-z" data-dolly="push" data-dolly-on="scene" data-dolly-range
+                  style="--dolly-z-from:-1600px;--dolly-z-to:0px;--dolly-range: contain 0% contain 58%"><span class="glyph" data-dolly="mask"
+                  data-dolly-on="scene" data-dolly-range
+                  style="background-position:8% 50%;--dolly-mask-from:130%;--dolly-mask-to:215%;--dolly-range: contain 0% contain 100%">D</span></span>
+            <span class="glyph-z" data-dolly="push" data-dolly-on="scene" data-dolly-range
+                  style="--dolly-z-from:-1150px;--dolly-z-to:0px;--dolly-range: contain 8% contain 62%"><span class="glyph" data-dolly="mask"
+                  data-dolly-on="scene" data-dolly-range
+                  style="background-position:28% 50%;--dolly-mask-from:130%;--dolly-mask-to:215%;--dolly-range: contain 0% contain 100%">O</span></span>
+            <span class="glyph-z" data-dolly="push" data-dolly-on="scene" data-dolly-range
+                  style="--dolly-z-from:-760px;--dolly-z-to:0px;--dolly-range: contain 16% contain 66%"><span class="glyph" data-dolly="mask"
+                  data-dolly-on="scene" data-dolly-range
+                  style="background-position:48% 50%;--dolly-mask-from:130%;--dolly-mask-to:215%;--dolly-range: contain 0% contain 100%">L</span></span>
+            <span class="glyph-z" data-dolly="push" data-dolly-on="scene" data-dolly-range
+                  style="--dolly-z-from:-430px;--dolly-z-to:0px;--dolly-range: contain 24% contain 70%"><span class="glyph" data-dolly="mask"
+                  data-dolly-on="scene" data-dolly-range
+                  style="background-position:68% 50%;--dolly-mask-from:130%;--dolly-mask-to:215%;--dolly-range: contain 0% contain 100%">L</span></span>
+            <span class="glyph-z" data-dolly="push" data-dolly-on="scene" data-dolly-range
+                  style="--dolly-z-from:-150px;--dolly-z-to:0px;--dolly-range: contain 32% contain 74%"><span class="glyph" data-dolly="mask"
+                  data-dolly-on="scene" data-dolly-range
+                  style="background-position:88% 50%;--dolly-mask-from:130%;--dolly-mask-to:215%;--dolly-range: contain 0% contain 100%">Y</span></span>
           </p>
           <div class="quiet">
             <p>It is named after a cart. A dolly carries a camera through a shot and never appears in one. Sibling to Foley, which does the sound.</p>
@@ -713,7 +729,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
     <div class="wrap">
 
       <div class="sign-off">
-        <p class="sign-off-line" data-dolly="letter" style="--dolly-letter-from:.26em;--dolly-letter-to:-.02em">that is the whole library</p>
+        <p class="sign-off-line" data-dolly="letter" style="--dolly-letter-from:.14em;--dolly-letter-to:-.02em">that is the whole library</p>
         <span class="m">30 moves · 0 kB of JavaScript · one attribute</span>
       </div>
 
