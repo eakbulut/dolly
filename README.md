@@ -1,6 +1,6 @@
 # Dolly
 
-Scroll-driven motion, in CSS. One attribute, 28 camera moves, no JavaScript.
+Scroll-driven motion, in CSS. One attribute, 30 camera moves, no JavaScript.
 
 ```html
 <h2 data-dolly="tilt-up">This rises into place as you scroll to it.</h2>
@@ -113,6 +113,8 @@ on the ancestor that should hold the camera.
 | `swing` | rotates in from the side on Y |
 | `tumble` | pitches in from above on X |
 | `fly` | travels from far past the camera, fading before it crosses the plane |
+| `drop` | falls through the frame, pitching as it goes |
+| `pass` | tracks laterally and reverses its yaw as it crosses, the way a shop window does as you walk past |
 
 ```html
 <div data-dolly-space style="--dolly-perspective: 1400px">

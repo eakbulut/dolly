@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dolly — scroll-driven motion, in CSS</title>
-<meta name="description" content="Dolly is a CSS library of 23 scroll-driven camera moves, with pinned scenes. No JavaScript, no IntersectionObserver, no runtime. Add one attribute.">
+<meta name="description" content="Dolly is a CSS library of 30 scroll-driven camera moves, with pinned scenes. No JavaScript, no IntersectionObserver, no runtime. Add one attribute.">
 <meta property="og:title" content="Dolly — scroll-driven motion, in CSS">
 <meta property="og:description" content="Everything that moves on this page was moved by the library. Nothing on it runs JavaScript.">
 <meta property="og:url" content="https://usedolly.dev/">
@@ -250,6 +250,16 @@ img{display:block;max-width:100%}
 .rail span:nth-child(3n+1){color:#F5F5F7}
 .rail span:nth-child(5n+3){color:var(--accent)}
 
+/* Each letter is its own window onto the same footage, and each sits at a
+   different distance — so the camera does not push a flat word, it travels
+   THROUGH one. The letters arrive in depth order and assemble. */
+.wordmark{display:flex;justify-content:center;align-items:baseline;margin:0;
+  font-size:min(24vh,min(23vw,calc((100vw - 2*var(--edge))/3.4)));
+  line-height:.9;letter-spacing:-.055em;font-weight:900}
+.glyph{display:inline-block;background-image:var(--plate);background-size:cover;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:brightness(1.5) contrast(1.25) saturate(1.15)}
+
 /* ===== THE DEPTH RIG =====
    perspective, but deliberately NO transform-style: preserve-3d. The plates
    are billboards, not volumes, and preserve-3d would be flattened by the
@@ -407,7 +417,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
 <header class="mast">
   <div class="wrap mast-in">
     <a class="mark" href="#top">Dolly</a>
-    <span class="m mast-spec">23 moves · 0 kB of JavaScript</span>
+    <span class="m mast-spec">30 moves · 0 kB of JavaScript</span>
     <div class="mast-right">
       <div class="readout" title="Your scroll position, counted in CSS"><span class="label readout-label">scroll</span></div>
       <a class="label" href="https://github.com/eakbulut/dolly">GitHub</a>
@@ -451,7 +461,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
         <div class="stack">
           <div class="quiet">
             <h1>Nobody is filming <span class="lit">your page.</span></h1>
-            <p>There is no camera, so every camera move on the web had to be invented. Dolly invents 23 of them in CSS, and scrolling back up rewinds them.</p>
+            <p>There is no camera, so every camera move on the web had to be invented. Dolly invents 30 of them in CSS, and scrolling back up rewinds them.</p>
           </div>
           <div class="subject" data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:1.14">
             <img src="https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=2000&q=78&auto=format&fit=crop"
@@ -470,34 +480,34 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
       <div class="stage seamless">
         <div class="depth" style="--lens:1100px;perspective-origin:50% 50%">
           <div class="haze"></div>
-          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
-                  style="--w:34vw;--px:calc(-22vw - 0 * 5vw);--py:-15.0vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:-58vw;--dolly-range: contain 1.0% contain 35.0%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
-                  style="--w:34vw;--px:calc(22vw + 1 * 5vw);--py:-3.5vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:58vw;--dolly-range: contain 6.29% contain 40.29%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
-                  style="--w:34vw;--px:calc(-22vw - 2 * 5vw);--py:7.9vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:-58vw;--dolly-range: contain 11.58% contain 45.58%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
-                  style="--w:34vw;--px:calc(22vw + 0 * 5vw);--py:-10.6vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:58vw;--dolly-range: contain 16.87% contain 50.87%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
-                  style="--w:34vw;--px:calc(-22vw - 1 * 5vw);--py:0.8vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:-58vw;--dolly-range: contain 22.16% contain 56.16%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
-                  style="--w:34vw;--px:calc(22vw + 2 * 5vw);--py:12.3vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:58vw;--dolly-range: contain 27.45% contain 61.45%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
-                  style="--w:34vw;--px:calc(-22vw - 0 * 5vw);--py:-6.2vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:-58vw;--dolly-range: contain 32.74% contain 66.74%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
-                  style="--w:34vw;--px:calc(22vw + 1 * 5vw);--py:5.2vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:58vw;--dolly-range: contain 38.03% contain 72.03%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
-                  style="--w:34vw;--px:calc(-22vw - 2 * 5vw);--py:-13.3vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:-58vw;--dolly-range: contain 43.32% contain 77.32%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
-                  style="--w:34vw;--px:calc(22vw + 0 * 5vw);--py:-1.9vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:58vw;--dolly-range: contain 48.61% contain 82.61%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
-                  style="--w:34vw;--px:calc(-22vw - 1 * 5vw);--py:9.6vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:-58vw;--dolly-range: contain 53.9% contain 87.9%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
-                  style="--w:34vw;--px:calc(22vw + 2 * 5vw);--py:-9.0vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:58vw;--dolly-range: contain 59.19% contain 93.19%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
-                  style="--w:34vw;--px:calc(-22vw - 0 * 5vw);--py:2.5vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:-58vw;--dolly-range: contain 64.48% contain 98.48%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
-                  style="--w:34vw;--px:calc(22vw + 1 * 5vw);--py:14.0vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:58vw;--dolly-range: contain 69.77% contain 103.77%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
+                  style="--w:26vw;--dolly-angle:16deg;--px:-38vw;--py:-15.0vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 1.0% contain 35.0%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
+                  style="--w:33vw;--dolly-angle:23deg;--px:-25vw;--py:-3.5vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 6.29% contain 40.29%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
+                  style="--w:40vw;--dolly-angle:30deg;--px:-12vw;--py:7.9vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 11.58% contain 45.58%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
+                  style="--w:26vw;--dolly-angle:37deg;--px:1vw;--py:-10.6vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 16.87% contain 50.87%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
+                  style="--w:33vw;--dolly-angle:22deg;--px:14vw;--py:0.8vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 22.16% contain 56.16%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
+                  style="--w:40vw;--dolly-angle:29deg;--px:27vw;--py:12.3vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 27.45% contain 61.45%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
+                  style="--w:26vw;--dolly-angle:36deg;--px:40vw;--py:-6.2vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 32.74% contain 66.74%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
+                  style="--w:33vw;--dolly-angle:21deg;--px:-27vw;--py:5.2vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 38.03% contain 72.03%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
+                  style="--w:40vw;--dolly-angle:28deg;--px:-14vw;--py:-13.3vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 43.32% contain 77.32%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
+                  style="--w:26vw;--dolly-angle:35deg;--px:-1vw;--py:-1.9vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 48.61% contain 82.61%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
+                  style="--w:33vw;--dolly-angle:20deg;--px:12vw;--py:9.6vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 53.9% contain 87.9%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
+                  style="--w:40vw;--dolly-angle:27deg;--px:25vw;--py:-9.0vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 59.19% contain 93.19%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
+                  style="--w:26vw;--dolly-angle:34deg;--px:38vw;--py:2.5vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 64.48% contain 98.48%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
+                  style="--w:33vw;--dolly-angle:19deg;--px:-29vw;--py:14.0vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 69.77% contain 103.77%"></figure>
         </div>
         <div class="stack">
           <div class="quiet">
@@ -511,20 +521,28 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
     </div>
   </div>
 
-  <!-- ===== ACT III — the name ===== -->
-  <div class="film" data-dolly-scene style="--dolly-scene:300vh">
+  <!-- ===== ACT III — the camera flies through the name ===== -->
+  <div class="film" data-dolly-scene style="--dolly-scene:340vh">
     <div data-dolly-pin>
-      <div class="stage seamless">
+      <div class="stage seamless" data-dolly-space style="--dolly-perspective:1500px">
         <div class="stack">
-          <div data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:1.18">
-          <p class="masked" data-dolly="mask" data-dolly-on="scene"
-             style="background-image:url('https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=2200&q=78&auto=format&fit=crop');--dolly-mask-from:130%;--dolly-mask-to:215%">DOLLY</p>
-          </div>
+          <p class="wordmark" style="--plate:url('https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1600&q=78&auto=format&fit=crop')">
+            <span class="glyph" data-dolly="push" data-dolly-on="scene" data-dolly-range
+                  style="--dolly-z-from:-1600px;--dolly-z-to:0px;background-position:8% 50%;--dolly-range: contain 0% contain 58%">D</span>
+            <span class="glyph" data-dolly="push" data-dolly-on="scene" data-dolly-range
+                  style="--dolly-z-from:-1150px;--dolly-z-to:0px;background-position:28% 50%;--dolly-range: contain 8% contain 62%">O</span>
+            <span class="glyph" data-dolly="push" data-dolly-on="scene" data-dolly-range
+                  style="--dolly-z-from:-760px;--dolly-z-to:0px;background-position:48% 50%;--dolly-range: contain 16% contain 66%">L</span>
+            <span class="glyph" data-dolly="push" data-dolly-on="scene" data-dolly-range
+                  style="--dolly-z-from:-430px;--dolly-z-to:0px;background-position:68% 50%;--dolly-range: contain 24% contain 70%">L</span>
+            <span class="glyph" data-dolly="push" data-dolly-on="scene" data-dolly-range
+                  style="--dolly-z-from:-150px;--dolly-z-to:0px;background-position:88% 50%;--dolly-range: contain 32% contain 74%">Y</span>
+          </p>
           <div class="quiet">
             <p>It is named after a cart. A dolly carries a camera through a shot and never appears in one. Sibling to Foley, which does the sound.</p>
           </div>
         </div>
-        <span class="m credit">mask · background-clip: text</span>
+        <span class="m credit">push · five letters, five depths</span>
       </div>
     </div>
   </div>
@@ -536,23 +554,23 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
         <!-- one lateral delta shared by five plates: only z differs, so the
              perspective divide alone produces five speeds moving together -->
         <div class="depth" style="--lens:1400px;perspective-origin:50% 52%">
-          <figure class="plate" data-dolly-plate data-dolly="fly" data-dolly-on="scene" data-dolly-depth="far"
+          <figure class="plate" data-dolly-plate data-dolly="pass" data-dolly-on="scene" data-dolly-depth="far"
                   style="--w:30vw;--px:0;--py:-13vh;--dolly-z-from:-3000px;--dolly-z-to:-3000px;--dolly-x-from:42vw;--dolly-x-to:-42vw;--dolly-range: contain 0% contain 100%">
             <img src="https://images.unsplash.com/photo-1516961642265-531546e84af2?w=1200&q=74&auto=format&fit=crop" alt="" decoding="async" fetchpriority="low">
           </figure>
-          <figure class="plate" data-dolly-plate data-dolly="fly" data-dolly-on="scene" data-dolly-depth="mid"
+          <figure class="plate" data-dolly-plate data-dolly="pass" data-dolly-on="scene" data-dolly-depth="mid"
                   style="--w:34vw;--px:0;--py:11vh;--dolly-z-from:-1900px;--dolly-z-to:-1900px;--dolly-x-from:42vw;--dolly-x-to:-42vw;--dolly-range: contain 0% contain 100%">
             <img src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1200&q=74&auto=format&fit=crop" alt="" decoding="async" fetchpriority="low">
           </figure>
-          <figure class="plate" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
+          <figure class="plate" data-dolly-plate data-dolly="pass" data-dolly-on="scene"
                   style="--w:44vw;--px:0;--py:-3vh;--dolly-z-from:-1000px;--dolly-z-to:-1000px;--dolly-x-from:42vw;--dolly-x-to:-42vw;--dolly-range: contain 0% contain 100%">
             <img src="https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=1200&q=74&auto=format&fit=crop" alt="" decoding="async" fetchpriority="low">
           </figure>
-          <figure class="plate" data-dolly-plate data-dolly="fly" data-dolly-on="scene" data-dolly-depth="near"
+          <figure class="plate" data-dolly-plate data-dolly="pass" data-dolly-on="scene" data-dolly-depth="near"
                   style="--w:38vw;--px:0;--py:15vh;--dolly-z-from:-300px;--dolly-z-to:-300px;--dolly-x-from:42vw;--dolly-x-to:-42vw;--dolly-range: contain 0% contain 100%">
             <img src="https://images.unsplash.com/photo-1774619755413-7c31ab3aabc3?w=1200&q=74&auto=format&fit=crop" alt="" decoding="async" fetchpriority="low">
           </figure>
-          <figure class="plate" data-dolly-plate data-dolly="fly" data-dolly-on="scene" data-dolly-depth="far"
+          <figure class="plate" data-dolly-plate data-dolly="pass" data-dolly-on="scene" data-dolly-depth="far"
                   style="--w:44vw;--px:0;--py:-22vh;--dolly-z-from:260px;--dolly-z-to:260px;--dolly-x-from:42vw;--dolly-x-to:-42vw;--dolly-range: contain 0% contain 100%">
             <img src="https://images.unsplash.com/photo-1568876694728-451bbf694b83?w=1200&q=74&auto=format&fit=crop" alt="" decoding="async" fetchpriority="low">
           </figure>
@@ -664,7 +682,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
     <div class="wrap">
 
       <div class="ded">
-        <p>Dolly is named for the camera dolly, the cart that carries a camera through a shot. The name came first and stands on its own. It is also, this year, a word that is hard to write down without thinking of someone else. <a href="https://imaginationlibrary.com">Dolly Parton's Imagination Library</a> has posted a book to a child every month since 1995, and still posts them. It takes donations. This library does not.</p>
+        <p>Dolly is named for the camera dolly, the cart that carries a camera through a shot. The name came first and stands on its own. It is also, this year, a word that is hard to write down without thinking of someone else. <a href="https://imaginationlibrary.com">Dolly Parton's Imagination Library</a> has sent a book to a child every month since 1995, and still sends them. It takes donations. This library does not.</p>
         <span class="m">1946–2026</span>
       </div>
 

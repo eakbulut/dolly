@@ -161,6 +161,31 @@
          translate: var(--dolly-x-to, 0) var(--dolly-y-to, 0) var(--dolly-z-to, 520px) }
 }
 
+/* Three different camera behaviours, so three acts do not read as one
+   idea repeated. `fly` rushes past the sides; `drop` falls through the
+   frame; `pass` tracks laterally and REVERSES its yaw as it crosses, which
+   is exactly what a shop window does as you walk past it. */
+@keyframes dolly-drop {
+  0%   { opacity: 0; rotate: x var(--dolly-angle, 24deg);
+         translate: 0 var(--dolly-y-from, -52vh) var(--dolly-z-from, -1500px) }
+  15%  { opacity: 1 }
+  74%  { opacity: 1 }
+  100% { opacity: 0; rotate: x calc(var(--dolly-angle, 24deg) * -.6);
+         translate: 0 var(--dolly-y-to, 58vh) var(--dolly-z-to, 380px) }
+}
+@keyframes dolly-pass {
+  0%   { opacity: 0; rotate: y var(--dolly-angle, 36deg);
+         translate: var(--dolly-x-from, 62vw) 0 var(--dolly-z-from, -500px) }
+  16%  { opacity: 1 }
+  78%  { opacity: 1 }
+  100% { opacity: 0; rotate: y calc(var(--dolly-angle, 36deg) * -1);
+         translate: var(--dolly-x-to, -62vw) 0 var(--dolly-z-to, -500px) }
+}
+
+[data-dolly="drop"]   { animation-name: dolly-drop;
+                        animation-range: var(--dolly-range, contain 0% contain 100%) }
+[data-dolly="pass"]   { animation-name: dolly-pass;
+                        animation-range: var(--dolly-range, contain 0% contain 100%) }
 [data-dolly="push"]   { animation-name: dolly-push }
 [data-dolly="pull"]   { animation-name: dolly-pull }
 [data-dolly="swing"]  { animation-name: dolly-swing }
@@ -214,7 +239,7 @@
      timeline that is where they park, so they hide their own content. */
   [data-dolly="beat"],     [data-dolly="beat-in"],
   /* fly ends past the camera at opacity 0 */
-  [data-dolly="fly"] {
+  [data-dolly="fly"], [data-dolly="drop"], [data-dolly="pass"] {
     animation-name: none;
   }
 }
