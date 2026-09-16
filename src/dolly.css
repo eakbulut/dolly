@@ -93,12 +93,6 @@
   will-change: scale;
 }
 
-/* ---------- authoring knobs ---------- */
-
-[data-dolly-range] { animation-range: var(--dolly-range) }
-[data-dolly-ease="out"]      { animation-timing-function: cubic-bezier(.22,1,.36,1) }
-[data-dolly-ease="in-out"]   { animation-timing-function: cubic-bezier(.65,0,.35,1) }
-
 /* ---------- reduced motion ---------- *
 
    Not a suppression hack: the element renders exactly as authored, because
@@ -146,3 +140,46 @@
   animation-timeline: --dolly-scene;
   animation-range: contain 0% contain 100%;
 }
+
+/* ---------- beats: enter, hold, leave ---------- *
+
+   An entry move only knows how to arrive. Inside a pinned scene you need
+   copy that arrives, stays legible long enough to read, and then leaves so
+   the next beat has the stage. That is a three-part keyframe, and it is the
+   difference between a sequence and a slideshow. */
+
+@keyframes dolly-beat {
+  0%          { opacity: 0; translate: 0 2.2rem }
+  16%, 72%    { opacity: 1; translate: 0 0 }
+  100%        { opacity: 0; translate: 0 -2.2rem }
+}
+@keyframes dolly-beat-in {
+  0%          { opacity: 0; scale: 1.06; filter: blur(8px) }
+  20%, 74%    { opacity: 1; scale: 1;    filter: blur(0) }
+  100%        { opacity: 0; scale: .98;  filter: blur(4px) }
+}
+@keyframes dolly-hold {      /* arrives, then simply stays */
+  0%          { opacity: 0; translate: 0 1.6rem }
+  22%, 100%   { opacity: 1; translate: 0 0 }
+}
+
+[data-dolly="beat"]    { animation-name: dolly-beat }
+[data-dolly="beat-in"] { animation-name: dolly-beat-in }
+[data-dolly="hold"]    { animation-name: dolly-hold }
+
+/* ---------- authoring knobs ---------- *
+
+   These come last on purpose. `data-dolly-on="scene"` sets a range, and
+   these have the same specificity, so a per-element override only wins
+   from here. Staggering ranges across one scene is how beats are staged:
+
+     style="--dolly-range: contain 10% contain 38%"                        */
+
+[data-dolly-range] { animation-range: var(--dolly-range) }
+[data-dolly-ease]  { animation-timing-function: var(--dolly-ease, cubic-bezier(.22,1,.36,1)) }
+
+/* Scenes deserve weight. Linear is right for a continuous push; a beat
+   that arrives should decelerate like something with mass. */
+[data-dolly="beat"],
+[data-dolly="beat-in"],
+[data-dolly="hold"] { animation-timing-function: cubic-bezier(.22,1,.36,1) }

@@ -83,6 +83,29 @@ img{display:block;max-width:100%}
 .chapter-p{max-width:46ch;margin:24px 0 0;color:#D8D8D2;font-size:clamp(15.5px,1.5vw,18px)}
 .credit{position:absolute;right:var(--gutter);bottom:20px;z-index:3;color:rgba(255,255,255,.5)}
 
+/* A wrapper lets two moves stack on one shot: the frame pushes in while
+   the image inside it racks into focus. One element, one animation. */
+.shot-frame{position:absolute;inset:0;overflow:clip}
+.shot-frame .shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+/* The countdown. 14 kB of AOS falling to nothing, counted in CSS off the
+   scene's own timeline. */
+@property --kb{syntax:"<integer>";initial-value:14;inherits:false}
+@keyframes countdown{from{--kb:14}to{--kb:0}}
+.kb{animation-name:countdown;animation-fill-mode:both;animation-timing-function:linear;
+  animation-timeline:--dolly-scene;animation-range:contain 8% contain 62%;
+  counter-reset:kb var(--kb)}
+.kb::before{content:counter(kb)}
+.unit{font-size:.30em;letter-spacing:-.02em;margin-left:.08em}
+.kb{font-size:clamp(6rem,26vw,22rem);display:block}
+
+/* Sequential move names sharing one stage, each with its own slice. */
+.beats{position:relative;min-height:clamp(5rem,13vw,11rem)}
+.beats > *{position:absolute;inset:0;display:flex;align-items:center}
+.beat-word{font-size:clamp(2.6rem,9vw,7rem);line-height:.85;letter-spacing:-.05em;
+  font-weight:900;color:#fff;margin:0}
+.beat-word span{color:var(--accent)}
+
 /* ================= PAPER HALF (documentation) ================= */
 .paper{background:var(--paper);color:var(--ink);position:relative;z-index:2}
 .paper section{padding:clamp(70px,12vh,140px) 0 0}
@@ -168,66 +191,90 @@ footer a{color:var(--ink-soft);text-decoration:none}
 
 <main id="top">
 
-  <!-- ===== CHAPTER 1 — the opening shot, pinned and pushing in ===== -->
+  <!-- ===== CHAPTER 1 — the house lights go down ===== -->
+  <div class="film" data-dolly-scene style="--dolly-scene:340vh">
+    <div data-dolly-pin>
+      <div class="stage">
+        <div class="shot-frame">
+          <img class="shot" data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:1.5"
+               src="https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=2200&q=75&auto=format&fit=crop"
+               alt="An audience seated in a dark cinema facing a bright screen">
+        </div>
+        <div class="veil"></div>
+        <div class="stage-copy">
+          <h1 class="giant" data-dolly="parallax" data-dolly-on="scene" style="--dolly-depth:2.6rem">Scroll is the<br><span class="lit">timeline.</span></h1>
+          <p class="stage-lede" data-dolly="beat" data-dolly-on="scene" data-dolly-range
+             style="--dolly-range: contain 20% contain 58%">This shot is pinned to your viewport and pushing in. The only thing driving it is how far you have scrolled.</p>
+          <p class="stage-lede" data-dolly="beat" data-dolly-on="scene" data-dolly-range
+             style="--dolly-range: contain 56% contain 96%">There is no JavaScript on this page. Not a library, not a listener, not a single frame of script.</p>
+        </div>
+        <span class="m cue" data-dolly="beat" data-dolly-on="scene" data-dolly-range
+              style="--dolly-range: contain 0% contain 22%">keep scrolling</span>
+        <span class="m credit">zoom · pinned scene</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CHAPTER 2 — rack focus: frame pushes, image resolves ===== -->
   <div class="film" data-dolly-scene style="--dolly-scene:300vh">
     <div data-dolly-pin>
       <div class="stage">
-        <img class="shot" data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:1.42"
-             src="https://images.unsplash.com/photo-1619099619226-f96e319e3732?w=2000&q=72&auto=format&fit=crop"
-             alt="A film camera on a dolly track in a darkened studio">
+        <div class="shot-frame" data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:1.22">
+          <img class="shot" data-dolly="rack" data-dolly-on="scene" data-dolly-range
+               style="--dolly-range: contain 0% contain 55%"
+               src="https://images.unsplash.com/photo-1568876694728-451bbf694b83?w=2200&q=75&auto=format&fit=crop"
+               alt="A film projector mechanism photographed in black and white">
+        </div>
         <div class="veil"></div>
         <div class="stage-copy">
-          <h1 class="giant">Scroll is the<br><span class="lit">timeline.</span></h1>
-          <p class="stage-lede">This shot is pinned to your viewport and pushing in, and the only thing driving it is how far you have scrolled. No JavaScript is running on this page.</p>
+          <h2 class="chapter-h" data-dolly="beat-in" data-dolly-on="scene" data-dolly-range
+              style="--dolly-range: contain 8% contain 52%">A rack focus is<br><span class="lit">one attribute.</span></h2>
+          <p class="chapter-p" data-dolly="beat" data-dolly-on="scene" data-dolly-range
+             style="--dolly-range: contain 50% contain 94%">Fourteen pixels of blur resolving to none, scrubbed by your scroll. Every library that does this today ships a runtime to watch the scrollbar for you.</p>
         </div>
-        <span class="m cue">keep scrolling</span>
-        <span class="m credit">zoom · pinned scene · unsplash</span>
+        <span class="m credit">rack + zoom · two moves, one scene</span>
       </div>
     </div>
   </div>
 
-  <!-- ===== CHAPTER 2 — rack focus, pinned ===== -->
-  <div class="film" data-dolly-scene style="--dolly-scene:260vh">
-    <div data-dolly-pin>
-      <div class="stage">
-        <img class="shot" data-dolly="rack" data-dolly-on="scene"
-             src="https://images.unsplash.com/photo-1516961642265-531546e84af2?w=2000&q=72&auto=format&fit=crop"
-             alt="Close-up of a film camera lens barrel">
-        <div class="veil"></div>
-        <div class="stage-copy">
-          <h2 class="chapter-h" data-dolly="pan-right" data-dolly-on="scene">A rack focus is <span class="lit">one attribute.</span></h2>
-          <p class="chapter-p" data-dolly="fade" data-dolly-on="scene">Fourteen pixels of blur resolving to nothing, scrubbed by your scroll. Every library that does this today ships a runtime to watch the scrollbar for you.</p>
-        </div>
-        <span class="m credit">rack · pinned scene</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== CHAPTER 3 — the claim, no image, drenched ===== -->
-  <div class="film" data-dolly-scene style="--dolly-scene:240vh">
+  <!-- ===== CHAPTER 3 — the countdown ===== -->
+  <div class="film" data-dolly-scene style="--dolly-scene:300vh">
     <div data-dolly-pin>
       <div class="stage" style="background:var(--accent)">
         <div class="stage-copy">
-          <p class="giant" data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:1.3;margin:0">0&nbsp;kB</p>
-          <p class="stage-lede" data-dolly="tilt-up" data-dolly-on="scene" style="color:#EDEFFF">of JavaScript. AOS ships fourteen kilobytes and was last published in 2022. Dolly ships a stylesheet, and a stylesheet cannot fail to boot.</p>
+          <p class="giant kb" style="margin:0"><span class="unit">kB</span></p>
+          <p class="stage-lede" data-dolly="beat" data-dolly-on="scene" data-dolly-range
+             style="--dolly-range: contain 4% contain 54%;color:#EDEFFF">AOS ships fourteen kilobytes of JavaScript to watch your scrollbar, and was last published in 2022.</p>
+          <p class="stage-lede" data-dolly="hold" data-dolly-on="scene" data-dolly-range
+             style="--dolly-range: contain 52% contain 86%;color:#EDEFFF">Dolly ships a stylesheet. A stylesheet cannot fail to boot.</p>
         </div>
+        <span class="m credit" style="color:rgba(255,255,255,.62)">counted in css · @property + counter()</span>
       </div>
     </div>
   </div>
 
-  <!-- ===== CHAPTER 4 — parallax layers ===== -->
-  <div class="film" data-dolly-scene style="--dolly-scene:280vh">
+  <!-- ===== CHAPTER 4 — the vocabulary, one name at a time ===== -->
+  <div class="film" data-dolly-scene style="--dolly-scene:360vh">
     <div data-dolly-pin>
       <div class="stage">
-        <img class="shot" data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:1.25;filter:grayscale(1)"
-             src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=2000&q=72&auto=format&fit=crop"
-             alt="Strips of developed film on a light table">
+        <div class="shot-frame">
+          <img class="shot" data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:1.3;filter:grayscale(1) contrast(1.1)"
+               src="https://images.unsplash.com/photo-1774619755413-7c31ab3aabc3?w=2200&q=75&auto=format&fit=crop"
+               alt="A projector beam cutting across an empty cinema of red seats">
+        </div>
         <div class="veil"></div>
         <div class="stage-copy">
-          <h2 class="chapter-h" data-dolly="crane" data-dolly-on="scene">Sixteen moves,<br><span class="lit">named for camera.</span></h2>
-          <p class="chapter-p" data-dolly="fade" data-dolly-on="scene">tilt, pan, crane, rack, whip, roll, dolly in and out. The vocabulary already existed and it is better than <em>fadeInUp</em>.</p>
+          <div class="beats">
+            <div data-dolly="beat" data-dolly-on="scene" data-dolly-range style="--dolly-range: contain 2% contain 26%"><p class="beat-word">tilt<span>.</span></p></div>
+            <div data-dolly="beat" data-dolly-on="scene" data-dolly-range style="--dolly-range: contain 24% contain 46%"><p class="beat-word">pan<span>.</span></p></div>
+            <div data-dolly="beat" data-dolly-on="scene" data-dolly-range style="--dolly-range: contain 44% contain 66%"><p class="beat-word">crane<span>.</span></p></div>
+            <div data-dolly="beat" data-dolly-on="scene" data-dolly-range style="--dolly-range: contain 64% contain 86%"><p class="beat-word">whip<span>.</span></p></div>
+            <div data-dolly="hold" data-dolly-on="scene" data-dolly-range style="--dolly-range: contain 84% contain 98%"><p class="beat-word">sixteen<span>.</span></p></div>
+          </div>
+          <p class="chapter-p" data-dolly="hold" data-dolly-on="scene" data-dolly-range
+             style="--dolly-range: contain 86% contain 99%">The vocabulary already existed, and it is better than <em>fadeInUp</em>.</p>
         </div>
-        <span class="m credit">zoom · pinned scene</span>
+        <span class="m credit">five beats · one scene timeline</span>
       </div>
     </div>
   </div>
