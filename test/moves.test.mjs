@@ -125,30 +125,81 @@ test('reduced motion turns every move off', () => {
    documented in the README simply does nothing. */
 const singleAttributeSelector = /^\[[^\]]+\](\s*,\s*\[[^\]]+\])*$/;
 
-for (const [selector, property] of [
-  ['[data-dolly-range]', 'animation-range'],
-  ['[data-dolly-ease]', 'animation-timing-function'],
-]) {
-  test(`${selector} comes last, so it actually overrides ${property}`, () => {
-    const override = rules.find((rule) => rule.selector === selector);
-    assert.ok(override, `${selector} is missing from the stylesheet`);
-
-    const rivals = rules.filter(
-      (rule) =>
-        rule !== override &&
-        singleAttributeSelector.test(rule.selector.replace(/\s+/g, ' ')) &&
-        decls(rule.body).some(([prop]) => prop === property)
+/* The ordering guards are gone with the rules they guarded. The invariant
+   now is that every built-in default is reachable through the knob: if a
+   rule sets animation-range to a bare value, the author's --dolly-range
+   cannot override it and the knob silently does nothing for that move. */
+test('every built-in animation-range is overridable through --dolly-range', () => {
+  const offenders = rules
+    .filter((rule) => rule.selector.startsWith('[data-dolly'))
+    .flatMap((rule) =>
+      decls(rule.body)
+        .filter(([prop, value]) => prop === 'animation-range' && !value.includes('var(--dolly-range'))
+        .map(([, value]) => `${rule.selector} -> animation-range: ${value}`)
     );
-    assert.ok(rivals.length, `nothing else sets ${property} — this guard has stopped guarding`);
+  assert.deepEqual(
+    offenders,
+    [],
+    'these hardcode a range, so --dolly-range is a no-op on them'
+  );
+});
 
-    const winning = rivals.filter((rule) => rule.order > override.order).map((rule) => rule.selector);
-    assert.deepEqual(
-      winning,
-      [],
-      `equal specificity, later in the file: these silently beat ${selector} instead of losing to it`
-    );
-  });
-}
+test('the scene binding is scoped to a descendant of a scene', () => {
+  const stray = rules.find((rule) => rule.selector === '[data-dolly-on="scene"]');
+  assert.ok(
+    !stray,
+    'unscoped: a data-dolly-on="scene" outside a scene binds to a timeline that ' +
+      'does not exist, holds the from state, and renders invisible forever'
+  );
+  const scoped = rules.find((rule) => rule.selector === '[data-dolly-scene] [data-dolly-on="scene"]');
+  assert.ok(scoped, 'the scoped scene-binding rule is missing');
+});
+
+test('moves whose `to` is not the authored state turn off without a timeline', () => {
+  /* Rule 1 holds for the entrances, whose `to` IS the element as authored.
+     A keyframes block with an explicit `to`/100% breaks that: with no
+     timeline, fill-mode:both lands the element on it. `track` parks a row
+     -60% inside overflow:clip, which is the exact disappearance this
+     library promises never happens. */
+  /* Only a FINAL keyframe that hides or displaces is dangerous. `hold`
+     ends at opacity 1 with an identity translate — that is the authored
+     state, which is the whole point of rule 1. */
+  const identity = (p, v) =>
+    (p === 'opacity' && v === '1') ||
+    (p === 'translate' && /^(0|0 0|none)$/.test(v)) ||
+    (p === 'scale' && /^(1|1 1|none)$/.test(v)) ||
+    (p === 'rotate' && /^(0deg|none)$/.test(v)) ||
+    (p === 'filter' && /^(blur\(0\w*\)|none)$/.test(v));
+
+  const explicitTo = keyframes
+    .filter((k) => {
+      const m = k.body.match(/(?:^|[;}\s])(?:to|100%)\s*\{([^}]*)\}/);
+      return m && decls(m[1]).some(([p, v]) => !identity(p, v));
+    })
+    .map((k) => k.keyframes);
+
+  const moveOf = (kf) =>
+    rules
+      .filter((r) => decls(r.body).some(([p, v]) => p === 'animation-name' && v === kf))
+      .map((r) => (r.selector.match(/\[data-dolly="([^"]+)"\]/) || [])[1])
+      .filter(Boolean)[0];
+
+  const guarded = rules
+    .filter((r) => r.within.some((a) => a.includes('@supports') && a.includes('not')))
+    .flatMap((r) => [...r.selector.matchAll(/\[data-dolly="([^"]+)"\]/g)].map((m) => m[1]));
+
+  const unguarded = explicitTo
+    .map(moveOf)
+    .filter(Boolean)
+    /* progress parks on a full bar: visible and harmless. */
+    .filter((move) => move !== 'progress' && !guarded.includes(move));
+
+  assert.deepEqual(
+    unguarded,
+    [],
+    'these land on an explicit `to` with no timeline — list them in the @supports not block'
+  );
+});
 
 test('the README documents exactly the moves that ship', () => {
   const claimed = Number(readme.match(/\b(\d+) camera moves\b/)?.[1]);

@@ -39,19 +39,27 @@
 @keyframes dolly-roll      { from { opacity: 0; rotate: -5deg; scale: 0.96 } }
 
 /* Continuous, not an entrance: these read the whole scrollport. */
-@keyframes dolly-progress  { from { transform: scaleX(0) } to { transform: scaleX(1) } }
+@keyframes dolly-progress  { from { scale: 0 1 } to { scale: 1 1 } }
 @keyframes dolly-parallax  { from { translate: 0 var(--dolly-depth, 4rem) }
                              to   { translate: 0 calc(-1 * var(--dolly-depth, 4rem)) } }
 @keyframes dolly-zoom      { from { scale: 1 } to { scale: var(--dolly-zoom, 1.12) } }
 
 /* ---------- the engine ---------- */
 
+/* Non-inheriting on purpose: a range meant for one beat must not leak to
+   its descendants. That was the only real justification for gating these
+   behind an attribute, and @property expresses it directly. */
+@property --dolly-range { syntax: "*"; inherits: false }
+@property --dolly-ease  { syntax: "*"; inherits: false }
+
 [data-dolly] {
   animation-name: none;
   animation-fill-mode: both;
-  animation-timing-function: linear;
-  animation-timeline: view();
-  animation-range: entry 0% cover 35%;
+  animation-timing-function: var(--dolly-ease, linear);
+  /* view(var(--dolly-axis)) so a horizontal scroller works: the block-axis
+     default never makes progress there, leaving entrances stuck invisible. */
+  animation-timeline: view(var(--dolly-axis, block));
+  animation-range: var(--dolly-range, entry 0% cover 35%);
 }
 
 [data-dolly="fade"]      { animation-name: dolly-fade }
@@ -74,14 +82,17 @@
 [data-dolly="progress"] {
   animation-name: dolly-progress;
   animation-timeline: scroll();
-  animation-range: normal;
+  animation-range: var(--dolly-range, normal);
   transform-origin: 0 50%;
 }
 
+/* No will-change. It cannot be removed after the animation, so every
+   instance holds a compositing layer for the life of the page — and it
+   creates a containing block, which silently un-fixes any position:fixed
+   descendant. Chrome composites these properties without the hint. */
 [data-dolly="parallax"] {
   animation-name: dolly-parallax;
-  animation-range: cover;
-  will-change: translate;
+  animation-range: var(--dolly-range, cover);
 }
 
 /* Ken Burns: a slow push that runs the whole time the element is on screen,
@@ -89,8 +100,7 @@
    never overflow:hidden, which would make it its own scrollport. */
 [data-dolly="zoom"] {
   animation-name: dolly-zoom;
-  animation-range: cover;
-  will-change: scale;
+  animation-range: var(--dolly-range, cover);
 }
 
 /* ---------- reduced motion ---------- *
@@ -98,7 +108,29 @@
    Not a suppression hack: the element renders exactly as authored, because
    the authored state was never the hidden one. */
 
-@media (prefers-reduced-motion: reduce) {
+/* ---------- the states that are NOT the element as authored ---------- *
+
+   Rule 1 at the top of this file holds for the 13 entrances, whose `to`
+   state is the element exactly as written. It does NOT hold for the
+   continuous and cinematic moves, which carry an explicit `to`. Without
+   timeline support the declaration is dropped, duration resolves to 0s,
+   and fill-mode:both lands the element on that `to`: zoom renders 12%
+   larger forever, iris leaves a permanent circular clip, and track shifts
+   a row -60% inside overflow:clip, which deletes it. That is the exact
+   failure this library promises never happens, so these turn themselves
+   off where there is no timeline to drive them. */
+@supports not (animation-timeline: view()) {
+  [data-dolly="parallax"], [data-dolly="zoom"], [data-dolly="track"],
+  [data-dolly="letter"],   [data-dolly="mask"], [data-dolly="iris"],
+  /* beat and beat-in END on opacity 0 — they are enter/hold/LEAVE. With no
+     timeline that is where they park, so they hide their own content. */
+  [data-dolly="beat"],     [data-dolly="beat-in"] {
+    animation-name: none;
+  }
+}
+
+/* Printing has no scrollport, so an entrance stuck at `from` prints blank. */
+@media (prefers-reduced-motion: reduce), print {
   [data-dolly] { animation-name: none !important }
   /* `track` parks at its untranslated state — a row wider than the
      viewport. Inside overflow:clip that content is unreachable, and clip
@@ -147,9 +179,14 @@
 
 /* `contain` spans exactly the time the track is pinned: from the track's
    top meeting the viewport top to its bottom meeting the viewport bottom. */
-[data-dolly-on="scene"] {
+/* Scoped to a descendant of an actual scene. Unscoped, a stray or
+   copy-pasted data-dolly-on="scene" binds to a named timeline that does
+   not exist; an inactive timeline holds the `from` state, so the element
+   renders at opacity 0 permanently, in a fully supporting browser, with
+   no error anywhere. Scoped, it falls through to the base view(). */
+[data-dolly-scene] [data-dolly-on="scene"] {
   animation-timeline: --dolly-scene;
-  animation-range: contain 0% contain 100%;
+  animation-range: var(--dolly-range, contain 0% contain 100%);
 }
 
 /* ---------- beats: enter, hold, leave ---------- *
@@ -206,20 +243,22 @@
                          to   { letter-spacing: var(--dolly-letter-to, -.05em); opacity: 1 } }
 
 [data-dolly="iris"]   { animation-name: dolly-iris }
-[data-dolly="track"]  { animation-name: dolly-track; animation-range: contain 0% contain 100% }
+[data-dolly="track"]  { animation-name: dolly-track;
+                        animation-range: var(--dolly-range, contain 0% contain 100%) }
 [data-dolly="mask"]   { animation-name: dolly-mask }
 [data-dolly="letter"] { animation-name: dolly-letter }
 
 /* ---------- authoring knobs ---------- *
 
-   These must be the LAST rules in the file, and the test suite enforces it.
-   Every rule they override is an attribute selector too — `data-dolly-on`
-   sets a range, so does `track`, and the beat group sets an easing — so
-   specificity is identical everywhere and source order is the whole
-   mechanism. Add a move below this block and its built-in range silently
-   beats the author's. Staggering ranges is how beats are staged:
+   One property, not a property plus an attribute. Every default above is
+   written `var(--dolly-range, <default>)`, so setting the custom property
+   is sufficient and nothing depends on source order any more — which is
+   what the two deleted rules here used to require, and what made adding a
+   move below them silently disable the knob.
 
-     style="--dolly-range: contain 10% contain 38%"                        */
+     style="--dolly-range: contain 10% contain 38%"
+     style="--dolly-ease: linear"
+     style="--dolly-axis: inline"      (inside a horizontal scroller)
 
-[data-dolly-range] { animation-range: var(--dolly-range) }
-[data-dolly-ease]  { animation-timing-function: var(--dolly-ease, cubic-bezier(.22,1,.36,1)) }
+   Caveat worth knowing: an INVALID value is invalid-at-computed-value-time
+   and resolves to `normal`, never to the default written beside it. */
