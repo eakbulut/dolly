@@ -208,6 +208,41 @@ stylesheet.
 as authored, because the authored state was never the hidden one — there is
 nothing to un-hide.
 
+## What it cannot do
+
+Honest limits, verified rather than assumed:
+
+- **No text splitting.** `split-letter` / `split-word` effects need `<span>`s
+  inserted into a text node. CSS has no text-node access, so per-letter
+  animation is out.
+- **No callbacks.** Scroll-driven animations fire no `animationstart` or
+  `animationend` — measured across a full scroll sweep in Chrome, forward and
+  back: zero events. If you need to lazy-init a map or fire analytics when a
+  section arrives, use an IntersectionObserver for that and keep Dolly for
+  the motion.
+- **No number counters with formatting.** `@property` can animate an integer
+  and `counter()` can print it, but preserving `42,350` is string work.
+- **No looping.** Scroll position is the clock; there is nothing to loop.
+- **Firefox, until 159.** Everyone else gets a complete, still page — which is
+  the design — but "it degrades gracefully" is a weaker answer than "it works"
+  if a stakeholder opens it in Firefox today.
+
+## Stagger
+
+A row of cards all cross `entry 0%` at the same instant and fire as one block.
+Offset each child along the same timeline instead:
+
+```html
+<div class="grid" data-dolly-stagger style="--dolly-step: 6%">
+  <article data-dolly="tilt-up">…</article>
+  <article data-dolly="tilt-up">…</article>
+  <article data-dolly="tilt-up">…</article>
+</div>
+```
+
+`data-dolly-stagger="center"` cascades outward from the middle;
+`"edges"` lands the outermost pair last. `--dolly-step` sets the spacing.
+
 ## Gotchas
 
 ### `letter` reflows unless the line cannot wrap

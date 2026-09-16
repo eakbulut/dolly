@@ -367,6 +367,65 @@
 [data-dolly="mask"]   { animation-name: dolly-mask }
 [data-dolly="letter"] { animation-name: dolly-letter }
 
+/* ---------- stagger ---------- *
+
+   The single most-requested scroll feature, and the one gap worth closing:
+   a row of cards all cross `entry 0%` at the same instant and fire as one
+   block. Offsetting each child's range along the SAME timeline cascades
+   them. Three curves, because "which one arrives first" is a design
+   decision: from the start, from the centre outward, or from both edges in.
+
+     <div data-dolly-stagger="center" style="--dolly-step:5%">
+       <div data-dolly="tilt-up">…                                        */
+
+[data-dolly-stagger] > [data-dolly] {
+  /* still routed through --dolly-range, so a per-element override inside a
+     stagger container keeps working rather than silently doing nothing */
+  animation-range: var(--dolly-range,
+    entry calc(var(--dolly-i, 0) * var(--dolly-step, 6%))
+    cover calc(35% + var(--dolly-i, 0) * var(--dolly-step, 6%)));
+}
+[data-dolly-stagger] > :nth-child(1) { --dolly-i: 0 }
+[data-dolly-stagger] > :nth-child(2) { --dolly-i: 1 }
+[data-dolly-stagger] > :nth-child(3) { --dolly-i: 2 }
+[data-dolly-stagger] > :nth-child(4) { --dolly-i: 3 }
+[data-dolly-stagger] > :nth-child(5) { --dolly-i: 4 }
+[data-dolly-stagger] > :nth-child(6) { --dolly-i: 5 }
+[data-dolly-stagger] > :nth-child(7) { --dolly-i: 6 }
+[data-dolly-stagger] > :nth-child(8) { --dolly-i: 7 }
+[data-dolly-stagger] > :nth-child(n+9) { --dolly-i: 8 }
+
+/* centre outward: 4 3 2 1 0 1 2 3 */
+[data-dolly-stagger="center"] > :nth-child(1),
+[data-dolly-stagger="center"] > :nth-last-child(1) { --dolly-i: 3 }
+[data-dolly-stagger="center"] > :nth-child(2),
+[data-dolly-stagger="center"] > :nth-last-child(2) { --dolly-i: 2 }
+[data-dolly-stagger="center"] > :nth-child(3),
+[data-dolly-stagger="center"] > :nth-last-child(3) { --dolly-i: 1 }
+[data-dolly-stagger="center"] > :nth-child(4),
+[data-dolly-stagger="center"] > :nth-last-child(4) { --dolly-i: 0 }
+
+/* edges in: the outermost pair lands last */
+[data-dolly-stagger="edges"] > :nth-child(4),
+[data-dolly-stagger="edges"] > :nth-last-child(4) { --dolly-i: 3 }
+[data-dolly-stagger="edges"] > :nth-child(3),
+[data-dolly-stagger="edges"] > :nth-last-child(3) { --dolly-i: 2 }
+[data-dolly-stagger="edges"] > :nth-child(2),
+[data-dolly-stagger="edges"] > :nth-last-child(2) { --dolly-i: 1 }
+[data-dolly-stagger="edges"] > :nth-child(1),
+[data-dolly-stagger="edges"] > :nth-last-child(1) { --dolly-i: 0 }
+
+/* ---------- named easings ---------- *
+
+   One bezier and an escape hatch is not a vocabulary. These are the curves
+   worth naming; anything else still goes through --dolly-ease directly. */
+
+[data-dolly-ease="out"]       { --dolly-ease: cubic-bezier(.22,1,.36,1) }
+[data-dolly-ease="out-back"]  { --dolly-ease: cubic-bezier(.34,1.56,.64,1) }
+[data-dolly-ease="out-expo"]  { --dolly-ease: cubic-bezier(.16,1,.3,1) }
+[data-dolly-ease="in-out"]    { --dolly-ease: cubic-bezier(.65,0,.35,1) }
+[data-dolly-ease="linear"]    { --dolly-ease: linear }
+
 /* ---------- authoring knobs ---------- *
 
    One property, not a property plus an attribute. Every default above is
