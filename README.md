@@ -1,6 +1,6 @@
 # Dolly
 
-Scroll-driven motion, in CSS. One attribute, 23 camera moves, no JavaScript.
+Scroll-driven motion, in CSS. One attribute, 28 camera moves, no JavaScript.
 
 ```html
 <h2 data-dolly="tilt-up">This rises into place as you scroll to it.</h2>
@@ -98,6 +98,31 @@ The cinematic three, plus one.
 | `track` | Vertical scroll driving horizontal travel. Put a too-wide row in a pinned scene. |
 | `mask` | Pushes a background picture inside letterforms. The element supplies its own `background-image` and `background-clip: text`. |
 | `letter` | Letter-spacing tightens from loose to tight while fading in. |
+
+### Depth
+
+A dolly move is physically a move through Z. These use `translateZ` under a
+perspective rather than `scale`, so layered children separate at different
+rates and the frame edges distort the way a lens does. Put `data-dolly-space`
+on the ancestor that should hold the camera.
+
+| Move | What it does |
+| --- | --- |
+| `push` | the camera travels toward it |
+| `pull` | the camera draws back from it |
+| `swing` | rotates in from the side on Y |
+| `tumble` | pitches in from above on X |
+| `fly` | travels from far past the camera, fading before it crosses the plane |
+
+```html
+<div data-dolly-space style="--dolly-perspective: 1400px">
+  <img data-dolly="fly" style="--dolly-z-from: -2400px" src="…" alt="">
+  <img data-dolly="fly" style="--dolly-z-from: -1400px" src="…" alt="">
+</div>
+```
+
+Knobs: `--dolly-perspective`, `--dolly-vanish`, `--dolly-z-from`, `--dolly-z-to`,
+`--dolly-angle`.
 
 ## Pinned scenes
 

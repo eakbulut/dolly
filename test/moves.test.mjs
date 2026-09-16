@@ -164,12 +164,20 @@ test('moves whose `to` is not the authored state turn off without a timeline', (
   /* Only a FINAL keyframe that hides or displaces is dangerous. `hold`
      ends at opacity 1 with an identity translate — that is the authored
      state, which is the whole point of rule 1. */
-  const identity = (p, v) =>
-    (p === 'opacity' && v === '1') ||
-    (p === 'translate' && /^(0|0 0|none)$/.test(v)) ||
-    (p === 'scale' && /^(1|1 1|none)$/.test(v)) ||
-    (p === 'rotate' && /^(0deg|none)$/.test(v)) ||
-    (p === 'filter' && /^(blur\(0\w*\)|none)$/.test(v));
+  /* A var() whose FALLBACK is the identity resolves to identity when the
+     author sets nothing, which is the case this guard is about. */
+  const unvar = (v) => v.replace(/var\(\s*--[\w-]+\s*,\s*([^()]*)\)/g, '$1').trim();
+  const zero = (n) => /^-?0(px|deg|%|em|rem)?$/.test(n);
+  const identity = (p, raw) => {
+    const v = unvar(raw);
+    if (p === 'opacity') return v === '1';
+    if (p === 'translate') return v === 'none' || v.split(/\s+/).every(zero);
+    if (p === 'scale') return v === 'none' || v.split(/\s+/).every((n) => n === '1');
+    if (p === 'rotate')
+      return v === 'none' || zero(v.split(/\s+/).pop() || '');   /* `y 0deg` too */
+    if (p === 'filter') return /^(none|blur\(0\w*\)|brightness\(1\))$/.test(v);
+    return false;
+  };
 
   const explicitTo = keyframes
     .filter((k) => {

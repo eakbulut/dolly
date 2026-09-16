@@ -108,6 +108,61 @@
    Not a suppression hack: the element renders exactly as authored, because
    the authored state was never the hidden one. */
 
+
+/* ---------- the third axis ---------- *
+
+   A dolly move is physically a move through Z — the camera travels toward
+   the subject. Doing that with translateZ under a perspective, rather than
+   with scale, is not decoration: layered children separate at different
+   rates and the frame edges distort the way a lens distorts. Scale cannot
+   produce either.
+
+   Everything here uses the INDEPENDENT transform properties. `translate`
+   takes a third length and `rotate` takes an axis, both verified to render
+   identically to the `transform` shorthand — which matters because the
+   shorthand would wipe out an author's own transform.
+
+   <div data-dolly-space>            the camera: perspective lives here
+     <figure data-dolly="fly" style="--dolly-z-from:-2200px">…
+     <figure data-dolly="fly" style="--dolly-z-from:-1400px">…            */
+
+[data-dolly-space] {
+  perspective: var(--dolly-perspective, 1400px);
+  perspective-origin: var(--dolly-vanish, 50% 46%);
+  transform-style: preserve-3d;
+}
+
+@keyframes dolly-push   { from { opacity: 0; translate: 0 0 var(--dolly-z-from, -620px) }
+                          to   { opacity: 1; translate: 0 0 var(--dolly-z-to, 0px) } }
+@keyframes dolly-pull   { from { opacity: 0; translate: 0 0 var(--dolly-z-from, 380px) }
+                          to   { opacity: 1; translate: 0 0 var(--dolly-z-to, 0px) } }
+@keyframes dolly-swing  { from { opacity: 0; rotate: y var(--dolly-angle, -24deg);
+                                 translate: 0 0 var(--dolly-z-from, -260px) }
+                          to   { opacity: 1; rotate: y 0deg; translate: 0 0 0 } }
+@keyframes dolly-tumble { from { opacity: 0; rotate: x var(--dolly-angle, 20deg);
+                                 translate: 0 0 var(--dolly-z-from, -200px) }
+                          to   { opacity: 1; rotate: x 0deg; translate: 0 0 0 } }
+
+/* The camera travels PAST this one. Atmospheric perspective at the far end
+   (dim, cool, slightly soft), full presence in the middle, and it fades out
+   before it reaches the camera plane — crossing it produces the pop-through
+   artifact where a layer inverts through the viewer. */
+@keyframes dolly-fly {
+  0%   { opacity: 0; translate: 0 0 var(--dolly-z-from, -2400px);
+         filter: blur(6px) brightness(.45) }
+  18%  { opacity: 1; filter: blur(0) brightness(1) }
+  74%  { opacity: 1; filter: blur(0) brightness(1) }
+  100% { opacity: 0; translate: 0 0 var(--dolly-z-to, 520px);
+         filter: blur(3px) brightness(1.1) }
+}
+
+[data-dolly="push"]   { animation-name: dolly-push }
+[data-dolly="pull"]   { animation-name: dolly-pull }
+[data-dolly="swing"]  { animation-name: dolly-swing }
+[data-dolly="tumble"] { animation-name: dolly-tumble }
+[data-dolly="fly"]    { animation-name: dolly-fly;
+                        animation-range: var(--dolly-range, contain 0% contain 100%) }
+
 /* ---------- the states that are NOT the element as authored ---------- *
 
    Rule 1 at the top of this file holds for the 13 entrances, whose `to`
@@ -124,7 +179,9 @@
   [data-dolly="letter"],   [data-dolly="mask"], [data-dolly="iris"],
   /* beat and beat-in END on opacity 0 — they are enter/hold/LEAVE. With no
      timeline that is where they park, so they hide their own content. */
-  [data-dolly="beat"],     [data-dolly="beat-in"] {
+  [data-dolly="beat"],     [data-dolly="beat-in"],
+  /* fly ends past the camera at opacity 0 */
+  [data-dolly="fly"] {
     animation-name: none;
   }
 }
