@@ -393,11 +393,11 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
       <div class="stage seamless">
         <div class="stack">
           <div class="quiet">
-            <h1>Scroll is the <span class="lit">timeline.</span></h1>
+            <h1>Nobody is filming <span class="lit">your page.</span></h1>
             <p data-dolly="beat" data-dolly-on="scene" data-dolly-range
-               style="--dolly-range: contain 0% contain 56%">Everything below is driven by how far you have scrolled. Nothing is running.</p>
+               style="--dolly-range: contain 0% contain 56%">There is no camera, so every camera move on the web had to be invented. Dolly invents 23 of them in CSS, with no JavaScript anywhere.</p>
             <p data-dolly="beat" data-dolly-on="scene" data-dolly-range
-               style="--dolly-range: contain 56% contain 98%">Not a library, not a listener, not one frame of JavaScript.</p>
+               style="--dolly-range: contain 56% contain 98%">Scroll drives the shot. Scrolling back up rewinds it, because scroll position is the timeline itself.</p>
           </div>
           <div class="subject" data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:1.14">
             <img src="https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=2000&q=78&auto=format&fit=crop"
@@ -416,9 +416,9 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
       <div class="stage seamless">
         <div class="stack">
           <div class="quiet">
-            <h2>What a runtime <span class="lit">costs.</span></h2>
+            <h2>Fourteen kilobytes, <span class="lit">watching a scrollbar.</span></h2>
             <p data-dolly="beat" data-dolly-on="scene" data-dolly-range
-               style="--dolly-range: contain 0% contain 52%">AOS ships fourteen kilobytes of JavaScript to watch your scrollbar. It was last published in 2022.</p>
+               style="--dolly-range: contain 0% contain 52%">That is what AOS ships to notice where you are: 14 kB of JavaScript, 4.7 kB gzipped, last published in 2022 and still downloaded 196,000 times a week.</p>
             <p data-dolly="beat" data-dolly-on="scene" data-dolly-range
                style="--dolly-range: contain 50% contain 98%">Dolly ships a stylesheet. A stylesheet cannot fail to boot.</p>
           </div>
@@ -438,7 +438,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
              style="background-image:url('https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=2200&q=78&auto=format&fit=crop');--dolly-mask-from:135%;--dolly-mask-to:200%">DOLLY</p>
           <div class="quiet">
             <p data-dolly="beat" data-dolly-on="scene" data-dolly-range
-               style="--dolly-range: contain 8% contain 92%">Named for the cart that carries a camera through a shot. That picture is running inside the letterforms, pushed by your scroll.</p>
+               style="--dolly-range: contain 8% contain 92%">It is named after a cart. A dolly carries a camera through a shot and never appears in one. Sibling to Foley, which does the sound.</p>
           </div>
         </div>
         <span class="m credit">mask · background-clip: text</span>
@@ -485,19 +485,19 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
         <div class="duo">
           <div class="card" data-dolly="dolly-in">
             <h3>It never hides your content.</h3>
-            <p>Every other library in this category puts <code>opacity: 0</code> in a base rule and reveals it from script. When the script fails, is blocked, or the browser lacks support, the page is blank. Dolly puts the hidden state only in <code>@keyframes</code>, so no support means <em>didn't animate</em>, never <em>didn't appear</em>.</p>
+            <p>Every other library in this category puts <code>opacity: 0</code> in a base rule and reveals it from script. Block the script and the page is blank. Dolly puts the hidden state only in <code>@keyframes</code>, so no support means <em>it didn't animate</em>, never <em>it didn't appear</em>. The worst it can do is nothing.</p>
           </div>
           <div class="card" data-dolly="dolly-out">
-            <h3>It has no runtime to fail.</h3>
-            <p>No IntersectionObserver, no scroll listener, no rAF loop, no init call, no provider, no hydration. Nothing runs, so nothing runs late — including the pinned chapters you just scrolled through.</p>
+            <h3>Nothing runs, so nothing runs late.</h3>
+            <p>No IntersectionObserver, no scroll listener, no rAF loop, no init call, no provider, no hydration. There is no boot sequence to wait on and no script tag to block — including for the pinned chapters you just scrolled through.</p>
           </div>
           <div class="card" data-dolly="wipe-up">
-            <h3>Reduced motion is a real path.</h3>
+            <h3>Reduced motion means off, not slower.</h3>
             <p>Under <code>prefers-reduced-motion</code> every move switches off, scenes stop pinning, and the page renders exactly as authored — because the authored state was never the hidden one.</p>
           </div>
           <div class="card" data-dolly="tilt-down">
             <h3>Firefox is fine, today.</h3>
-            <p>Scroll timelines run in Chrome 115+, Edge, Safari 26+ and Opera, about 87% of the web, with Firefox landing in 159. Everyone else reads a complete, still page. There is no shim to ship.</p>
+            <p>Scroll timelines run in Chrome 115+, Edge, Safari 26+ and Opera — about 87% of the web, with Firefox landing in 159. The other 13% get a complete, still page, which is the design, not the degradation. There is no shim to ship.</p>
           </div>
         </div>
       </section>
@@ -532,7 +532,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
 
       <section>
         <div class="head-row">
-          <h2 data-dolly="tilt-up">The entire API.</h2>
+          <h2 data-dolly="tilt-up">There is no step two.</h2>
           <span class="label">one attribute, plus scenes</span>
         </div>
         <p class="note" data-dolly="fade">Link the stylesheet, then annotate markup you already have. No init call, no wrapper component, no configuration object, because nothing is running that could read one.</p>
@@ -555,7 +555,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
       </section>
 
       <div class="ded">
-        <p>Dolly is named for the camera dolly, the cart that carries a camera through a shot. It is also, this year, hard to write down without thinking of someone else. <a href="https://imaginationlibrary.com">Dolly Parton's Imagination Library</a> has posted a book to a child every month since 1995. If this saved you a dependency, it is a good place to send five dollars.</p>
+        <p>Dolly is named for the camera dolly, the cart that carries a camera through a shot. The name came first and stands on its own. It is also, this year, a word that is hard to write down without thinking of someone else. <a href="https://imaginationlibrary.com">Dolly Parton's Imagination Library</a> has posted a book to a child every month since 1995, and still posts them. It takes donations. This library does not.</p>
         <span class="m">1946–2026</span>
       </div>
 
