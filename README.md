@@ -208,6 +208,16 @@ nothing to un-hide.
 
 ## Gotchas
 
+### `loading="lazy"` does not work on a depth layer
+
+A plate pushed back on Z inside a clipped container is, as far as the
+browser's lazy-load heuristic is concerned, off-screen — it cannot know a
+scroll-driven transform is about to bring it forward. The image never starts
+loading and the layer flies past empty. Use `decoding="async"` and
+`fetchpriority="low"` instead; they reduce the cost without gating the fetch
+on visibility.
+
+
 **An ancestor with `overflow: hidden` breaks view timelines.** It makes that
 element a scroll container, and children measured against it sit at progress 1
 forever — so they look pinned in their end state and never animate. Use

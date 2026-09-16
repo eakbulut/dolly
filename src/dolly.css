@@ -148,20 +148,45 @@
    before it reaches the camera plane — crossing it produces the pop-through
    artifact where a layer inverts through the viewer. */
 @keyframes dolly-fly {
-  0%   { opacity: 0; translate: 0 0 var(--dolly-z-from, -2400px);
-         filter: blur(6px) brightness(.45) }
-  18%  { opacity: 1; filter: blur(0) brightness(1) }
-  74%  { opacity: 1; filter: blur(0) brightness(1) }
-  100% { opacity: 0; translate: 0 0 var(--dolly-z-to, 520px);
-         filter: blur(3px) brightness(1.1) }
+  0%   { opacity: 0;
+         translate: var(--dolly-x-from, 0) var(--dolly-y-from, 0) var(--dolly-z-from, -2400px) }
+  14%  { opacity: 1 }
+  76%  { opacity: 1 }
+  100% { opacity: 0;
+         translate: var(--dolly-x-to, 0) var(--dolly-y-to, 0) var(--dolly-z-to, 520px) }
 }
 
 [data-dolly="push"]   { animation-name: dolly-push }
 [data-dolly="pull"]   { animation-name: dolly-pull }
 [data-dolly="swing"]  { animation-name: dolly-swing }
 [data-dolly="tumble"] { animation-name: dolly-tumble }
+/* Lateral divergence is what makes a layer LEAVE through a frame edge
+   rather than fade in mid-air. Under a perspective the screen displacement
+   is x * P/(P-z), so one shared x delta produces every layer's speed for
+   free — the near ones tear past, the far ones crawl. Nobody authors that
+   differential; the divide does. */
 [data-dolly="fly"]    { animation-name: dolly-fly;
                         animation-range: var(--dolly-range, contain 0% contain 100%) }
+
+/* Depth haze is a PAINT, not an animation. A filter animated per frame
+   forces a repaint; assigned statically by depth band it costs nothing and
+   reads as atmospheric perspective. */
+[data-dolly-depth="far"]  { filter: blur(5px) brightness(.5) saturate(.75) }
+[data-dolly-depth="mid"]  { filter: blur(2.5px) brightness(.62) saturate(.85) }
+/* Near layers stay sharp — blurring them reads as mush, not depth.
+   Subordinate to the hero by brightness alone. */
+[data-dolly-depth="near"] { filter: brightness(.82) saturate(.95) }
+
+/* Decorative depth layers are not content. With no timeline they would
+   park at opacity 1 with no translate — a stack of plates piled at dead
+   centre, which is exactly the disappearance-by-pile this library says it
+   never causes. They are removed instead, leaving the authored page. */
+@supports not (animation-timeline: view()) {
+  [data-dolly-plate] { display: none }
+}
+@media (prefers-reduced-motion: reduce), print {
+  [data-dolly-plate] { display: none }
+}
 
 /* ---------- the states that are NOT the element as authored ---------- *
 

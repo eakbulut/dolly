@@ -159,7 +159,7 @@ img{display:block;max-width:100%}
 @property --kb{syntax:"<integer>";initial-value:14;inherits:false}
 @keyframes countdown{from{--kb:14}to{--kb:0}}
 .kb{animation-name:countdown;animation-fill-mode:both;animation-timing-function:linear;
-  animation-timeline:--dolly-scene;animation-range:contain 8% contain 62%;
+  animation-timeline:--dolly-scene;animation-range:contain 10% contain 84%;
   counter-reset:kb var(--kb)}
 .kb::before{content:counter(kb)}
 .unit{font-size:.30em;letter-spacing:-.02em;margin-left:.08em}
@@ -249,6 +249,30 @@ img{display:block;max-width:100%}
   color:#6E6E76;white-space:nowrap}
 .rail span:nth-child(3n+1){color:#F5F5F7}
 .rail span:nth-child(5n+3){color:var(--accent)}
+
+/* ===== THE DEPTH RIG =====
+   perspective, but deliberately NO transform-style: preserve-3d. The plates
+   are billboards, not volumes, and preserve-3d would be flattened by the
+   overflow:clip they live inside anyway. Occlusion is z-index. Keeping the
+   context flat is what lets clip, filter and clip-path keep working. */
+.depth{position:absolute;inset:0;overflow:clip;pointer-events:none;z-index:1;
+  perspective:var(--lens,1100px);perspective-origin:50% 46%}
+/* The reading column outranks the scenery, always. A plate may pass behind
+   the type; it may never pass in front of it. */
+.stack{position:relative;z-index:6}
+.subject{z-index:4}
+.plate{position:absolute;width:var(--w,34vw);aspect-ratio:16/9.6;
+  left:calc(50% + var(--px,0px));top:calc(50% + var(--py,0px));
+  margin:calc(var(--w,34vw) * -.3) 0 0 calc(var(--w,34vw) / -2);
+  border-radius:clamp(6px,.7vw,14px);overflow:clip;
+  box-shadow:0 0 0 1px rgba(255,255,255,.09),0 30px 90px -24px #000,
+             0 0 120px -46px color-mix(in srgb,var(--glow) 70%,transparent)}
+.plate img{width:100%;height:100%;object-fit:cover}
+/* An empty frame: 14 kB of payload that delivers no picture. */
+.pane{background:rgba(255,255,255,.028);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.13),0 24px 70px -30px #000}
+.haze{position:absolute;inset:-30%;pointer-events:none;
+  background:radial-gradient(62% 52% at 50% 46%,transparent,rgba(10,14,28,.38) 80%)}
 
 /* ===== THE SUBJECT =====
    The product here is motion, so the hero has to be a thing that moves,
@@ -382,9 +406,36 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
 <main id="top">
 
   <!-- ===== ACT I — one subject, centred, on seamless ground ===== -->
-  <div class="film" data-dolly-scene style="--dolly-scene:340vh">
+  <div class="film" data-dolly-scene style="--dolly-scene:420vh">
     <div data-dolly-pin>
       <div class="stage seamless">
+        <div class="depth" style="--lens:1100px">
+          <figure class="plate" data-dolly-plate data-dolly="fly" data-dolly-on="scene" data-dolly-depth="far"
+                  style="--w:30vw;--px:-36vw;--py:-10vh;--dolly-z-from:-2400px;--dolly-z-to:-2050px;--dolly-x-to:0;--dolly-range: contain 0% contain 100%">
+            <img src="https://images.unsplash.com/photo-1516961642265-531546e84af2?w=1200&q=74&auto=format&fit=crop" alt="" decoding="async" fetchpriority="low">
+          </figure>
+          <figure class="plate" data-dolly-plate data-dolly="fly" data-dolly-on="scene" data-dolly-depth="far"
+                  style="--w:28vw;--px:33vw;--py:13vh;--dolly-z-from:-2600px;--dolly-z-to:-2200px;--dolly-x-to:0;--dolly-range: contain 0% contain 100%">
+            <img src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1200&q=74&auto=format&fit=crop" alt="" decoding="async" fetchpriority="low">
+          </figure>
+          <div class="haze"></div>
+          <figure class="plate" data-dolly-plate data-dolly="fly" data-dolly-on="scene" data-dolly-depth="near"
+                  style="--w:40vw;--px:-30vw;--py:0;--dolly-z-from:-1700px;--dolly-z-to:520px;--dolly-x-to:-60vw;--dolly-range: contain 2% contain 30%">
+            <img src="https://images.unsplash.com/photo-1568876694728-451bbf694b83?w=1200&q=74&auto=format&fit=crop" alt="" decoding="async" fetchpriority="low">
+          </figure>
+          <figure class="plate" data-dolly-plate data-dolly="fly" data-dolly-on="scene" data-dolly-depth="near"
+                  style="--w:40vw;--px:26vw;--py:-12vh;--dolly-z-from:-1950px;--dolly-z-to:480px;--dolly-x-to:64vw;--dolly-range: contain 15% contain 45%">
+            <img src="https://images.unsplash.com/photo-1774619755413-7c31ab3aabc3?w=1200&q=74&auto=format&fit=crop" alt="" decoding="async" fetchpriority="low">
+          </figure>
+          <figure class="plate" data-dolly-plate data-dolly="fly" data-dolly-on="scene" data-dolly-depth="near"
+                  style="--w:40vw;--px:-24vw;--py:14vh;--dolly-z-from:-2200px;--dolly-z-to:440px;--dolly-x-to:-56vw;--dolly-range: contain 31% contain 63%">
+            <img src="https://images.unsplash.com/photo-1516961642265-531546e84af2?w=1200&q=74&auto=format&fit=crop" alt="" decoding="async" fetchpriority="low">
+          </figure>
+          <figure class="plate" data-dolly-plate data-dolly="fly" data-dolly-on="scene" data-dolly-depth="near"
+                  style="--w:40vw;--px:34vw;--py:-6vh;--dolly-z-from:-1600px;--dolly-z-to:560px;--dolly-x-to:70vw;--dolly-range: contain 52% contain 88%">
+            <img src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1200&q=74&auto=format&fit=crop" alt="" decoding="async" fetchpriority="low">
+          </figure>
+        </div>
         <div class="stack">
           <div class="quiet">
             <h1>Nobody is filming <span class="lit">your page.</span></h1>
@@ -405,6 +456,37 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
   <div class="film" data-dolly-scene style="--dolly-scene:320vh">
     <div data-dolly-pin>
       <div class="stage seamless">
+        <div class="depth" style="--lens:1100px;perspective-origin:50% 50%">
+          <div class="haze"></div>
+          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
+                  style="--w:34vw;--px:calc(-22vw - 0 * 5vw);--py:-15.0vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:-58vw;--dolly-range: contain 1.0% contain 19.0%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
+                  style="--w:34vw;--px:calc(22vw + 1 * 5vw);--py:-3.5vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:58vw;--dolly-range: contain 6.29% contain 24.29%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
+                  style="--w:34vw;--px:calc(-22vw - 2 * 5vw);--py:7.9vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:-58vw;--dolly-range: contain 11.58% contain 29.58%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
+                  style="--w:34vw;--px:calc(22vw + 0 * 5vw);--py:-10.6vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:58vw;--dolly-range: contain 16.87% contain 34.87%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
+                  style="--w:34vw;--px:calc(-22vw - 1 * 5vw);--py:0.8vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:-58vw;--dolly-range: contain 22.16% contain 40.16%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
+                  style="--w:34vw;--px:calc(22vw + 2 * 5vw);--py:12.3vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:58vw;--dolly-range: contain 27.45% contain 45.45%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
+                  style="--w:34vw;--px:calc(-22vw - 0 * 5vw);--py:-6.2vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:-58vw;--dolly-range: contain 32.74% contain 50.74%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
+                  style="--w:34vw;--px:calc(22vw + 1 * 5vw);--py:5.2vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:58vw;--dolly-range: contain 38.03% contain 56.03%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
+                  style="--w:34vw;--px:calc(-22vw - 2 * 5vw);--py:-13.3vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:-58vw;--dolly-range: contain 43.32% contain 61.32%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
+                  style="--w:34vw;--px:calc(22vw + 0 * 5vw);--py:-1.9vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:58vw;--dolly-range: contain 48.61% contain 66.61%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
+                  style="--w:34vw;--px:calc(-22vw - 1 * 5vw);--py:9.6vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:-58vw;--dolly-range: contain 53.9% contain 71.9%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
+                  style="--w:34vw;--px:calc(22vw + 2 * 5vw);--py:-9.0vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:58vw;--dolly-range: contain 59.19% contain 77.19%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
+                  style="--w:34vw;--px:calc(-22vw - 0 * 5vw);--py:2.5vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:-58vw;--dolly-range: contain 64.48% contain 82.48%"></figure>
+          <figure class="plate pane" data-dolly-plate data-dolly="fly" data-dolly-on="scene"
+                  style="--w:34vw;--px:calc(22vw + 1 * 5vw);--py:14.0vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-x-to:58vw;--dolly-range: contain 69.77% contain 87.77%"></figure>
+        </div>
         <div class="stack">
           <div class="quiet">
             <h2>Fourteen kilobytes, <span class="lit">watching a scrollbar.</span></h2>
@@ -422,8 +504,10 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
     <div data-dolly-pin>
       <div class="stage seamless">
         <div class="stack">
+          <div data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:1.18">
           <p class="masked" data-dolly="mask" data-dolly-on="scene"
-             style="background-image:url('https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=2200&q=78&auto=format&fit=crop');--dolly-mask-from:135%;--dolly-mask-to:200%">DOLLY</p>
+             style="background-image:url('https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=2200&q=78&auto=format&fit=crop');--dolly-mask-from:130%;--dolly-mask-to:215%">DOLLY</p>
+          </div>
           <div class="quiet">
             <p>It is named after a cart. A dolly carries a camera through a shot and never appears in one. Sibling to Foley, which does the sound.</p>
           </div>

@@ -77,8 +77,18 @@ test('every move has keyframes and every keyframes block has a move', () => {
 
 test('no base rule hides an element — the hidden state lives in @keyframes only', () => {
   const hiding = { opacity: '0', visibility: 'hidden', display: 'none' };
+  /* One narrow exception, and it must stay narrow. A decorative depth layer
+     (data-dolly-plate) is not content: with no timeline it would park at
+     opacity 1 with no translate, piling every plate at dead centre. Removing
+     it restores the authored page, so hiding IS the correct degradation —
+     but only inside a degradation block, and never for a move. */
+  const degrading = (rule) =>
+    rule.selector.includes('[data-dolly-plate]') &&
+    rule.within.some((at) => /@supports\s+not|prefers-reduced-motion|print/.test(at));
+
   for (const rule of rules) {
     if (!rule.selector.includes('[data-dolly')) continue;
+    if (degrading(rule)) continue;
     for (const [prop, value] of decls(rule.body)) {
       assert.notEqual(
         hiding[prop],
