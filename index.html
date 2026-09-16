@@ -389,9 +389,18 @@ h2 .lit{color:var(--accent)}
 pre{margin:30px 0 0;background:var(--ink);color:#EDEDE9;padding:22px;overflow-x:auto;
   font-family:var(--mono);font-size:var(--t-01);line-height:1.7}
 pre .c{color:#8B8B85}pre .k{color:#9DB4F5}pre .s{color:#C6E1A6}
+/* Click-to-copy needs the Clipboard API, and this page's whole claim is
+   that nothing here runs. `user-select: all` gets most of the way in CSS:
+   one click selects the entire command, then Cmd/Ctrl-C. The prompt glyph
+   is excluded from the selection so you copy the command, not "$ npm …". */
+.install .cmd{user-select:all;-webkit-user-select:all}
+.install .dim{user-select:none;-webkit-user-select:none}
+.install-hint{user-select:none;color:rgba(255,255,255,.62);margin-left:4px;
+  transition:color .2s cubic-bezier(.22,1,.36,1)}
+.install:hover .install-hint{color:rgba(255,255,255,.85)}
 .install{display:inline-flex;align-items:center;gap:14px;background:var(--accent);color:#fff;
   font-family:var(--mono);font-size:clamp(15px,1.7vw,24px);padding:clamp(16px,1.8vw,24px) clamp(20px,2.4vw,34px);
-  margin-top:clamp(26px,3vw,40px);font-weight:500}
+  margin-top:clamp(26px,3vw,40px);font-weight:500;cursor:text;flex-wrap:wrap}
 .install .dim{color:rgba(255,255,255,.72)}
 /* One structural event in the document half: a black band spanning the
    viewport, carrying the code and the install line. Reconnects the paper
@@ -767,7 +776,10 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
    container and pins the move at its end state. Use overflow:clip. */</span>
 </code></pre>
 </figure>
-        <code class="install"><span class="dim">$</span> npm i @dollyjs/core</code>
+        <code class="install">
+          <span class="dim" aria-hidden="true">$</span><span class="cmd">npm i @dollyjs/core</span>
+          <span class="m install-hint">select to copy</span>
+        </code>
       </div>
     </div>
     <div class="wrap">
