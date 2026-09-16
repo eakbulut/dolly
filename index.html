@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dolly — scroll-driven motion, in CSS</title>
-<meta name="description" content="Dolly is a CSS library of 30 scroll-driven camera moves, with pinned scenes. No JavaScript, no IntersectionObserver, no runtime. Add one attribute.">
+<meta name="description" content="Dolly is a CSS library of 31 scroll-driven camera moves, with pinned scenes. No JavaScript, no IntersectionObserver, no runtime. Add one attribute.">
 <meta property="og:title" content="Dolly — scroll-driven motion, in CSS">
 <meta property="og:description" content="Everything that moves on this page was moved by the library. Nothing on it runs JavaScript.">
 <meta property="og:url" content="https://usedolly.dev/">
@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://images.unsplash.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%20role%3D%22img%22%20aria-label%3D%22Dolly%22%3E%20%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%2216%22%20fill%3D%22%230B0B0C%22%2F%3E%20%3Crect%20x%3D%225.4%22%20y%3D%228.2%22%20width%3D%2215.8%22%20height%3D%2211.2%22%20rx%3D%221.8%22%20fill%3D%22none%22%20stroke%3D%22%23F2F2EE%22%20stroke-width%3D%221.75%22%2F%3E%20%3Crect%20x%3D%2213.6%22%20y%3D%2215%22%20width%3D%2212.4%22%20height%3D%229%22%20rx%3D%221.5%22%20fill%3D%22%232B4BE8%22%2F%3E%20%3Crect%20x%3D%2213.6%22%20y%3D%2215%22%20width%3D%2212.4%22%20height%3D%229%22%20rx%3D%221.5%22%20fill%3D%22none%22%20stroke%3D%22%230B0B0C%22%20stroke-width%3D%221.6%22%2F%3E%20%3C%2Fsvg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%20role%3D%22img%22%20aria-label%3D%22Dolly%22%3E%20%3Cstyle%3E.r%7Bstroke%3A%230B0B0C%7D%40media%28prefers-color-scheme%3Adark%29%7B.r%7Bstroke%3A%23F2F2EE%7D%7D%3C%2Fstyle%3E%20%3Cpath%20class%3D%22r%22%20d%3D%22M9.5%203v26M22.5%203v26%22%20stroke-width%3D%223.2%22%20stroke-linecap%3D%22round%22%2F%3E%20%3Crect%20x%3D%224.5%22%20y%3D%2212.5%22%20width%3D%2223%22%20height%3D%228.5%22%20rx%3D%222.4%22%20fill%3D%22%232B4BE8%22%2F%3E%20%3C%2Fsvg%3E">
 <link rel="apple-touch-icon" href="https://usedolly.dev/assets/apple-touch-icon.png">
 <meta property="og:image" content="https://usedolly.dev/assets/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -106,7 +106,10 @@ img{display:block;max-width:100%}
 .mast-in{display:flex;align-items:center;gap:18px;width:100%}
 .mark{font-weight:900;letter-spacing:-.01em;font-size:var(--t-05);text-decoration:none;color:inherit;
   display:inline-flex;align-items:center;gap:9px}
+/* The truck rides the rails on page scroll — the logo runs on the library
+   it advertises, using the same `travel` move the docs describe. */
 .mark-logo{flex:none;overflow:visible}
+.mark-truck{will-change:auto}
 .mast-spec{opacity:.72;white-space:nowrap}
 .mast-right{margin-left:auto;display:flex;align-items:center;gap:16px}
 .mast a{color:inherit;text-decoration:none}
@@ -500,8 +503,13 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
 <div class="topbar" data-dolly="progress"></div>
 <header class="mast">
   <div class="wrap mast-in">
-    <a class="mark" href="#top"><svg class="mark-logo" viewBox="0 0 32 32" width="22" height="22" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="none"/><rect x="5.4" y="8.2" width="15.8" height="11.2" rx="1.8" fill="none" stroke="currentColor" stroke-width="1.9"/><rect x="13.6" y="15" width="12.4" height="9" rx="1.5" fill="#2B4BE8"/><rect x="13.6" y="15" width="12.4" height="9" rx="1.5" fill="none" stroke="#0B0B0C" stroke-width="1.7"/></svg>Dolly</a>
-    <span class="m mast-spec">30 moves · 0 kB of JavaScript</span>
+    <a class="mark" href="#top" aria-label="Dolly">
+        <svg class="mark-logo" viewBox="0 0 32 32" width="21" height="21" aria-hidden="true">
+          <path d="M9.5 3v26M22.5 3v26" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+          <rect class="mark-truck" data-dolly="travel" x="4.5" y="6" width="23" height="8.5" rx="2.4"
+                fill="#2B4BE8" style="--dolly-travel-from:0;--dolly-travel-to:11.5px"/>
+        </svg><span>Dolly</span></a>
+    <span class="m mast-spec">31 moves · 0 kB of JavaScript</span>
     <div class="mast-right">
       <div class="readout" title="Your scroll position, counted in CSS"><span class="label readout-label">scroll</span></div>
       <a class="label" href="https://github.com/eakbulut/dolly">GitHub</a>
@@ -545,7 +553,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
         <div class="stack">
           <div class="quiet">
             <h1>Nobody is filming <span class="lit">your page.</span></h1>
-            <p>There is no camera, so every camera move on the web had to be invented. Dolly invents 30 of them in CSS, and scrolling back up rewinds them.</p>
+            <p>There is no camera, so every camera move on the web had to be invented. Dolly invents 31 of them in CSS, and scrolling back up rewinds them.</p>
           </div>
           <div class="subject" data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:1.14">
             <img src="https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=2000&q=78&auto=format&fit=crop"
@@ -741,6 +749,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
             <tr><td>wipe-up</td><td class="r hide-sm">—</td><td>wipes in vertically</td></tr>
             <tr><td>roll</td><td class="r hide-sm">—</td><td>rotates level</td></tr>
             <tr><td>progress</td><td class="r hide-sm">normal</td><td>tracks the whole page</td></tr>
+            <tr><td>travel</td><td class="r hide-sm">normal</td><td>rides page scroll</td></tr>
             <tr><td>parallax</td><td class="r hide-sm">cover</td><td>drifts against the scroll</td></tr>
             <tr><td>zoom</td><td class="r hide-sm">cover</td><td>slow continuous push</td></tr>
             <tr><td>drop</td><td class="r hide-sm">contain 0% contain 100%</td><td>falls through the frame</td></tr>
@@ -799,7 +808,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
 
       <div class="sign-off">
         <p class="sign-off-line" data-dolly="letter" style="--dolly-letter-from:.14em;--dolly-letter-to:-.02em">that is the whole library</p>
-        <span class="m">30 moves · 0 kB of JavaScript · one attribute</span>
+        <span class="m">31 moves · 0 kB of JavaScript · one attribute</span>
       </div>
 
       <div class="ded">

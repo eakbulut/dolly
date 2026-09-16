@@ -90,6 +90,17 @@
    instance holds a compositing layer for the life of the page — and it
    creates a containing block, which silently un-fixes any position:fixed
    descendant. Chrome composites these properties without the hint. */
+/* The counterpart to `progress`: that fills a bar, this rides one. A marker
+   travelling its own height along the page — a scroll indicator, or the
+   truck on Dolly's own logo. */
+@keyframes dolly-travel { from { translate: 0 var(--dolly-travel-from, 0) }
+                          to   { translate: 0 var(--dolly-travel-to, 100%) } }
+[data-dolly="travel"] {
+  animation-name: dolly-travel;
+  animation-timeline: scroll();
+  animation-range: var(--dolly-range, normal);
+}
+
 [data-dolly="parallax"] {
   animation-name: dolly-parallax;
   animation-range: var(--dolly-range, cover);
@@ -245,7 +256,8 @@
      timeline that is where they park, so they hide their own content. */
   [data-dolly="beat"],     [data-dolly="beat-in"],
   /* fly ends past the camera at opacity 0 */
-  [data-dolly="fly"], [data-dolly="drop"], [data-dolly="pass"] {
+  [data-dolly="fly"], [data-dolly="drop"], [data-dolly="pass"],
+  [data-dolly="travel"] {
     animation-name: none;
   }
 }

@@ -1,6 +1,6 @@
 # Dolly
 
-Scroll-driven motion, in CSS. One attribute, 30 camera moves, no JavaScript.
+Scroll-driven motion, in CSS. One attribute, 31 camera moves, no JavaScript.
 
 ```html
 <h2 data-dolly="tilt-up">This rises into place as you scroll to it.</h2>
@@ -82,6 +82,7 @@ length of the page, rather than resolving once on entry.
 | Move | What it does |
 | --- | --- |
 | `progress` | Scales a bar from 0 to 1 across the document's scroll. |
+| `travel` | Rides the document's scroll — a marker moving along its own track. |
 | `parallax` | Drifts vertically against the scroll by `--dolly-depth`. |
 | `zoom` | Ken Burns: a slow push to `--dolly-zoom`. |
 
