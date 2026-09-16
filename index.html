@@ -389,19 +389,18 @@ h2 .lit{color:var(--accent)}
 pre{margin:30px 0 0;background:var(--ink);color:#EDEDE9;padding:22px;overflow-x:auto;
   font-family:var(--mono);font-size:var(--t-01);line-height:1.7}
 pre .c{color:#8B8B85}pre .k{color:#9DB4F5}pre .s{color:#C6E1A6}
-/* Click-to-copy needs the Clipboard API, and this page's whole claim is
-   that nothing here runs. `user-select: all` gets most of the way in CSS:
-   one click selects the entire command, then Cmd/Ctrl-C. The prompt glyph
-   is excluded from the selection so you copy the command, not "$ npm …". */
-.install .cmd{user-select:all;-webkit-user-select:all}
-.install .dim{user-select:none;-webkit-user-select:none}
-.install-hint{user-select:none;color:rgba(255,255,255,.62);margin-left:4px;
-  transition:color .2s cubic-bezier(.22,1,.36,1)}
-.install:hover .install-hint{color:rgba(255,255,255,.85)}
-.install{display:inline-flex;align-items:center;gap:14px;background:var(--accent);color:#fff;
-  font-family:var(--mono);font-size:clamp(15px,1.7vw,24px);padding:clamp(16px,1.8vw,24px) clamp(20px,2.4vw,34px);
-  margin-top:clamp(26px,3vw,40px);font-weight:500;cursor:text;flex-wrap:wrap}
-.install .dim{color:rgba(255,255,255,.72)}
+/* A command line, not a button. A filled accent block reads as something
+   to press, and pressing it does nothing — so it borrows the code panel's
+   surface instead: same ground, same hairline, same mono. The whole command
+   selects atomically, and the $ is excluded so you get `npm i …` and not
+   `$ npm i …`. */
+.install{display:inline-flex;align-items:baseline;gap:12px;
+  background:#101014;border:1px solid #33333A;border-radius:8px;color:#EDEDE9;
+  font-family:var(--mono);font-size:clamp(14px,1.15vw,17px);
+  padding:clamp(12px,1.2vw,16px) clamp(14px,1.5vw,20px);
+  margin-top:clamp(22px,2.4vw,32px);font-weight:400;cursor:text}
+.install .cmd{user-select:all;-webkit-user-select:all;color:#EDEDE9}
+.install .dim{user-select:none;-webkit-user-select:none;color:#5E5E67}
 /* One structural event in the document half: a black band spanning the
    viewport, carrying the code and the install line. Reconnects the paper
    half to the film half's black. */
@@ -778,7 +777,6 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
 </figure>
         <code class="install">
           <span class="dim" aria-hidden="true">$</span><span class="cmd">npm i @dollyjs/core</span>
-          <span class="m install-hint">select to copy</span>
         </code>
       </div>
     </div>
