@@ -99,6 +99,18 @@ img{display:block;max-width:100%}
 .mast-spec{opacity:.72;white-space:nowrap}
 .mast-right{margin-left:auto;display:flex;align-items:center;gap:16px}
 .mast a{color:inherit;text-decoration:none}
+
+/* Inline links on the film half. The paper half uses a border-bottom, but
+   that draws one box and breaks badly if an inline link wraps a line — a
+   real underline with an offset survives wrapping and sits off the
+   baseline instead of through the descenders. Accent is lightened here:
+   #2B4BE8 on near-black is almost invisible. */
+.film a{color:#F2F2EE;text-decoration:underline;
+  text-decoration-color:color-mix(in srgb,#8FA6FF 55%,transparent);
+  text-decoration-thickness:1px;text-underline-offset:.2em;
+  transition:text-decoration-color .22s cubic-bezier(.22,1,.36,1),color .22s cubic-bezier(.22,1,.36,1)}
+.film a:hover{color:#fff;text-decoration-color:#8FA6FF}
+.film a:focus-visible{outline:2px solid #8FA6FF;outline-offset:3px;text-decoration-color:transparent}
 @media(max-width:700px){.mast-spec{display:none}}
 @media(max-width:410px){.readout-label{display:none}}
 
