@@ -17,8 +17,12 @@ const css = source.replace(/\/\*[\s\S]*?\*\//g, '');
 
 /* Flatten the stylesheet into blocks. @keyframes bodies are kept whole;
    other at-rules (@media) are descended into, so no amount of nesting can
-   hide a rule from a guard. */
-function blocks(src, within = []) {
+   hide a rule from a guard.
+
+   `order` is the offset of the rule's opening brace in the flattened source,
+   because equal-specificity rules are resolved by source order and nothing
+   else. */
+function blocks(src, within = [], base = 0) {
   const out = [];
   let prelude = '';
   for (let i = 0; i < src.length; ) {
@@ -31,9 +35,10 @@ function blocks(src, within = []) {
     }
     const body = src.slice(i + 1, j - 1);
     const at = prelude.trim();
-    if (/^@keyframes\b/.test(at)) out.push({ keyframes: at.replace(/^@keyframes\s+/, ''), body, within });
-    else if (at.startsWith('@')) out.push(...blocks(body, [...within, at]));
-    else out.push({ selector: at, body, within });
+    const order = base + i;
+    if (/^@keyframes\b/.test(at)) out.push({ keyframes: at.replace(/^@keyframes\s+/, ''), body, within, order });
+    else if (at.startsWith('@')) out.push(...blocks(body, [...within, at], order + 1));
+    else out.push({ selector: at, body, within, order });
     prelude = '';
     i = j;
   }
@@ -110,10 +115,51 @@ test('reduced motion turns every move off', () => {
   assert.ok(off, 'no @media (prefers-reduced-motion: reduce) rule setting animation-name: none');
 });
 
+/* `[data-dolly-range]` and `[data-dolly-ease]` are per-element overrides made
+   of one attribute selector each, and every rule they have to beat is made of
+   attribute selectors too — `[data-dolly-on="scene"]` sets a range, so does
+   `[data-dolly="track"]`, and the beat group sets an easing. Specificity is
+   therefore identical across all of them and source order is the entire
+   mechanism. Move an override up the file, or append a new move rule below it,
+   and the override stops overriding: no parse error, no warning, the knob
+   documented in the README simply does nothing. */
+const singleAttributeSelector = /^\[[^\]]+\](\s*,\s*\[[^\]]+\])*$/;
+
+for (const [selector, property] of [
+  ['[data-dolly-range]', 'animation-range'],
+  ['[data-dolly-ease]', 'animation-timing-function'],
+]) {
+  test(`${selector} comes last, so it actually overrides ${property}`, () => {
+    const override = rules.find((rule) => rule.selector === selector);
+    assert.ok(override, `${selector} is missing from the stylesheet`);
+
+    const rivals = rules.filter(
+      (rule) =>
+        rule !== override &&
+        singleAttributeSelector.test(rule.selector.replace(/\s+/g, ' ')) &&
+        decls(rule.body).some(([prop]) => prop === property)
+    );
+    assert.ok(rivals.length, `nothing else sets ${property} — this guard has stopped guarding`);
+
+    const winning = rivals.filter((rule) => rule.order > override.order).map((rule) => rule.selector);
+    assert.deepEqual(
+      winning,
+      [],
+      `equal specificity, later in the file: these silently beat ${selector} instead of losing to it`
+    );
+  });
+}
+
 test('the README documents exactly the moves that ship', () => {
   const claimed = Number(readme.match(/\b(\d+) camera moves\b/)?.[1]);
   assert.equal(claimed, moves.size, 'the README move count disagrees with the stylesheet');
 
-  const undocumented = [...moves.keys()].filter((name) => !readme.includes(`| \`${name}\` |`));
+  /* Scoped to the Moves section on purpose. The knobs table names moves in its
+     "Applies to" column, so an unscoped search counts `| `zoom` |` there as
+     documentation and lets a move vanish from every move table unnoticed. */
+  const movesSection = readme.match(/\n## Moves\n([\s\S]*?)\n## /)?.[1];
+  assert.ok(movesSection, 'the README has no "## Moves" section to check against');
+
+  const undocumented = [...moves.keys()].filter((name) => !movesSection.includes(`| \`${name}\` |`));
   assert.deepEqual(undocumented, [], 'missing from the README move tables');
 });

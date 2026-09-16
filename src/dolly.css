@@ -171,17 +171,6 @@
 [data-dolly="beat-in"] { animation-name: dolly-beat-in }
 [data-dolly="hold"]    { animation-name: dolly-hold }
 
-/* ---------- authoring knobs ---------- *
-
-   These come last on purpose. `data-dolly-on="scene"` sets a range, and
-   these have the same specificity, so a per-element override only wins
-   from here. Staggering ranges across one scene is how beats are staged:
-
-     style="--dolly-range: contain 10% contain 38%"                        */
-
-[data-dolly-range] { animation-range: var(--dolly-range) }
-[data-dolly-ease]  { animation-timing-function: var(--dolly-ease, cubic-bezier(.22,1,.36,1)) }
-
 /* Scenes deserve weight. Linear is right for a continuous push; a beat
    that arrives should decelerate like something with mass. */
 [data-dolly="beat"],
@@ -213,3 +202,17 @@
 [data-dolly="track"]  { animation-name: dolly-track; animation-range: contain 0% contain 100% }
 [data-dolly="mask"]   { animation-name: dolly-mask }
 [data-dolly="letter"] { animation-name: dolly-letter }
+
+/* ---------- authoring knobs ---------- *
+
+   These must be the LAST rules in the file, and the test suite enforces it.
+   Every rule they override is an attribute selector too — `data-dolly-on`
+   sets a range, so does `track`, and the beat group sets an easing — so
+   specificity is identical everywhere and source order is the whole
+   mechanism. Add a move below this block and its built-in range silently
+   beats the author's. Staggering ranges is how beats are staged:
+
+     style="--dolly-range: contain 10% contain 38%"                        */
+
+[data-dolly-range] { animation-range: var(--dolly-range) }
+[data-dolly-ease]  { animation-timing-function: var(--dolly-ease, cubic-bezier(.22,1,.36,1)) }
