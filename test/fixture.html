@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dolly fixture</title>
+<link rel="stylesheet" href="../src/dolly.css">
+<style>
+  body { margin: 0; font: 16px/1.5 system-ui; }
+  .bar { position: fixed; top: 0; left: 0; height: 4px; width: 100%; background: #c0392b; z-index: 9 }
+  .spacer { height: 120vh }
+  .box { margin: 40vh auto; width: 300px; padding: 40px; background: #eee; text-align: center }
+</style>
+</head>
+<body>
+  <div class="bar" data-dolly="progress"></div>
+  <div class="spacer">scroll down</div>
+  <div class="box" id="a" data-dolly="fade-up">fade-up</div>
+  <div class="box" id="b" data-dolly="dolly-in">dolly-in</div>
+  <div class="box" id="c" data-dolly="fade-in">fade-in</div>
+  <div class="box" id="d" data-dolly="not-a-real-preset">unknown preset — must stay visible</div>
+  <div class="spacer"></div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+/* Dolly — scroll-driven motion, in CSS.
+   https://usedolly.dev
+
+   Three rules govern everything in this file:
+
+   1. NEVER hide content in a base rule. The animation's keyframes own the
+      hidden state, never the element. A browser without scroll timelines
+      drops `animation-timeline`, falls back to the default 0s duration, and
+      `animation-fill-mode: both` lands the element on its `to` state
+      immediately — visible. The failure mode is "didn't animate", never
+      "didn't appear". This is the bug every scroll library ships.
+
+   2. Longhands only, never the `animation` shorthand. The shorthand resets
+      `animation-timeline` to `auto`, which silently converts a scroll-driven
+      animation into a time-driven one that fires once on load.
+
+   3. Unknown attribute value = no animation = visible. `animation-name`
+      defaults to `none`; only a preset we actually ship turns it on. */
+
+@keyframes dolly-fade-up   { from { opacity: 0; translate: 0 2rem } }
+@keyframes dolly-fade-in   { from { opacity: 0 } }
+@keyframes dolly-dolly-in  { from { opacity: 0; scale: 0.92 } }
+@keyframes dolly-progress  { from { transform: scaleX(0) } to { transform: scaleX(1) } }
+
+[data-dolly] {
+  animation-name: none;
+  animation-fill-mode: both;
+  animation-timing-function: linear;
+  animation-timeline: view();
+  animation-range: entry 0% cover 35%;
+}
+
+[data-dolly="fade-up"]  { animation-name: dolly-fade-up }
+[data-dolly="fade-in"]  { animation-name: dolly-fade-in }
+[data-dolly="dolly-in"] { animation-name: dolly-dolly-in }
+
+/* Scroll-linked rather than element-linked: tracks the scrollport itself. */
+[data-dolly="progress"] {
+  animation-name: dolly-progress;
+  animation-timeline: scroll();
+  animation-range: normal;
+  transform-origin: 0 50%;
+}
+
+/* Someone who asked for less motion gets none of it, and still gets the page. */
+@media (prefers-reduced-motion: reduce) {
+  [data-dolly] { animation-name: none !important }
+}
