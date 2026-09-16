@@ -1,9 +1,0 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><title>probe</title><style>
-@property --n { syntax: "<integer>"; initial-value: 0; inherits: false }
-@keyframes count { from { --n: 0 } to { --n: 100 } }
-#probe { position: fixed; top: 10px; left: 10px; font: 40px monospace;
-  animation-name: count; animation-fill-mode: both; animation-timing-function: linear;
-  animation-timeline: scroll(); animation-range: normal;
-  counter-reset: n var(--n); }
-#probe::after { content: counter(n) "%" }
-</style></head><body><div id="probe"></div><div style="height:300vh"></div></body></html>

@@ -5,19 +5,22 @@
 <title>Dolly fixture</title>
 <link rel="stylesheet" href="../src/dolly.css">
 <style>
-  body { margin: 0; font: 16px/1.5 system-ui; }
-  .bar { position: fixed; top: 0; left: 0; height: 4px; width: 100%; background: #c0392b; z-index: 9 }
-  .spacer { height: 120vh }
-  .box { margin: 40vh auto; width: 300px; padding: 40px; background: #eee; text-align: center }
+  body{margin:0;font:16px/1.5 system-ui}
+  /* NOTE: never assert on getComputedStyle here. Scroll-driven animations are
+     composited, so getComputedStyle reports the BASE value (opacity 1) even
+     mid-animation. Verify these visually, with a screenshot. */
+  .bar{position:fixed;top:0;left:0;height:4px;width:100%;background:#1E40AF;z-index:9}
+  .sp{height:130vh}
+  .b{height:90px;margin:60vh 20px;background:#1E40AF;color:#fff;padding:10px;font-family:monospace}
 </style>
 </head>
 <body>
   <div class="bar" data-dolly="progress"></div>
-  <div class="spacer">scroll down</div>
-  <div class="box" id="a" data-dolly="fade-up">fade-up</div>
-  <div class="box" id="b" data-dolly="dolly-in">dolly-in</div>
-  <div class="box" id="c" data-dolly="fade-in">fade-in</div>
-  <div class="box" id="d" data-dolly="not-a-real-preset">unknown preset — must stay visible</div>
-  <div class="spacer"></div>
+  <div class="sp">scroll down</div>
+  <div class="b" data-dolly="fade">fade</div>
+  <div class="b" data-dolly="tilt-up">tilt-up</div>
+  <div class="b" data-dolly="rack">rack</div>
+  <div class="b" data-dolly="not-a-real-move">unknown move — must stay visible</div>
+  <div class="sp"></div>
 </body>
 </html>
