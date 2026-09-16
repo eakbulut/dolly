@@ -13,6 +13,15 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://images.unsplash.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%20role%3D%22img%22%20aria-label%3D%22Dolly%22%3E%20%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%2216%22%20fill%3D%22%230B0B0C%22%2F%3E%20%3Crect%20x%3D%225.4%22%20y%3D%228.2%22%20width%3D%2215.8%22%20height%3D%2211.2%22%20rx%3D%221.8%22%20fill%3D%22none%22%20stroke%3D%22%23F2F2EE%22%20stroke-width%3D%221.75%22%2F%3E%20%3Crect%20x%3D%2213.6%22%20y%3D%2215%22%20width%3D%2212.4%22%20height%3D%229%22%20rx%3D%221.5%22%20fill%3D%22%232B4BE8%22%2F%3E%20%3Crect%20x%3D%2213.6%22%20y%3D%2215%22%20width%3D%2212.4%22%20height%3D%229%22%20rx%3D%221.5%22%20fill%3D%22none%22%20stroke%3D%22%230B0B0C%22%20stroke-width%3D%221.6%22%2F%3E%20%3C%2Fsvg%3E">
+<link rel="apple-touch-icon" href="https://usedolly.dev/assets/apple-touch-icon.png">
+<meta property="og:image" content="https://usedolly.dev/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Dolly — scroll-driven motion, in CSS">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://usedolly.dev/assets/og-image.png">
+<meta name="theme-color" content="#0B0B0C">
 <link rel="stylesheet" href="src/dolly.css">
 <style>
 /* ================================================================
@@ -95,7 +104,9 @@ img{display:block;max-width:100%}
 .mast{position:fixed;inset:0 0 auto;z-index:60;height:56px;display:flex;align-items:center;
   color:#fff;mix-blend-mode:difference}
 .mast-in{display:flex;align-items:center;gap:18px;width:100%}
-.mark{font-weight:900;letter-spacing:-.01em;font-size:var(--t-05);text-decoration:none;color:inherit}
+.mark{font-weight:900;letter-spacing:-.01em;font-size:var(--t-05);text-decoration:none;color:inherit;
+  display:inline-flex;align-items:center;gap:9px}
+.mark-logo{flex:none;overflow:visible}
 .mast-spec{opacity:.72;white-space:nowrap}
 .mast-right{margin-left:auto;display:flex;align-items:center;gap:16px}
 .mast a{color:inherit;text-decoration:none}
@@ -489,7 +500,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
 <div class="topbar" data-dolly="progress"></div>
 <header class="mast">
   <div class="wrap mast-in">
-    <a class="mark" href="#top">Dolly</a>
+    <a class="mark" href="#top"><svg class="mark-logo" viewBox="0 0 32 32" width="22" height="22" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="none"/><rect x="5.4" y="8.2" width="15.8" height="11.2" rx="1.8" fill="none" stroke="currentColor" stroke-width="1.9"/><rect x="13.6" y="15" width="12.4" height="9" rx="1.5" fill="#2B4BE8"/><rect x="13.6" y="15" width="12.4" height="9" rx="1.5" fill="none" stroke="#0B0B0C" stroke-width="1.7"/></svg>Dolly</a>
     <span class="m mast-spec">30 moves · 0 kB of JavaScript</span>
     <div class="mast-right">
       <div class="readout" title="Your scroll position, counted in CSS"><span class="label readout-label">scroll</span></div>

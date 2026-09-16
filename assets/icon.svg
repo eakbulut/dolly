@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Dolly">
+  <!-- Two frames at two depths: the far one outlined, the near one solid and
+       overlapping it. That is the whole library in one shape, and it is the
+       only silhouette among the candidates that stays legible at 16px. -->
+  <circle cx="16" cy="16" r="16" fill="#0B0B0C"/>
+  <rect x="5.4" y="8.2" width="15.8" height="11.2" rx="1.8" fill="none" stroke="#F2F2EE" stroke-width="1.75"/>
+  <rect x="13.6" y="15" width="12.4" height="9" rx="1.5" fill="#2B4BE8"/>
+  <rect x="13.6" y="15" width="12.4" height="9" rx="1.5" fill="none" stroke="#0B0B0C" stroke-width="1.6"/>
+</svg>
