@@ -2,3 +2,10 @@ node_modules/
 .DS_Store
 dist/
 .impeccable/live/
+
+# design-tool scaffolding and scratch probes, not part of the library
+.impeccable/
+test/*-probe.html
+test/min.html
+test/scene.html
+test/viewport.html
