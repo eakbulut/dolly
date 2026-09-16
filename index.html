@@ -104,6 +104,8 @@ img{display:block;max-width:100%}
 
 @property --scroll-pct{syntax:"<integer>";initial-value:0;inherits:false}
 @keyframes read-out{from{--scroll-pct:0}to{--scroll-pct:100}}
+/* The opening line must be readable before anyone scrolls. */
+.quiet p:first-of-type{animation-timing-function:linear(0,1 4%,1 72%,0)}
 .readout{display:flex;align-items:baseline;gap:7px;
   animation-name:read-out;animation-fill-mode:both;animation-timing-function:linear;
   animation-timeline:scroll();animation-range:normal;counter-reset:pct var(--scroll-pct)}
@@ -163,7 +165,7 @@ img{display:block;max-width:100%}
   counter-reset:kb var(--kb)}
 .kb::before{content:counter(kb)}
 .unit{font-size:.30em;letter-spacing:-.02em;margin-left:.08em}
-.kb{font-size:min(26vw,calc((100vw - 2*var(--edge))/2.55));display:block;line-height:.86}
+
 /* the unit must not lurch sideways when the count drops a digit */
 .kb::before{display:inline-block;min-width:2ch;text-align:right;font-variant-numeric:tabular-nums}
 
@@ -175,10 +177,10 @@ img{display:block;max-width:100%}
   background-repeat:no-repeat;background-position:center 42%;
   /* the plate is a dark cinema; lift it so the picture reads inside type */
   filter:brightness(1.55) contrast(1.3) saturate(1.25);
-  font-size:min(26vw,calc((100vw - 2*var(--edge))/3.2));line-height:.86;letter-spacing:-.065em;text-align:center;
+  font-size:min(20vh,min(26vw,calc((100vw - 2*var(--edge))/3.2)));line-height:.9;letter-spacing:-.05em;text-align:center;
   font-weight:900;margin:0;white-space:nowrap;
 }
-.masked-cap{position:absolute;right:var(--edge);bottom:clamp(54px,13vh,150px);
+.masked-cap{display:none;position:absolute;right:var(--edge);bottom:clamp(54px,13vh,150px);
   max-width:38ch;margin:0;color:var(--film-body);text-align:left;z-index:4;font-size:var(--t-03);
   line-height:1.68;letter-spacing:.006em;text-shadow:0 1px 20px rgba(11,11,12,.9)}
 
@@ -247,6 +249,43 @@ img{display:block;max-width:100%}
    other is faded out. Same rig as Act I. */
 .act2-beats{display:grid;margin-top:26px}
 .act2-beats > *{grid-area:1/1;margin:0}
+
+.figure{font-size:min(30vh,19rem);line-height:.9;letter-spacing:-.045em;font-weight:700;
+  margin:0;color:#F5F5F7;text-align:center}
+.figure .unit{font-size:.3em;letter-spacing:-.02em;margin-left:.06em;color:#8A8A90}
+
+/* ===== THE SUBJECT =====
+   The product here is motion, so the hero has to be a thing that moves,
+   not a photograph with type over it. This is a film frame: seamless
+   ground, one luminous edge, footage held inside it. Two or three
+   elements per viewport, centred, with air around them. */
+.seamless{background:
+  radial-gradient(120% 80% at 50% 42%,#17171B 0%,#0A0A0C 46%,#060607 100%)}
+.subject{position:relative;width:auto;height:100%;max-height:min(58vh,620px);
+  aspect-ratio:16/9.6;flex:0 1 auto;
+  border-radius:clamp(8px,1vw,18px);overflow:clip;
+  box-shadow:0 0 0 1px rgba(255,255,255,.1),0 40px 120px -30px rgba(0,0,0,.9),
+             0 0 160px -40px color-mix(in srgb,var(--glow) 85%,transparent);
+  isolation:isolate}
+.subject img{width:100%;height:100%;object-fit:cover}
+.subject::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(160deg,rgba(255,255,255,.14),transparent 34%);
+  border-radius:inherit}
+.subject-frame{position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+
+/* Calm, centred, with air. Not a poster. */
+.quiet{max-width:min(90vw,1100px);margin:0 auto;text-align:center}
+.quiet h1,.quiet h2{font-size:clamp(2.4rem,4.6vw,4.6rem);line-height:1.04;
+  letter-spacing:-.032em;font-weight:700;margin:0;color:#F5F5F7}
+.quiet h1 .lit,.quiet h2 .lit{color:#8FA6FF}
+.quiet{display:grid}
+.quiet h1{grid-area:1/1}
+.quiet p{grid-area:2/1;max-width:54ch;margin:clamp(18px,1.8vw,26px) auto 0;
+  font-size:var(--t-04);line-height:1.45;color:#A1A1A6;letter-spacing:.002em}
+.stack{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:clamp(20px,3.4vh,44px);width:100%;height:100%;
+  padding:calc(clamp(28px,7vh,86px) + clamp(12px,2vh,28px)) var(--gutter)}
 
 /* ================= PAPER HALF (documentation) ================= */
 .paper{background:var(--paper);color:var(--ink);position:relative;z-index:2}
@@ -348,71 +387,60 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
 
 <main id="top">
 
-  <!-- ===== ACT I — the house lights go down ===== -->
-  <div class="film" data-dolly-scene style="--dolly-scene:360vh">
+  <!-- ===== ACT I — one subject, centred, on seamless ground ===== -->
+  <div class="film" data-dolly-scene style="--dolly-scene:340vh">
     <div data-dolly-pin>
-      <div class="stage">
-        <div class="shot-frame">
-          <img class="shot" data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:1.55"
-               src="https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=2200&q=75&auto=format&fit=crop"
-               alt="An audience seated in a dark cinema facing a bright screen">
+      <div class="stage seamless">
+        <div class="stack">
+          <div class="quiet">
+            <h1>Scroll is the <span class="lit">timeline.</span></h1>
+            <p data-dolly="beat" data-dolly-on="scene" data-dolly-range
+               style="--dolly-range: contain 0% contain 56%">Everything below is driven by how far you have scrolled. Nothing is running.</p>
+            <p data-dolly="beat" data-dolly-on="scene" data-dolly-range
+               style="--dolly-range: contain 56% contain 98%">Not a library, not a listener, not one frame of JavaScript.</p>
+          </div>
+          <div class="subject" data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:1.14">
+            <img src="https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=2000&q=78&auto=format&fit=crop"
+                 alt="An audience seated in a dark cinema facing a bright screen">
+            <div class="subject-frame"></div>
+          </div>
         </div>
-        <div class="veil"></div>
-        <div class="stage-copy act1-title">
-          <h1 class="giant" data-dolly="parallax" data-dolly-on="scene" style="--dolly-depth:2.6rem">Scroll is the<br><span class="lit">timeline.</span></h1>
-        </div>
-        <div class="act1-beats">
-          <p class="stage-lede" data-dolly="beat" data-dolly-on="scene" data-dolly-range
-             style="--dolly-range: contain 0% contain 54%">This shot is pinned to your viewport and pushing in. The only thing driving it is how far you have scrolled.</p>
-          <p class="stage-lede" data-dolly="beat" data-dolly-on="scene" data-dolly-range
-             style="--dolly-range: contain 54% contain 96%">No JavaScript is running on this page. Not a library, not a listener, not one frame of script.</p>
-        </div>
-        <span class="label cue" data-dolly="beat" data-dolly-on="scene" data-dolly-range
-              style="--dolly-range: contain 0% contain 20%">keep scrolling</span>
         <span class="m credit">zoom · pinned scene</span>
       </div>
     </div>
   </div>
 
-  <!-- ===== ACT II — the aperture opens on the problem ===== -->
-  <div class="film" data-dolly-scene style="--dolly-scene:340vh">
+  <!-- ===== ACT II — what a runtime costs ===== -->
+  <div class="film" data-dolly-scene style="--dolly-scene:320vh">
     <div data-dolly-pin>
-      <div class="stage" style="background:#000">
-        <div class="iris-layer" data-dolly="iris" data-dolly-on="scene" data-dolly-range
-             style="--dolly-range: contain 0% contain 34%">
-          <div class="shot-frame" style="position:absolute;inset:0">
-            <img class="shot" data-dolly="rack" data-dolly-on="scene" data-dolly-range
-                 style="--dolly-range: contain 10% contain 58%"
-                 src="https://images.unsplash.com/photo-1568876694728-451bbf694b83?w=2200&q=75&auto=format&fit=crop"
-                 alt="A film projector mechanism photographed in black and white">
+      <div class="stage seamless">
+        <div class="stack">
+          <div class="quiet">
+            <h2>What a runtime <span class="lit">costs.</span></h2>
+            <p data-dolly="beat" data-dolly-on="scene" data-dolly-range
+               style="--dolly-range: contain 0% contain 52%">AOS ships fourteen kilobytes of JavaScript to watch your scrollbar. It was last published in 2022.</p>
+            <p data-dolly="beat" data-dolly-on="scene" data-dolly-range
+               style="--dolly-range: contain 50% contain 98%">Dolly ships a stylesheet. A stylesheet cannot fail to boot.</p>
           </div>
+          <p class="figure kb"><span class="unit">kB</span></p>
         </div>
-        <div class="vignette"></div>
-        <div class="stage-copy act2">
-          <p class="giant kb" data-dolly="beat" data-dolly-on="scene" data-dolly-range
-             style="--dolly-range: contain 30% contain 99%;margin:0"><span class="unit">kB</span></p>
-          <div class="act2-beats">
-            <p class="stage-lede" data-dolly="beat" data-dolly-on="scene" data-dolly-range
-               style="--dolly-range: contain 34% contain 70%">of JavaScript, shipped by AOS to watch your scrollbar for you. Last published in 2022.</p>
-            <p class="stage-lede" data-dolly="hold" data-dolly-on="scene" data-dolly-range
-               style="--dolly-range: contain 70% contain 99%">Dolly ships a stylesheet. A stylesheet cannot fail to boot.</p>
-          </div>
-        </div>
-        <span class="m credit">iris · rack · countdown, all in css</span>
+        <span class="m credit">counted in css · @property + counter()</span>
       </div>
     </div>
   </div>
 
-  <!-- ===== ACT III — the brand, footage inside the letterforms ===== -->
-  <div class="film" data-dolly-scene style="--dolly-scene:320vh">
+  <!-- ===== ACT III — the name ===== -->
+  <div class="film" data-dolly-scene style="--dolly-scene:300vh">
     <div data-dolly-pin>
-      <div class="stage" style="background:#000">
-        <div class="stage-copy">
+      <div class="stage seamless">
+        <div class="stack">
           <p class="masked" data-dolly="mask" data-dolly-on="scene"
              style="background-image:url('https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=2200&q=78&auto=format&fit=crop');--dolly-mask-from:135%;--dolly-mask-to:200%">DOLLY</p>
+          <div class="quiet">
+            <p data-dolly="beat" data-dolly-on="scene" data-dolly-range
+               style="--dolly-range: contain 8% contain 92%">Named for the cart that carries a camera through a shot. That picture is running inside the letterforms, pushed by your scroll.</p>
+          </div>
         </div>
-        <p class="masked-cap" data-dolly="beat" data-dolly-on="scene" data-dolly-range
-           style="--dolly-range: contain 22% contain 78%">Named for the cart that carries a camera through a shot. That picture is running inside the letterforms, pushed by your scroll.</p>
         <span class="m credit">mask · background-clip: text</span>
       </div>
     </div>
