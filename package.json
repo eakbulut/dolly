@@ -1,0 +1,46 @@
+{
+  "name": "@dollyjs/core",
+  "version": "0.1.0",
+  "description": "Scroll-driven motion, in CSS. 23 camera moves on one attribute — no JavaScript, and content stays visible where scroll timelines aren't supported.",
+  "type": "module",
+  "style": "./src/dolly.css",
+  "exports": {
+    ".": "./src/dolly.css",
+    "./dolly.css": "./src/dolly.css"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test",
+    "demo": "npx serve ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eakbulut/dolly.git"
+  },
+  "homepage": "https://usedolly.dev/",
+  "bugs": {
+    "url": "https://github.com/eakbulut/dolly/issues"
+  },
+  "keywords": [
+    "scroll animation",
+    "scroll-driven animations",
+    "animation-timeline",
+    "view timeline",
+    "css only",
+    "no javascript",
+    "scrollytelling",
+    "parallax",
+    "sticky",
+    "scroll reveal"
+  ],
+  "author": "eakbulut",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}

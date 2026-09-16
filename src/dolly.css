@@ -123,6 +123,10 @@
   min-height: var(--dolly-scene, 300vh);
   view-timeline-name: --dolly-scene;
   view-timeline-axis: block;
+  /* Default view() ranges begin the instant 1px crosses the viewport edge,
+     so things start moving while still off-frame and the page reads as
+     permanently in motion. Pull the trigger inward. */
+  view-timeline-inset: 8% 8%;
 }
 
 [data-dolly-pin] {
