@@ -126,6 +126,11 @@
      <figure data-dolly="fly" style="--dolly-z-from:-2200px">…
      <figure data-dolly="fly" style="--dolly-z-from:-1400px">…            */
 
+/* The number that decides cinematic from cheap is perspective ÷ element
+   width, not the angle: 2.5-4 reads like a lens, below 1.5 is a fisheye.
+   A 320px card wants roughly 900-1300px. Note also that geometry past the
+   camera plane is NOT culled — it renders mirrored at enormous scale — so
+   keep any z-to below about 0.8 × perspective. */
 [data-dolly-space] {
   perspective: var(--dolly-perspective, 1400px);
   perspective-origin: var(--dolly-vanish, 50% 46%);
@@ -168,9 +173,12 @@
 [data-dolly="fly"]    { animation-name: dolly-fly;
                         animation-range: var(--dolly-range, contain 0% contain 100%) }
 
-/* Depth haze is a PAINT, not an animation. A filter animated per frame
-   forces a repaint; assigned statically by depth band it costs nothing and
-   reads as atmospheric perspective. */
+/* Depth haze is a PAINT, not an animation — but blur is only free on a
+   layer whose Z is NOT moving. A blurred layer that travels in Z must be
+   re-rasterised every frame, because its rasterisation scale changes
+   continuously; that is the most expensive thing you can do here. So:
+   blur the parked layers, and damp the travelling ones with brightness
+   alone, which is a compositor-only property. */
 [data-dolly-depth="far"]  { filter: blur(5px) brightness(.5) saturate(.75) }
 [data-dolly-depth="mid"]  { filter: blur(2.5px) brightness(.62) saturate(.85) }
 /* Near layers stay sharp — blurring them reads as mush, not depth.
