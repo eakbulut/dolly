@@ -198,17 +198,23 @@
 [data-dolly="fly"]    { animation-name: dolly-fly;
                         animation-range: var(--dolly-range, contain 0% contain 100%) }
 
-/* Depth haze is a PAINT, not an animation — but blur is only free on a
-   layer whose Z is NOT moving. A blurred layer that travels in Z must be
+/* Depth reads through BLUR and SCALE, never through darkening. A layer
+   dimmed toward the background stops being visible as motion at all —
+   movement is only perceptible against contrast. Far layers are softer,
+   not darker; on a dark ground they are if anything brighter, the way a
+   lit subject reads across a dark room.
+
+   The other half of the rule: blur is only free on a layer whose Z is NOT
+   moving. A blurred layer that travels in Z must be
    re-rasterised every frame, because its rasterisation scale changes
    continuously; that is the most expensive thing you can do here. So:
    blur the parked layers, and damp the travelling ones with brightness
    alone, which is a compositor-only property. */
-[data-dolly-depth="far"]  { filter: blur(4px) brightness(.62) saturate(.8) }
-[data-dolly-depth="mid"]  { filter: blur(2px) brightness(.78) saturate(.9) }
+[data-dolly-depth="far"]  { filter: blur(6px) brightness(1.05) saturate(.85) }
+[data-dolly-depth="mid"]  { filter: blur(2.5px) brightness(1.15) }
 /* Near layers stay sharp — blurring them reads as mush, not depth.
    Subordinate to the hero by brightness alone. */
-[data-dolly-depth="near"] { filter: brightness(.94) }
+[data-dolly-depth="near"] { filter: brightness(1.3) contrast(1.05) }
 
 /* Decorative depth layers are not content. With no timeline they would
    park at opacity 1 with no translate — a stack of plates piled at dead

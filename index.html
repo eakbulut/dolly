@@ -273,6 +273,22 @@ img{display:block;max-width:100%}
   -webkit-background-clip:text;background-clip:text;color:transparent;
   filter:brightness(1.5) contrast(1.25) saturate(1.15)}
 
+/* One act has to be bright, or "dark" stops meaning anything: every tone on
+   this half otherwise sits in the bottom 7% of the luminance scale, and the
+   eye has nothing to anchor on. A projector is the brightest thing in a
+   cinema, so the act about the projector is the one that lifts. */
+.lit-stage{background:
+  radial-gradient(120% 90% at 50% 40%,#F6F5F1 0%,#E4E2DC 42%,#C9C6BE 78%,#AFABA2 100%)}
+.lit-stage .quiet h1,.lit-stage .quiet h2{color:var(--ink)}
+.lit-stage .quiet h1 .lit,.lit-stage .quiet h2 .lit{color:var(--accent)}
+.lit-stage .quiet p{color:#4A4A44}
+.lit-stage .figure{color:var(--ink)}
+.lit-stage .figure .unit{color:#7A7A72}
+.lit-stage .credit{color:rgba(20,20,18,.55)}
+.lit-stage .pane{background:rgba(20,20,22,.12);
+  box-shadow:inset 0 0 0 1px rgba(20,20,22,.42),0 26px 70px -28px rgba(20,20,22,.6)}
+.lit-stage .haze{background:radial-gradient(70% 60% at 50% 46%,transparent,rgba(120,118,110,.25) 86%)}
+
 /* ===== THE DEPTH RIG =====
    perspective, but deliberately NO transform-style: preserve-3d. The plates
    are billboards, not volumes, and preserve-3d would be flattened by the
@@ -288,14 +304,14 @@ img{display:block;max-width:100%}
   left:calc(50% + var(--px,0px));top:calc(50% + var(--py,0px));
   margin:calc(var(--w,34vw) * -.3) 0 0 calc(var(--w,34vw) / -2);
   border-radius:clamp(6px,.7vw,14px);overflow:clip;
-  box-shadow:0 0 0 1px rgba(255,255,255,.09),0 30px 90px -24px #000,
-             0 0 120px -46px color-mix(in srgb,var(--glow) 70%,transparent)}
+  box-shadow:0 0 0 1px rgba(255,255,255,.34),0 30px 90px -20px #000,
+             0 0 150px -40px color-mix(in srgb,var(--glow) 95%,transparent)}
 .plate img{width:100%;height:100%;object-fit:cover}
 /* An empty frame: 14 kB of payload that delivers no picture. */
 .pane{background:rgba(255,255,255,.028);
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.13),0 24px 70px -30px #000}
 .haze{position:absolute;inset:-30%;pointer-events:none;
-  background:radial-gradient(70% 60% at 50% 46%,transparent,rgba(10,14,28,.22) 86%)}
+  background:radial-gradient(70% 60% at 50% 46%,transparent,rgba(10,14,28,.12) 90%)}
 
 /* ===== THE SUBJECT =====
    The product here is motion, so the hero has to be a thing that moves,
@@ -512,7 +528,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
   <!-- ===== ACT II — what a runtime costs ===== -->
   <div class="film" data-dolly-scene style="--dolly-scene:320vh">
     <div data-dolly-pin>
-      <div class="stage seamless">
+      <div class="stage lit-stage">
         <div class="depth" style="--lens:1100px;perspective-origin:50% 50%">
           <div class="haze"></div>
           <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
