@@ -107,3 +107,42 @@
 @media (prefers-reduced-motion: reduce) {
   [data-dolly] { animation-name: none !important }
 }
+
+/* ---------- scenes: pinned, scrubbed sequences ---------- *
+
+   The move that makes scroll libraries look impressive, and the one they
+   all need JavaScript for: pin an element to the viewport and let scroll
+   scrub a transformation through it. GSAP calls this ScrollTrigger pin.
+   Here it is position:sticky plus a named view timeline, and nothing else.
+
+   <div data-dolly-scene>                  tall track, owns the timeline
+     <div data-dolly-pin>                  sticks for the scene's length
+       <div data-dolly="zoom" data-dolly-on="scene">…</div>
+     </div>
+   </div>
+
+   Children opt in with data-dolly-on="scene" so an ordinary entry move
+   inside a scene still behaves like an entry move. */
+
+[data-dolly-scene] {
+  position: relative;
+  min-height: var(--dolly-scene, 300vh);
+  view-timeline-name: --dolly-scene;
+  view-timeline-axis: block;
+}
+
+[data-dolly-pin] {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: clip;   /* clip, never hidden — see the note above */
+  display: grid;
+  place-items: center;
+}
+
+/* `contain` spans exactly the time the track is pinned: from the track's
+   top meeting the viewport top to its bottom meeting the viewport bottom. */
+[data-dolly-on="scene"] {
+  animation-timeline: --dolly-scene;
+  animation-range: contain 0% contain 100%;
+}

@@ -1,0 +1,17 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>scene</title>
+<link rel="stylesheet" href="../src/dolly.css">
+<style>
+body{margin:0;font:16px system-ui;background:#0D0D0D;color:#fff}
+.sp{height:110vh;display:grid;place-items:center;color:#888}
+.word{font-size:16vw;font-weight:900;letter-spacing:-.05em}
+.box{width:40vw;aspect-ratio:1;background:#1E40AF}
+</style></head><body>
+<div class="sp">scroll</div>
+<div data-dolly-scene style="--dolly-scene:340vh">
+  <div data-dolly-pin>
+    <div class="box" data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:2.4"></div>
+    <div class="word" style="position:absolute" data-dolly="fade" data-dolly-on="scene">PINNED</div>
+  </div>
+</div>
+<div class="sp">after</div>
+</body></html>
