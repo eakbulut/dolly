@@ -179,11 +179,11 @@
    continuously; that is the most expensive thing you can do here. So:
    blur the parked layers, and damp the travelling ones with brightness
    alone, which is a compositor-only property. */
-[data-dolly-depth="far"]  { filter: blur(5px) brightness(.5) saturate(.75) }
-[data-dolly-depth="mid"]  { filter: blur(2.5px) brightness(.62) saturate(.85) }
+[data-dolly-depth="far"]  { filter: blur(4px) brightness(.62) saturate(.8) }
+[data-dolly-depth="mid"]  { filter: blur(2px) brightness(.78) saturate(.9) }
 /* Near layers stay sharp — blurring them reads as mush, not depth.
    Subordinate to the hero by brightness alone. */
-[data-dolly-depth="near"] { filter: brightness(.82) saturate(.95) }
+[data-dolly-depth="near"] { filter: brightness(.94) }
 
 /* Decorative depth layers are not content. With no timeline they would
    park at opacity 1 with no translate — a stack of plates piled at dead
