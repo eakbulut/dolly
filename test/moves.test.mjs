@@ -250,3 +250,16 @@ test('the demo page documents every move that ships', () => {
     'the reference table on the page is missing moves the library ships'
   );
 });
+
+/* package.json drifted to "23 camera moves" while the library shipped 30.
+   Three files now claim a count; all three are derived from one source. */
+test('package.json agrees with the stylesheet on the move count', () => {
+  const pkg = JSON.parse(read('../package.json'));
+  const shipped = new Set(
+    rules
+      .filter((r) => decls(r.body).some(([p]) => p === 'animation-name'))
+      .flatMap((r) => [...r.selector.matchAll(/\[data-dolly="([^"]+)"\]/g)].map((m) => m[1]))
+  );
+  const claimed = Number((pkg.description.match(/(\d+) camera moves/) || [])[1]);
+  assert.equal(claimed, shipped.size, 'package.json description has a stale move count');
+});

@@ -208,6 +208,36 @@ stylesheet.
 as authored, because the authored state was never the hidden one — there is
 nothing to un-hide.
 
+## Where this sits
+
+`usal` was built because AOS and sal "don't handle text splitting well" — its
+author's words. Word-by-word and letter-by-letter animation needs `<span>`s
+inserted into a text node, which CSS cannot do at all. So that is genuinely
+their territory, not a gap to close: if you need text splitting or number
+counters, use usal and use it without apology.
+
+What CSS answers is the objection its own thread opened with — *"9kb is too
+much for scroll animation"* — which the author granted, pointing simple cases
+at sal.js instead. For a fade, a reveal, a parallax or a pinned scrub, this
+stylesheet is the smaller answer, and nothing executes.
+
+Worth knowing about the neighbours, all verified from their published
+packages rather than their marketing:
+
+| | ships | hides content first | reduced motion | maintained |
+| --- | --- | --- | --- | --- |
+| AOS | 4.7 kB JS | yes | no | last published 2022 |
+| ScrollReveal | 5.6 kB JS | yes, via `html.sr` | no | last published 2021 |
+| sal.js | 1.8 kB JS + CSS | yes | no | last published 2021 |
+| usal | 7.5 kB JS | **no** | **no** | active |
+| Motion | 43.8 kB (React) | yes, in SSR HTML | yes | active |
+| Dolly | 1.6 kB CSS | no | yes | — |
+
+Two of those deserve credit: usal never pre-hides, and ScrollReveal's
+`html.sr` scoping is the least-bad version of hiding. Motion is a different
+purchase — a whole animation runtime — and on its fast path it hands
+scroll-linked work to the same `ViewTimeline` this library is built on.
+
 ## What it cannot do
 
 Honest limits, verified rather than assumed:
