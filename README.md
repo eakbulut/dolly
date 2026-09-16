@@ -9,6 +9,10 @@ Scroll-driven motion, in CSS. One attribute, 30 camera moves, no JavaScript.
 That is the whole API. No init call, no observer, no wrapper component, no
 runtime. The stylesheet is the product.
 
+Named for the camera dolly, the cart that carries a camera through a shot.
+Sibling to [Foley](https://usefoley.dev) ([repo](https://github.com/eakbulut/foley)),
+which does the sound the same way — synthesized live, no files.
+
 The other half of the pitch is the failure mode. Every mainstream scroll
 library hides content in a base rule and reveals it from script; when the
 script fails or the browser can't help, the content is simply gone. Dolly
