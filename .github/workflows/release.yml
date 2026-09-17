@@ -23,7 +23,7 @@ jobs:
           PKG=$(node -p "require('./package.json').version")
           TAG="${GITHUB_REF_NAME#v}"
           if [ "$PKG" != "$TAG" ]; then
-            echo "::error::Tag v$TAG but package.json says $PKG - bump and re-tag (see RELEASING.md)"
+            echo "::error::Tag v$TAG but package.json says $PKG - bump all version sites and re-tag"
             exit 1
           fi
       - name: Tests gate the release

@@ -9,3 +9,7 @@ test/*-probe.html
 test/min.html
 test/scene.html
 test/viewport.html
+
+# maintainer notes, kept local
+PRODUCT.md
+RELEASING.md
