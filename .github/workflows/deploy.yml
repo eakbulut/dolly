@@ -28,6 +28,19 @@ jobs:
           cp index.html _site/
           cp src/dolly.css _site/src/
           cp -r assets _site/
+          # Pages serves index.html for 10 minutes but css/images for 4 hours,
+          # so a returning visitor gets new markup against a stale stylesheet
+          # and the page breaks in ways that look like code bugs. Fingerprint
+          # the two assets the markup is coupled to. The comment on line 28 and
+          # the figcaption that prints the filename are deliberately not touched.
+          CSS_V=$(sha1sum src/dolly.css | cut -c1-8)
+          PNG_V=$(sha1sum assets/leader.png | cut -c1-8)
+          sed -i "s|href=\"src/dolly.css\"|href=\"src/dolly.css?v=$CSS_V\"|" _site/index.html
+          sed -i "s|url(\"assets/leader.png\")|url(\"assets/leader.png?v=$PNG_V\")|" _site/index.html
+          sed -i "s|src=\"assets/leader.png\"|src=\"assets/leader.png?v=$PNG_V\"|" _site/index.html
+          for want in "dolly.css?v=$CSS_V" "url(\"assets/leader.png?v=$PNG_V\")" "src=\"assets/leader.png?v=$PNG_V\""; do
+            grep -qF "$want" _site/index.html || { echo "::error::fingerprint missed: $want"; exit 1; }
+          done
           echo "usedolly.dev" > _site/CNAME
           printf 'User-agent: *\nAllow: /\nSitemap: https://usedolly.dev/sitemap.xml\n' > _site/robots.txt
           printf '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n<url><loc>https://usedolly.dev/</loc></url>\n</urlset>\n' > _site/sitemap.xml
