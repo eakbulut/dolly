@@ -268,3 +268,26 @@ test('package.json agrees with the stylesheet on the move count', () => {
   const claimed = Number((pkg.description.match(/(\d+) camera moves/) || [])[1]);
   assert.equal(claimed, shipped.size, 'package.json description has a stale move count');
 });
+
+test('the page binding is declared after every move that sets a range', () => {
+  /* [data-dolly-on="page"] carries one attribute selector, exactly like a
+     move rule, so nothing but source order decides which animation-range
+     survives. Declared above a move, it silently hands that move's default
+     range back — on a scroll timeline, where entry/cover mean nothing.
+     The scene binding is safe by specificity (it is a descendant selector);
+     this one is safe only by position, so position is what gets guarded. */
+  const pageBinding = rules.find((r) => r.selector === '[data-dolly-on="page"]');
+  assert.ok(pageBinding, 'the page binding rule has gone missing');
+
+  const movesWithRange = rules
+    .filter((r) => /^\[data-dolly="[^"]+"\]$/.test(r.selector))
+    .filter((r) => decls(r.body).some(([p]) => p === 'animation-range'))
+    .filter((r) => r.order > pageBinding.order)
+    .map((r) => r.selector);
+
+  assert.deepEqual(
+    movesWithRange,
+    [],
+    'these are declared below [data-dolly-on="page"] and take their range back from it'
+  );
+});

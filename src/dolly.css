@@ -488,6 +488,32 @@
 }
 [data-dolly="count"]::after { content: counter(dolly-n) }
 
+/* ---------- riding the page instead of the viewport ---------- *
+
+   Every move defaults to view(): progress is the element's own trip across
+   the viewport. `progress` and `travel` opt out of that and read the page
+   scroller, because a progress bar that fills as it crosses the viewport is
+   not a progress bar. This opts any OTHER move into the same thing — one
+   long draw down the side of the page, a parallax keyed to the document
+   rather than to its own box.
+
+     <path data-dolly="draw" data-dolly-on="page" pathLength="1" d="…">
+
+   `normal` on a scroll timeline is the full length of the scroller, which
+   is what "top to bottom" means here. entry/exit/cover/contain are view-
+   timeline phases and mean nothing on this timeline, so a --dolly-range
+   copied off an entrance will not do what it says.
+
+   PLACEMENT IS LOAD-BEARING: this carries the same specificity as a move
+   rule, so it only wins by being declared after every one of them. Moving
+   it above a move takes that move's range back, silently. There is a guard
+   for exactly this — it is the third time this file has needed one. */
+
+[data-dolly-on="page"] {
+  animation-timeline: scroll();
+  animation-range: var(--dolly-range, normal);
+}
+
 /* ---------- stagger ---------- *
 
    The single most-requested scroll feature, and the one gap worth closing:

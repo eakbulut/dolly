@@ -244,6 +244,45 @@ in sequence instead of all at once:
 
 Overlap the ranges slightly so one beat leaves as the next arrives.
 
+## Riding the page
+
+Every move defaults to `view()`: progress is the element's own trip across the
+viewport. `data-dolly-on="page"` swaps that for the page scroller, so a move
+runs from the top of the document to the bottom instead.
+
+```html
+<svg class="ribbon" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+  <path data-dolly="draw" data-dolly-on="page" pathLength="1" d="…"
+        stroke="currentColor" fill="none" stroke-linecap="round"/>
+</svg>
+```
+
+That is the ribbon on this project's own site: one unbroken stroke that
+writes the word `dolly` in cursive as you scroll from the top of the page to
+the bottom. Handwriting is what `draw` is for — a single pen line, never
+lifted. Note that a font would not work here: glyphs are filled outlines, not
+strokes, so they have no path to draw along.
+
+The artwork lives at `assets/dolly-word.svg` and must be a **centerline**: one
+open path, `fill="none"`, drawn in writing order, with the weight coming from
+`stroke-width`. Text converted to outlines gives the *contour* of each letter,
+so drawing it traces the rim instead of writing the word — and that cannot be
+fixed downstream. `scripts/make-ribbon.py` refits a replacement in one command.
+
+**Do not put `vector-effect="non-scaling-stroke"` on a path you are drawing.**
+It makes the browser compute the dash pattern in screen space, which fights
+`pathLength="1"`, and the stroke comes apart into disconnected pieces instead
+of advancing as one line. It looks like a geometry bug and it is not. If the
+stroke needs to keep a constant width, scale the SVG uniformly instead.
+
+`normal` is the default range here and means the full length of the scroller.
+`entry`, `exit`, `cover` and `contain` are view-timeline phases and mean
+nothing on this timeline, so a `--dolly-range` copied off an entrance will not
+do what it looks like it does.
+
+`progress` and `travel` already read the page scroller and ignore this
+attribute; they have nowhere else to read from.
+
 ## Knobs
 
 Set these as inline styles or in your own CSS. `data-dolly-range` and
