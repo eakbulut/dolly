@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dolly — scroll-driven motion, in CSS</title>
-<meta name="description" content="Dolly is a CSS library of 31 scroll-driven camera moves, with pinned scenes. No JavaScript, no IntersectionObserver, no runtime. Add one attribute.">
+<meta name="description" content="Dolly is a CSS library of 34 scroll-driven camera moves, with pinned scenes. No JavaScript, no IntersectionObserver, no runtime. Add one attribute.">
 <meta property="og:title" content="Dolly — scroll-driven motion, in CSS">
 <meta property="og:description" content="Everything that moves on this page was moved by the library. Nothing on it runs JavaScript.">
 <meta property="og:url" content="https://usedolly.dev/">
@@ -509,7 +509,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
           <rect class="mark-truck" data-dolly="travel" x="4.5" y="6" width="23" height="8.5" rx="2.4"
                 fill="#2B4BE8" style="--dolly-travel-from:0;--dolly-travel-to:11.5px"/>
         </svg><span>Dolly</span></a>
-    <span class="m mast-spec">31 moves · 0 kB of JavaScript</span>
+    <span class="m mast-spec">34 moves · 0 kB of JavaScript</span>
     <div class="mast-right">
       <div class="readout" title="Your scroll position, counted in CSS"><span class="label readout-label">scroll</span></div>
       <a class="label" href="https://github.com/eakbulut/dolly">GitHub</a>
@@ -553,7 +553,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
         <div class="stack">
           <div class="quiet">
             <h1>Nobody is filming <span class="lit">your page.</span></h1>
-            <p>There is no camera, so every camera move on the web had to be invented. Dolly invents 31 of them in CSS, and scrolling back up rewinds them.</p>
+            <p>There is no camera, so every camera move on the web had to be invented. Dolly invents 34 of them in CSS, and scrolling back up rewinds them.</p>
           </div>
           <div class="subject" data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:1.14">
             <img src="https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=2000&q=78&auto=format&fit=crop"
@@ -764,7 +764,10 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
             <tr><td>hold</td><td class="r hide-sm">—</td><td>arrives and stays</td></tr>
             <tr><td>iris</td><td class="r hide-sm">—</td><td>an aperture opening</td></tr>
             <tr><td>track</td><td class="r hide-sm">contain 0% contain 100%</td><td>vertical scroll, horizontal travel</td></tr>
-            <tr><td>mask</td><td class="r hide-sm">—</td><td>footage inside letterforms</td></tr>
+            <tr><td>draw</td><td class="r hide-sm">entry 0% cover 60%</td><td>a stroke drawing itself; needs pathLength="1"</td></tr>
+<tr><td>count</td><td class="r hide-sm">entry 0% cover 45%</td><td>a number counting up, printed by counter()</td></tr>
+<tr><td>sequence</td><td class="r hide-sm">cover 0% cover 100%</td><td>a sprite strip, stepped one frame per slice of scroll</td></tr>
+<tr><td>mask</td><td class="r hide-sm">—</td><td>footage inside letterforms</td></tr>
             <tr><td>letter</td><td class="r hide-sm">—</td><td>tracking closes as it arrives</td></tr>
           </tbody>
         </table>
@@ -808,7 +811,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
 
       <div class="sign-off">
         <p class="sign-off-line" data-dolly="letter" style="--dolly-letter-from:.14em;--dolly-letter-to:-.02em">that is the whole library</p>
-        <span class="m">31 moves · 0 kB of JavaScript · one attribute</span>
+        <span class="m">34 moves · 0 kB of JavaScript · one attribute</span>
       </div>
 
       <div class="ded">

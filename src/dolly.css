@@ -257,7 +257,11 @@
   [data-dolly="beat"],     [data-dolly="beat-in"],
   /* fly ends past the camera at opacity 0 */
   [data-dolly="fly"], [data-dolly="drop"], [data-dolly="pass"],
-  [data-dolly="travel"] {
+  [data-dolly="travel"],
+  /* sequence ends on the LAST frame of the strip. With no timeline that is
+     where it parks, showing the end of a sequence nobody watched. Off, and
+     the authored background-position-x (frame 1) stands. */
+  [data-dolly="sequence"] {
     animation-name: none;
   }
 }
@@ -384,6 +388,105 @@
                         animation-range: var(--dolly-range, contain 0% contain 100%) }
 [data-dolly="mask"]   { animation-name: dolly-mask }
 [data-dolly="letter"] { animation-name: dolly-letter }
+
+/* ---------- the sprite sequence ---------- *
+
+   background-position percentages resolve against the OVERFLOW (image width
+   minus element width), not against pixels. Size the strip to exactly N
+   element-widths and 0% is frame 1, 100% is frame N — no frame width to
+   hardcode, nothing that breaks at 2x or at a fractional element width.
+   `steps(N, jump-none)` emits exactly N values including both ends, so no
+   frame is ever caught half-tweened.
+
+   The one move here whose animated property is not compositor-friendly. It
+   repaints N times across the scroll, not once a frame, so it stays cheap.
+   Strip authoring — size budget, 2x — is in the README. */
+
+@property --dolly-cols { syntax: "<integer>"; inherits: false; initial-value: 6 }
+@property --dolly-rows { syntax: "<integer>"; inherits: false; initial-value: 1 }
+
+/* Two stepped animations, one per axis, so the sheet can be a GRID. A single
+   row is not merely inconvenient past a dozen frames — the background is
+   rendered at FRAMES x element-width, and an animated background that wide
+   stops rasterising and paints NOTHING, with no error and no fallback. A 6x6
+   grid renders six element-widths across instead of thirty-six.
+
+   jump-none, not jump-end. `steps(n, jump-none)` emits exactly n values,
+   0 to 100%, jumping at k/n — so the last cell is the END state and the x
+   jumps land on the row changes. jump-end instead returns 1 at t=1, which
+   pushes background-position a whole cell PAST the sheet: the element goes
+   blank at the end of the scene and, because fill-mode is both, stays blank
+   for as long as the act is still on screen. */
+@keyframes dolly-sequence-x {
+  from { background-position-x: 0% }
+  to   { background-position-x: 100% }
+}
+@keyframes dolly-sequence-y {
+  from { background-position-y: 0% }
+  to   { background-position-y: 100% }
+}
+
+[data-dolly="sequence"] {
+  animation-name: dolly-sequence-x, dolly-sequence-y;
+  /* stepping IS the move, so this is the one move that does not route
+     through --dolly-ease: an eased sprite sheet reads as a stutter. */
+  animation-timing-function: steps(var(--dolly-cols), jump-none),
+                             steps(var(--dolly-rows), jump-none);
+  animation-iteration-count: var(--dolly-rows), 1;
+  animation-range: var(--dolly-range, cover 0% cover 100%);
+  background-repeat: no-repeat;
+  background-size: calc(var(--dolly-cols) * 100%) calc(var(--dolly-rows) * 100%);
+}
+
+/* ---------- the two that draw and count ---------- *
+
+   Both are from-only, so the `to` state is the element as authored: with no
+   timeline the path lands finished and the number lands real. That is why
+   neither belongs in the @supports block — adding one would park `count` at
+   zero forever, which is worse than the thing the guard protects against.
+
+   draw  — the path must carry pathLength="1", an SVG attribute with no CSS
+           equivalent, which normalises it to length 1 so one dash covers it
+           exactly. Without it the path renders dashed, never invisible.
+           Never combine it with vector-effect:non-scaling-stroke: that moves
+           the dash computation into screen space, where pathLength means
+           nothing, and the stroke comes apart into disconnected pieces that
+           read as a broken path rather than a broken dash.
+
+   count — counter() is the only way CSS can print a number it computed, and
+           the counter must be reset on the ELEMENT, read on ::after. Going
+           through a counter rather than reading --dolly-n in the pseudo
+           directly is what lets the property stay inherits:false: a non-
+           inheriting registered property never reaches a pseudo-element,
+           but counters do. Digit grouping and the a11y naming rule are in
+           the README. */
+
+@property --dolly-n { syntax: "<integer>"; inherits: false; initial-value: 0 }
+
+@keyframes dolly-draw  { from { stroke-dashoffset: 1 } }
+@keyframes dolly-count { from { --dolly-n: var(--dolly-count-from, 0) } }
+
+[data-dolly="draw"] {
+  animation-name: dolly-draw;
+  /* a draw is meant to be watched, so it scrubs longer than an entrance */
+  animation-range: var(--dolly-range, entry 0% cover 60%);
+  /* with pathLength="1" one dash spans the path, so dashoffset is the
+     fraction still undrawn. Not a hidden state: at the authored dashoffset
+     of 0 the path is whole. */
+  stroke-dasharray: 1;
+}
+
+[data-dolly="count"] {
+  animation-name: dolly-count;
+  animation-range: var(--dolly-range, entry 0% cover 45%);
+  /* the authored state, and therefore the no-timeline state: the real number */
+  --dolly-n: var(--dolly-count-to, 100);
+  counter-reset: dolly-n var(--dolly-n);
+  /* digits are not equal-width in most faces, so a number counting through
+     1 and 8 reflows its own line on nearly every tick. */
+  font-variant-numeric: tabular-nums;
+}
+[data-dolly="count"]::after { content: counter(dolly-n) }
 
 /* ---------- stagger ---------- *
 

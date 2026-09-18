@@ -61,17 +61,22 @@ const decls = (body) =>
     .filter(([prop]) => prop);
 
 /* move name -> animation-name, straight out of the [data-dolly="…"] rules */
+/* animation-name is a LIST: `sequence` drives one stepped animation per axis
+   so its sheet can be a grid. Map each move to every keyframes block it
+   names, so the bijection below still catches an orphan on either side. */
 const moves = new Map();
 for (const rule of rules) {
   const name = rule.selector.match(/^\[data-dolly="([^"]+)"\]$/)?.[1];
   if (!name) continue;
   const animation = decls(rule.body).find(([p]) => p === 'animation-name')?.[1];
-  if (animation && animation !== 'none') moves.set(name, animation);
+  if (!animation || animation === 'none') continue;
+  const named = animation.split(',').map((n) => n.trim()).filter((n) => n && n !== 'none');
+  if (named.length) moves.set(name, named);
 }
 
 test('every move has keyframes and every keyframes block has a move', () => {
   const defined = [...new Set(keyframes.map((k) => k.keyframes))].sort();
-  const referenced = [...new Set(moves.values())].sort();
+  const referenced = [...new Set([...moves.values()].flat())].sort();
   assert.deepEqual(referenced, defined, 'orphaned keyframes or a move pointing at nothing');
 });
 

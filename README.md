@@ -1,6 +1,6 @@
 # Dolly
 
-Scroll-driven motion, in CSS. One attribute, 31 camera moves, no JavaScript.
+Scroll-driven motion, in CSS. One attribute, 34 camera moves, no JavaScript.
 
 ```html
 <h2 data-dolly="tilt-up">This rises into place as you scroll to it.</h2>
@@ -103,6 +103,77 @@ The cinematic three, plus one.
 | `track` | Vertical scroll driving horizontal travel. Put a too-wide row in a pinned scene. |
 | `mask` | Pushes a background picture inside letterforms. The element supplies its own `background-image` and `background-clip: text`. |
 | `letter` | Letter-spacing tightens from loose to tight while fading in. |
+
+### Frame sequences
+
+Scrubbing a frame sequence with scroll — the effect everyone still reaches for
+canvas to do. One sprite sheet, no canvas and no decode loop.
+
+| Move | What it does |
+| --- | --- |
+| `sequence` | Steps through a sprite sheet, one cell per slice of scroll. |
+
+```html
+<div data-dolly="sequence"
+     style="--dolly-cols: 8; --dolly-rows: 4;
+            background-image: url(sheet.png)"></div>
+```
+
+The sheet is a **grid**, read left to right, top to bottom. Everything is
+percentage-based, so there is no cell size to hardcode and nothing breaks at
+2x, 3x or a fractional element width.
+
+**Use a grid, not a single row.** The sheet is rendered at `cols ×` the
+element's width, so a one-row sheet of thirty-two cells is drawn thirty-two
+element-widths across. An *animated* background that wide stops rasterising
+and paints **nothing** — no error, no fallback, and inconsistently enough that
+it can look fine on the machine that built it. Eight columns draws eight
+element-widths instead. Keep `--dolly-cols` in single digits and put the
+frames in rows.
+
+Pick the format by what the cells contain. Flat or synthetic art palettises
+extremely well: this site's own leader is forty-eight cells at 384px — a
+4608×1536 sheet — and weighs 187 kB as a 64-colour PNG. For photographic
+sequences the choice flips to WebP, which additionally caps any dimension at
+16383px. PNG has no such limit.
+
+This is also the one move whose animated property is not compositor-friendly —
+but it repaints once per cell across the whole scroll, not once a frame.
+
+Knobs: `--dolly-cols` (default 6), `--dolly-rows` (default 1). `--dolly-ease`
+does not apply: stepping is the move, and an eased sheet reads as a stutter.
+
+
+### Drawing and counting
+
+| Move | What it does |
+| --- | --- |
+| `draw` | A stroke draws itself along its own path. |
+| `count` | A number counts up (or down) as it scrolls into place. |
+
+```html
+<svg viewBox="0 0 420 160" fill="none">
+  <path data-dolly="draw" pathLength="1" d="…" stroke="currentColor"/>
+</svg>
+
+<span data-dolly="count" role="img" aria-label="1,380"
+      style="--dolly-count-to: 1380"></span>
+```
+
+`draw` needs `pathLength="1"` on the path. That normalises any path to a length
+of 1 so a single dash covers it exactly, and it is an SVG attribute with no CSS
+equivalent — the one move in this library that needs a second authoring step.
+Leave it off and the path renders dashed rather than drawn: wrong, but never
+invisible. With `stroke-linecap: round` the dashes overlap into a solid line, so
+the mistake can hide; check it with `butt` caps.
+
+`count` renders through `counter()` in `::after`, which has two consequences
+worth knowing before you use it. There is no digit grouping in CSS counters, so
+1380 prints as `1380`. And generated content is decorative to assistive tech, so
+give the element an accessible name — `role="img"` plus `aria-label` is the
+shortest thing that works.
+
+Knobs: `--dolly-count-from` (default 0), `--dolly-count-to` (default 100).
 
 ### Depth
 
