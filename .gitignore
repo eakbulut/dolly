@@ -13,3 +13,6 @@ test/viewport.html
 # maintainer notes, kept local
 PRODUCT.md
 RELEASING.md
+
+# press-photo source for scripts/make-parton.py, kept out of the repo
+00parton-dolly-phwq-superJumbo.webp

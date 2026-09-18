@@ -1,7 +1,7 @@
 """Regenerates assets/leader.png — the Academy countdown leader played by the
 `sequence` move in Act V, and shown uncropped as the reel beneath it.
 
-Twenty-four cells on a 6x4 GRID: rows are 3, 2, 1, GO and each row is six
+Thirty-six cells on a 12x3 GRID: rows are 3, 2, 1 and each row is twelve
 frames of the sweep hand.
 
 TWO HARD CONSTRAINTS, both learned the painful way:
@@ -24,7 +24,7 @@ WebP additionally caps any dimension at 16383px.
 from PIL import Image, ImageDraw, ImageFont
 import math, os
 
-CELL, COLS, ROWS = 384, 12, 4           # rows: 3, 2, 1, GO; eight sweep frames each
+CELL, COLS, ROWS = 384, 12, 3           # rows: 3, 2, 1 — the payoff is a photograph, not a GO card
 SS     = 4                              # supersample: Pillow does not antialias
 INK    = (242, 242, 238)
 BG     = (11, 11, 12)
@@ -33,7 +33,7 @@ DIM    = (112, 112, 108)
 FAINT  = (46, 46, 50)
 FONT   = "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
 THIN   = "/System/Library/Fonts/Supplemental/Arial.ttf"
-LABELS = ["3", "2", "1", "GO"]
+LABELS = ["3", "2", "1"]
 
 def cell(row, col):
     z = CELL * SS
@@ -41,15 +41,11 @@ def cell(row, col):
     d  = ImageDraw.Draw(im, "RGBA")
     c  = z / 2
     label = LABELS[row]
-    go    = (label == "GO")
     t     = col / COLS                  # 0 .. 5/6 of a full sweep
     ang   = -90 + 360 * t
 
     R, R2, R3 = z*0.46, z*0.355, z*0.30
 
-    # GO fills as it lands, so the last row reads as a release, not a fourth count
-    if go:
-        d.ellipse([c-R, c-R, c+R, c+R], fill=ACCENT + (int(30 + 150*t),))
     d.pieslice([c-R, c-R, c+R, c+R], -90, ang, fill=ACCENT + (54,))
 
     d.line([c, 0, c, z], fill=FAINT, width=int(z*0.0035))
@@ -66,10 +62,10 @@ def cell(row, col):
 
     rr = R*0.97
     d.line([c, c, c + rr*math.cos(math.radians(ang)), c + rr*math.sin(math.radians(ang))],
-           fill=ACCENT if not go else INK, width=int(z*0.0105))
+           fill=ACCENT, width=int(z*0.0105))
     d.ellipse([c-z*0.011, c-z*0.011, c+z*0.011, c+z*0.011], fill=INK)
 
-    f = ImageFont.truetype(FONT, int(z*(0.30 if not go else 0.21)))
+    f = ImageFont.truetype(FONT, int(z*0.30))
     tb = d.textbbox((0,0), label, font=f)
     d.text((c-(tb[2]-tb[0])/2-tb[0], c-(tb[3]-tb[1])/2-tb[1]-z*0.012), label, font=f, fill=INK)
 
