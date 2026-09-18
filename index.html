@@ -141,7 +141,8 @@ img{display:block;max-width:100%}
 
 /* ================= FILM CHAPTERS (dark) ================= */
 .film{background:transparent;color:#fff;position:relative;-webkit-font-smoothing:antialiased}
-.stage{position:relative;width:100%;height:100%;display:grid;place-items:center;overflow:clip}
+.stage{position:relative;width:100%;height:100%;display:grid;place-items:center;overflow:clip;
+  min-width:0}   /* grid item: without this its min-content width wins */
 .shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .veil{position:absolute;inset:0;background:
   linear-gradient(100deg,rgba(11,11,12,.92) 12%,rgba(11,11,12,.55) 46%,rgba(11,11,12,.18) 78%),
@@ -196,6 +197,11 @@ img{display:block;max-width:100%}
 .sheet figcaption{color:var(--film-quiet)}
 @media(max-width:820px){.sheet{position:static;width:min(58vw,240px);
   margin:0 auto;justify-items:center}}
+
+/* a drawn rule: the `draw` move standing in for a border-bottom.
+   Sits where the head-row's border-bottom would be, because it replaces it —
+   two near-parallel rules read as a mistake. */
+.rule-draw{display:block;width:100%;height:auto;margin:-9px 0 26px;color:#8FA6FF}
 
 .credit{position:absolute;right:var(--edge);bottom:0;height:clamp(28px,7vh,86px);
   display:flex;align-items:center;z-index:7;color:var(--film-quiet)}
@@ -268,6 +274,11 @@ img{display:block;max-width:100%}
     border-left:2px solid var(--accent);mask-image:none;-webkit-mask-image:none;
     background:rgba(11,11,12,.72);backdrop-filter:blur(12px)}
   .act2-beats,.stage-copy{position:static}
+  /* Act II's flying panes are 26-40vw on a desktop stage. At 390px they
+     land as a scatter of small grey rectangles across the number instead of
+     reading as depth, so the act keeps only its subject. Scoped to .pane —
+     act IV's photo plates still carry that act. */
+  .pane{display:none}
   /* the slate and the cue each get their own half of the matte */
   .cue,.credit{font-size:11px}
   .act1-title{position:static;bottom:auto}
@@ -357,6 +368,7 @@ img{display:block;max-width:100%}
 .seamless{background:
   radial-gradient(120% 80% at 50% 42%,#17171B 0%,#0A0A0C 46%,#060607 100%)}
 .subject{position:relative;width:auto;height:100%;max-height:min(46vh,500px);
+  max-width:calc(100vw - 2*var(--gutter));
   aspect-ratio:16/9.6;flex:0 1 auto;
   border-radius:clamp(8px,1vw,18px);overflow:clip;
   box-shadow:0 0 0 1px rgba(255,255,255,.1),0 40px 120px -30px rgba(0,0,0,.9),
