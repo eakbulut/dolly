@@ -180,18 +180,15 @@ img{display:block;max-width:100%}
 .shot-frame{position:absolute;inset:0;overflow:clip}
 .shot-frame .shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 
-/* The countdown. 14 kB of AOS falling to nothing, counted in CSS off the
-   scene's own timeline. */
-@property --kb{syntax:"<integer>";initial-value:14;inherits:false}
-@keyframes countdown{from{--kb:14}to{--kb:0}}
-.kb{animation-name:countdown;animation-fill-mode:both;animation-timing-function:linear;
-  animation-timeline:--dolly-scene;animation-range:contain 10% contain 84%;
-  counter-reset:kb var(--kb)}
-.kb::before{content:counter(kb)}
+/* The countdown. 14 kB of AOS falling to nothing — this used to be a
+   hand-rolled @property + @keyframes here; it is the library's `count`
+   move now, on the same timeline and the same range as before. */
 .unit{font-size:.30em;letter-spacing:-.02em;margin-left:.08em}
 
-/* the unit must not lurch sideways when the count drops a digit */
-.kb::before{display:inline-block;min-width:2ch;text-align:right;font-variant-numeric:tabular-nums}
+/* the unit must not lurch sideways when the count drops a digit. The move
+   supplies tabular figures; only reserving the column is the page's job,
+   because tabular figures cannot help going from two digits to one. */
+.kb::after{display:inline-block;min-width:2ch;text-align:right}
 
 /* Sequential move names sharing one stage, each with its own slice. */
 
@@ -470,11 +467,11 @@ footer{padding:26px 0 44px;display:flex;gap:20px;justify-content:space-between;f
 footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--accent)}
 
 @media (prefers-reduced-motion: reduce){
-  .readout,.topbar,.kb{animation-name:none !important}
+  .readout,.topbar{animation-name:none !important}
   /* The clock only interpolates colour and grain, but the countdown is a
      number ticking on scroll — that is motion, and it has to stop. */
   :root{animation-name:none !important}
-  .kb::before{content:"0"}
+  /* count parks on --dolly-count-to, which is 0 — no override needed */
   [data-dolly-pin]{position:static;height:auto;min-height:70svh}
   [data-dolly-scene]{min-height:0 !important}
 }
@@ -606,9 +603,11 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
             <h2>Fourteen kilobytes, <span class="lit">watching a scrollbar.</span></h2>
             <p>AOS ships 14 kB of JavaScript to notice where you are. Dolly ships a stylesheet, and a stylesheet cannot fail to boot.</p>
           </div>
-          <p class="figure kb"><span class="unit">kB</span></p>
+          <p class="figure"><span class="kb" data-dolly="count" data-dolly-on="scene"
+                 role="img" aria-label="14 kilobytes, counting down to zero"
+                 style="--dolly-count-from:14;--dolly-count-to:0;--dolly-range: contain 10% contain 84%"></span><span class="unit">kB</span></p>
         </div>
-        <span class="m credit">counted in css · @property + counter()</span>
+        <span class="m credit">count · @property + counter()</span>
       </div>
     </div>
   </div>
