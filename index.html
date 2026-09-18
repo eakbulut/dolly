@@ -274,11 +274,19 @@ img{display:block;max-width:100%}
     border-left:2px solid var(--accent);mask-image:none;-webkit-mask-image:none;
     background:rgba(11,11,12,.72);backdrop-filter:blur(12px)}
   .act2-beats,.stage-copy{position:static}
-  /* Act II's flying panes are 26-40vw on a desktop stage. At 390px they
-     land as a scatter of small grey rectangles across the number instead of
-     reading as depth, so the act keeps only its subject. Scoped to .pane —
-     act IV's photo plates still carry that act. */
-  .pane{display:none}
+  /* Act II's fourteen panes are sized for a desktop stage; at 390px they
+     land as a scatter of small grey rectangles rather than reading as depth.
+     Half again as large keeps every one of them — dropping some thinned the
+     flow to nothing for stretches of the act — while each still reads as a
+     pane passing the camera. */
+  .pane{--plate-scale:1.5}
+  /* The panes fly to z:700, and the perspective divide multiplies their
+     offset from centre by 1100/(1100-z) — nearly 3x at the end. In a narrow
+     frame that throws them off screen while the act still has half to run
+     (desktop keeps all fourteen to 75%, the phone had none by then). Ending
+     the flight nearer keeps them in the shot. Inline styles set --dolly-z-to,
+     so this has to out-rank them. */
+  .pane{--dolly-z-to:380px !important}
   /* the slate and the cue each get their own half of the matte */
   .cue,.credit{font-size:11px}
   .act1-title{position:static;bottom:auto}
@@ -347,9 +355,11 @@ img{display:block;max-width:100%}
    the type; it may never pass in front of it. */
 .stack{position:relative;z-index:6}
 .subject{z-index:4}
-.plate{position:absolute;width:var(--w,34vw);aspect-ratio:16/9.6;
+.plate{position:absolute;width:calc(var(--w,34vw) * var(--plate-scale,1));
+  aspect-ratio:16/9.6;
   left:calc(50% + var(--px,0px));top:calc(50% + var(--py,0px));
-  margin:calc(var(--w,34vw) * -.3) 0 0 calc(var(--w,34vw) / -2);
+  margin:calc(var(--w,34vw) * var(--plate-scale,1) * -.3) 0 0
+         calc(var(--w,34vw) * var(--plate-scale,1) / -2);
   border-radius:clamp(6px,.7vw,14px);overflow:clip;
   box-shadow:0 0 0 1px rgba(255,255,255,.34),0 30px 90px -20px #000,
              0 0 150px -40px color-mix(in srgb,var(--glow) 95%,transparent)}
