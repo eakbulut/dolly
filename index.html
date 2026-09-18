@@ -769,8 +769,11 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
       <div class="stage">
         <!-- copy arrives, holds, and is gone before the photograph lands -->
         <div class="act5-copy">
+          <!-- starts in `entry`, not `contain`: contain 0% is the moment the
+               act's top reaches the top of the viewport, so a beat that begins
+               there leaves the whole first screen of the act blank. -->
           <div class="quiet" data-dolly="beat" data-dolly-on="scene"
-               style="--dolly-range: contain 0% contain 42%">
+               style="--dolly-range: entry 0% contain 42%">
             <h2>Every film ever made <span class="lit">is a flipbook.</span></h2>
             <p>This one is thirty-six pictures on a single sheet. Scrolling picks which one you see — no canvas, no decode loop, nothing running. The browser is moving a background by one cell.</p>
           </div>
