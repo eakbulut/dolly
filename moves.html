@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dolly — every move</title>
+<meta name="description" content="All 34 Dolly moves, each one playing as you scroll past it. A reference page for choosing a move.">
+<meta property="og:title" content="Dolly — every move">
+<meta property="og:description" content="All 34 moves, each one playing as you scroll past it.">
+<meta property="og:url" content="https://usedolly.dev/moves.html">
+<link rel="canonical" href="https://usedolly.dev/moves.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%20role%3D%22img%22%20aria-label%3D%22Dolly%22%3E%20%3Cstyle%3E.r%7Bstroke%3A%230B0B0C%7D%40media%28prefers-color-scheme%3Adark%29%7B.r%7Bstroke%3A%23F2F2EE%7D%7D%3C%2Fstyle%3E%20%3Cpath%20class%3D%22r%22%20d%3D%22M9.5%203v26M22.5%203v26%22%20stroke-width%3D%223.2%22%20stroke-linecap%3D%22round%22%2F%3E%20%3Crect%20x%3D%224.5%22%20y%3D%2212.5%22%20width%3D%2223%22%20height%3D%228.5%22%20rx%3D%222.4%22%20fill%3D%22%232B4BE8%22%2F%3E%20%3C%2Fsvg%3E">
+<link rel="stylesheet" href="src/dolly.css">
+<style>
+/* Tokens mirror index.html. This page is deliberately the calm half of the
+   site: the demo essay argues, this one answers "which move do I want?" */
+:root{
+  --paper:#FAFAF8; --ink:#0B0B0C; --ink-soft:#57574F;
+  --accent:#2B4BE8; --surface:#EFEFEC; --rule:#D7D7D3;
+  --mono:"Azeret Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:"Archivo",system-ui,-apple-system,sans-serif;
+  --gutter:clamp(20px,4vw,56px);
+  --t-00:12px; --t-02:clamp(14px,.8rem + .2vw,15.5px);
+  --t-03:clamp(16px,.9rem + .35vw,18px);
+  --t-06:clamp(28px,1.3rem + 2vw,44px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:var(--t-03);line-height:1.5;-webkit-font-smoothing:antialiased}
+img,svg{display:block;max-width:100%}
+.wrap{max-width:1320px;margin:0 auto;padding:0 var(--gutter)}
+.label{font-family:var(--mono);font-size:var(--t-00);line-height:1.1;letter-spacing:.02em}
+a{color:inherit}
+
+/* ---------- masthead ---------- */
+.top{border-bottom:1px solid var(--rule);background:var(--paper);
+  position:sticky;top:0;z-index:10}
+.top .wrap{display:flex;align-items:center;gap:clamp(12px,2vw,28px);
+  min-height:58px;flex-wrap:wrap}
+.home{font-weight:800;letter-spacing:-.02em;text-decoration:none;font-size:var(--t-03)}
+.home span{color:var(--accent)}
+/* Sheds to the right at narrow widths rather than wrapping the brand. */
+.top nav{display:flex;gap:clamp(10px,1.4vw,20px);margin-left:auto;flex-wrap:wrap}
+.top nav a{font-family:var(--mono);font-size:var(--t-00);letter-spacing:.02em;
+  color:var(--ink-soft);text-decoration:none;padding:4px 0}
+.top nav a:hover{color:var(--accent)}
+@media(max-width:700px){.top nav{display:none}}
+
+.lede{padding:clamp(48px,9vh,110px) 0 clamp(30px,5vh,60px)}
+.lede h1{font-size:var(--t-06);line-height:1.02;letter-spacing:-.03em;margin:0 0 14px;
+  max-width:18ch;font-weight:800}
+.lede p{margin:0;max-width:56ch;color:var(--ink-soft)}
+.lede .label{display:block;margin-top:22px;color:var(--ink-soft)}
+
+/* ---------- sections ---------- */
+section{padding:clamp(34px,6vh,72px) 0 0}
+.sec{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;
+  padding-bottom:18px;border-bottom:1px solid var(--rule);margin-bottom:clamp(20px,3vw,34px)}
+.sec h2{margin:0;font-size:var(--t-03);font-weight:700;letter-spacing:-.01em}
+.sec p{margin:0;color:var(--ink-soft);font-size:var(--t-02);flex:1 1 22ch;min-width:0}
+.sec .label{color:var(--ink-soft)}
+.sec code{font-family:var(--mono);font-size:.9em}
+
+/* Explicit column counts, never auto-fit: the cards hold uneven text and
+   auto-fit re-flows them into a different count at every breakpoint. */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.6vw,22px)}
+@media(max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.grid{grid-template-columns:1fr}}
+
+.card{display:flex;flex-direction:column;min-width:0;
+  border:1px solid var(--rule);border-radius:12px;background:#fff;
+  padding:clamp(14px,1.4vw,20px);scroll-margin-top:80px;
+  box-shadow:0 1px 2px rgba(11,11,12,.04),0 12px 28px -22px rgba(11,11,12,.5)}
+.card h3{margin:14px 0 4px;font-family:var(--mono);font-size:var(--t-02);
+  font-weight:500;letter-spacing:.01em}
+/* Reserved text zone: two lines everywhere, so every card is the same height
+   and the snippet row lines up across a row. */
+/* Child combinator, not descendant: `.card p` is (0,1,1) and silently beat
+   `.masked` / `.letters` / `.tally` (0,1,0) inside .demo, repainting three
+   demo subjects in the description colour. */
+.card > p{margin:0;color:var(--ink-soft);font-size:var(--t-02);min-height:2.9em}
+.card code{margin-top:auto;font-family:var(--mono);font-size:var(--t-00);
+  background:var(--surface);border-radius:6px;padding:7px 9px;color:var(--ink);
+  overflow-wrap:anywhere;user-select:all}
+
+/* ---------- the stage each move plays on ---------- */
+.demo{height:132px;border-radius:8px;background:var(--surface);position:relative;
+  display:grid;place-items:center;overflow:clip}
+/* A move that ends off-frame leaves an empty box that reads as a broken
+   card. A dashed frame says "the subject left" instead. */
+.demo.leaves::before{content:"";position:absolute;width:56%;height:46%;
+  border:1px dashed #C9C9C4;border-radius:5px}
+.plate{width:56%;height:46%;border-radius:5px;background:var(--accent)}
+.plate.tall{width:70%;height:150%}
+.clip{width:72%;height:70%;border-radius:6px;overflow:clip;display:grid;place-items:center}
+.space{width:100%;height:100%;display:grid;place-items:center}
+.bar{width:74%;height:9px;border-radius:99px;background:#DCDCD8;overflow:clip}
+.bar i{display:block;height:100%;background:var(--accent);
+  transform-origin:left center;border-radius:99px}
+/* travel moves an element its OWN HEIGHT down the page by default, so the
+   marker is half the rail and the default lands it exactly at the bottom —
+   the card demonstrates the default with no knobs set. */
+.rail{width:10px;height:96px;background:#DCDCD8;border-radius:99px;overflow:clip}
+.rail i{display:block;width:100%;height:50%;border-radius:99px;background:var(--accent)}
+.row{display:flex;gap:7px}
+.row span{flex:0 0 58px;height:44px;border-radius:4px;background:var(--accent);opacity:.85}
+.masked{margin:0;font-size:46px;font-weight:900;letter-spacing:-.03em;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  background-image:linear-gradient(115deg,#2B4BE8,#8FA6FF 42%,#2B4BE8 78%);
+  background-repeat:no-repeat;background-position:center}
+.letters{margin:0;font-size:26px;font-weight:700;white-space:nowrap}
+.sheet{width:104px;aspect-ratio:1;border-radius:50%;
+  background-image:url("assets/leader.png");background-color:#0B0B0C}
+.scribble{width:72%;color:var(--accent)}
+.tally{margin:0;font-family:var(--mono);font-size:34px;font-weight:500;
+  font-variant-numeric:tabular-nums}
+
+footer{margin-top:clamp(60px,10vh,120px);padding:clamp(30px,5vh,60px) 0;
+  border-top:1px solid var(--rule);display:flex;gap:18px;flex-wrap:wrap;
+  color:var(--ink-soft)}
+
+/* Firefox, and anything else without scroll timelines, gets the page whole
+   and still — the same promise the library makes. Say so rather than let it
+   look broken. */
+.nosupport{display:none;margin-top:22px;padding:12px 14px;border-radius:8px;
+  background:var(--surface);color:var(--ink-soft);font-size:var(--t-02);max-width:56ch}
+@supports not (animation-timeline: view()){.nosupport{display:block}}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="wrap">
+  <a class="home" href="./">Dolly<span>.</span></a>
+  <nav><a href="#entrances">Entrances</a> <a href="#continuous">Continuous</a> <a href="#beats">Beats</a> <a href="#cinematic">Cinematic</a> <a href="#depth">Depth</a> <a href="#data">Drawing and data</a></nav>
+</div></div>
+
+<main class="wrap">
+
+  <div class="lede">
+    <h1>Every move, playing as you pass it.</h1>
+    <p>All 34 moves in the library, each one running on its own trip across
+      your viewport. Nothing here runs JavaScript — the page is the library
+      demonstrating itself. Scroll back up to watch one again.</p>
+    <span class="label">34 moves · 0 kB of JavaScript · one attribute</span>
+    <p class="nosupport">This browser has no scroll-driven animation support, so the
+      moves below are sitting still at their finished state. That is the library
+      working as designed: content never depends on the motion.</p>
+  </div>
+
+    <section id="entrances">
+      <header class="sec">
+        <h2>Entrances</h2>
+        <p>Resolve once, as the element enters the viewport.</p>
+        <span class="label">13</span>
+      </header>
+      <div class="grid">
+      <article class="card" id="fade">
+        <div class="demo"><div class="plate" data-dolly="fade"></div></div>
+        <h3>fade</h3>
+        <p>Fades up from nothing.</p>
+        <code>data-dolly="fade"</code>
+      </article>
+      <article class="card" id="tilt-up">
+        <div class="demo"><div class="plate" data-dolly="tilt-up"></div></div>
+        <h3>tilt-up</h3>
+        <p>Rises 2.5rem into place.</p>
+        <code>data-dolly="tilt-up"</code>
+      </article>
+      <article class="card" id="tilt-down">
+        <div class="demo"><div class="plate" data-dolly="tilt-down"></div></div>
+        <h3>tilt-down</h3>
+        <p>Drops 2.5rem into place.</p>
+        <code>data-dolly="tilt-down"</code>
+      </article>
+      <article class="card" id="pan-left">
+        <div class="demo"><div class="plate" data-dolly="pan-left"></div></div>
+        <h3>pan-left</h3>
+        <p>Enters from the right, travelling left.</p>
+        <code>data-dolly="pan-left"</code>
+      </article>
+      <article class="card" id="pan-right">
+        <div class="demo"><div class="plate" data-dolly="pan-right"></div></div>
+        <h3>pan-right</h3>
+        <p>Enters from the left, travelling right.</p>
+        <code>data-dolly="pan-right"</code>
+      </article>
+      <article class="card" id="dolly-in">
+        <div class="demo"><div class="plate" data-dolly="dolly-in"></div></div>
+        <h3>dolly-in</h3>
+        <p>Pushes in from 0.9 scale.</p>
+        <code>data-dolly="dolly-in"</code>
+      </article>
+      <article class="card" id="dolly-out">
+        <div class="demo"><div class="plate" data-dolly="dolly-out"></div></div>
+        <h3>dolly-out</h3>
+        <p>Settles back from 1.1 scale.</p>
+        <code>data-dolly="dolly-out"</code>
+      </article>
+      <article class="card" id="crane">
+        <div class="demo"><div class="plate" data-dolly="crane"></div></div>
+        <h3>crane</h3>
+        <p>Rises 5rem with a slight scale. The big arrival.</p>
+        <code>data-dolly="crane"</code>
+      </article>
+      <article class="card" id="rack">
+        <div class="demo"><div class="plate" data-dolly="rack"></div></div>
+        <h3>rack</h3>
+        <p>Rack focus: a 14px blur clearing.</p>
+        <code>data-dolly="rack"</code>
+      </article>
+      <article class="card" id="whip">
+        <div class="demo"><div class="plate" data-dolly="whip"></div></div>
+        <h3>whip</h3>
+        <p>Whip pan: lateral travel plus blur.</p>
+        <code>data-dolly="whip"</code>
+      </article>
+      <article class="card" id="reveal">
+        <div class="demo"><div class="plate" data-dolly="reveal"></div></div>
+        <h3>reveal</h3>
+        <p>Clip wipe, left edge to right.</p>
+        <code>data-dolly="reveal"</code>
+      </article>
+      <article class="card" id="wipe-up">
+        <div class="demo"><div class="plate" data-dolly="wipe-up"></div></div>
+        <h3>wipe-up</h3>
+        <p>Clip wipe, bottom edge upward.</p>
+        <code>data-dolly="wipe-up"</code>
+      </article>
+      <article class="card" id="roll">
+        <div class="demo"><div class="plate" data-dolly="roll"></div></div>
+        <h3>roll</h3>
+        <p>Rotates -5deg to level.</p>
+        <code>data-dolly="roll"</code>
+      </article>
+      </div>
+    </section>
+    <section id="continuous">
+      <header class="sec">
+        <h2>Continuous</h2>
+        <p>Run the whole time the element is on screen, or the whole page.</p>
+        <span class="label">4</span>
+      </header>
+      <div class="grid">
+      <article class="card" id="progress">
+        <div class="demo"><div class="bar"><i data-dolly="progress"></i></div></div>
+        <h3>progress</h3>
+        <p>Scales a bar from 0 to 1 across the document.</p>
+        <code>data-dolly="progress"</code>
+      </article>
+      <article class="card" id="travel">
+        <div class="demo"><div class="rail"><i data-dolly="travel"></i></div></div>
+        <h3>travel</h3>
+        <p>Rides the document scroll along its own track.</p>
+        <code>data-dolly="travel"</code>
+      </article>
+      <article class="card" id="parallax">
+        <div class="demo"><div class="clip"><div class="plate tall" data-dolly="parallax"></div></div></div>
+        <h3>parallax</h3>
+        <p>Drifts vertically against the scroll.</p>
+        <code>data-dolly="parallax"</code>
+      </article>
+      <article class="card" id="zoom">
+        <div class="demo"><div class="clip"><div class="plate tall" data-dolly="zoom"></div></div></div>
+        <h3>zoom</h3>
+        <p>Ken Burns: a slow push in.</p>
+        <code>data-dolly="zoom"</code>
+      </article>
+      </div>
+    </section>
+    <section id="beats">
+      <header class="sec">
+        <h2>Beats</h2>
+        <p>Enter, hold long enough to read, leave. Built for pinned scenes.</p>
+        <span class="label">3</span>
+      </header>
+      <div class="grid">
+      <article class="card" id="beat">
+        <div class="demo leaves"><div class="plate" data-dolly="beat"></div></div>
+        <h3>beat</h3>
+        <p>Rises in, holds, leaves upward.</p>
+        <code>data-dolly="beat"</code>
+      </article>
+      <article class="card" id="beat-in">
+        <div class="demo leaves"><div class="plate" data-dolly="beat-in"></div></div>
+        <h3>beat-in</h3>
+        <p>Arrives out of blur and scale, holds, leaves.</p>
+        <code>data-dolly="beat-in"</code>
+      </article>
+      <article class="card" id="hold">
+        <div class="demo"><div class="plate" data-dolly="hold"></div></div>
+        <h3>hold</h3>
+        <p>Arrives and stays.</p>
+        <code>data-dolly="hold"</code>
+      </article>
+      </div>
+    </section>
+    <section id="cinematic">
+      <header class="sec">
+        <h2>Cinematic</h2>
+        <p>The three that usually cost a JavaScript library, plus one.</p>
+        <span class="label">4</span>
+      </header>
+      <div class="grid">
+      <article class="card" id="iris">
+        <div class="demo"><div class="plate" data-dolly="iris"></div></div>
+        <h3>iris</h3>
+        <p>The aperture opening: a circle clip growing.</p>
+        <code>data-dolly="iris"</code>
+      </article>
+      <article class="card" id="track">
+        <div class="demo"><div class="clip"><div class="row" data-dolly="track"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div></div>
+        <h3>track</h3>
+        <p>Vertical scroll driving horizontal travel.</p>
+        <code>data-dolly="track"</code>
+      </article>
+      <article class="card" id="mask">
+        <div class="demo"><p class="masked" data-dolly="mask">MASK</p></div>
+        <h3>mask</h3>
+        <p>Pushes a picture inside letterforms.</p>
+        <code>data-dolly="mask"</code>
+      </article>
+      <article class="card" id="letter">
+        <div class="demo"><p class="letters" data-dolly="letter">letter</p></div>
+        <h3>letter</h3>
+        <p>Letter-spacing tightens from loose to tight.</p>
+        <code>data-dolly="letter"</code>
+      </article>
+      </div>
+    </section>
+    <section id="depth">
+      <header class="sec">
+        <h2>Depth</h2>
+        <p>Real Z translation under a perspective, not scale. Needs <code>data-dolly-space</code> on an ancestor.</p>
+        <span class="label">7</span>
+      </header>
+      <div class="grid">
+      <article class="card" id="push">
+        <div class="demo"><div class="space" data-dolly-space><div class="plate" data-dolly="push"></div></div></div>
+        <h3>push</h3>
+        <p>The camera travels toward it.</p>
+        <code>data-dolly="push"</code>
+      </article>
+      <article class="card" id="pull">
+        <div class="demo"><div class="space" data-dolly-space><div class="plate" data-dolly="pull"></div></div></div>
+        <h3>pull</h3>
+        <p>The camera draws back from it.</p>
+        <code>data-dolly="pull"</code>
+      </article>
+      <article class="card" id="swing">
+        <div class="demo"><div class="space" data-dolly-space><div class="plate" data-dolly="swing"></div></div></div>
+        <h3>swing</h3>
+        <p>Rotates in from the side on Y.</p>
+        <code>data-dolly="swing"</code>
+      </article>
+      <article class="card" id="tumble">
+        <div class="demo"><div class="space" data-dolly-space><div class="plate" data-dolly="tumble"></div></div></div>
+        <h3>tumble</h3>
+        <p>Pitches in from above on X.</p>
+        <code>data-dolly="tumble"</code>
+      </article>
+      <article class="card" id="fly">
+        <div class="demo leaves"><div class="space" data-dolly-space><div class="plate" data-dolly="fly"></div></div></div>
+        <h3>fly</h3>
+        <p>Travels from far, past the camera.</p>
+        <code>data-dolly="fly"</code>
+      </article>
+      <article class="card" id="drop">
+        <div class="demo leaves"><div class="space" data-dolly-space><div class="plate" data-dolly="drop"></div></div></div>
+        <h3>drop</h3>
+        <p>Falls through the frame, pitching as it goes.</p>
+        <code>data-dolly="drop"</code>
+      </article>
+      <article class="card" id="pass">
+        <div class="demo leaves"><div class="space" data-dolly-space><div class="plate" data-dolly="pass"></div></div></div>
+        <h3>pass</h3>
+        <p>Tracks laterally, reversing its yaw as it crosses.</p>
+        <code>data-dolly="pass"</code>
+      </article>
+      </div>
+    </section>
+    <section id="data">
+      <header class="sec">
+        <h2>Drawing and data</h2>
+        <p>A sprite sheet, a pen line, and a number.</p>
+        <span class="label">3</span>
+      </header>
+      <div class="grid">
+      <article class="card" id="sequence">
+        <div class="demo"><div class="sheet" data-dolly="sequence" role="img" aria-label="A countdown leader" style="--dolly-cols:12;--dolly-rows:3"></div></div>
+        <h3>sequence</h3>
+        <p>Steps through a sprite sheet, one cell per slice of scroll.</p>
+        <code>data-dolly="sequence"</code>
+      </article>
+      <article class="card" id="draw">
+        <div class="demo"><svg class="scribble" viewBox="0 0 200 80" fill="none" aria-hidden="true"><path data-dolly="draw" pathLength="1" stroke="currentColor" stroke-width="6" stroke-linecap="round" d="M14 58C30 20 46 18 62 46s28 32 44 8 26-26 40-12"/></svg></div>
+        <h3>draw</h3>
+        <p>A stroke draws itself along its own path.</p>
+        <code>data-dolly="draw"</code>
+      </article>
+      <article class="card" id="count">
+        <div class="demo"><p class="tally"><span data-dolly="count" role="img" aria-label="240" style="--dolly-count-to:240"></span></p></div>
+        <h3>count</h3>
+        <p>A number counts up as it scrolls into place.</p>
+        <code>data-dolly="count"</code>
+      </article>
+      </div>
+    </section>
+
+  <footer>
+    <span class="label">Dolly · MIT · no dependencies</span>
+    <span class="label"><a href="./">Demo</a> · <a href="https://github.com/eakbulut/dolly">GitHub</a> · <a href="https://www.npmjs.com/package/@dollyjs/core">npm</a></span>
+  </footer>
+
+</main>
+</body>
+</html>
