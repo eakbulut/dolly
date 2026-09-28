@@ -256,6 +256,21 @@ test('the demo page documents every move that ships', () => {
   );
 });
 
+/* agents.md is the file other people's agents read to write Dolly markup.
+   A move missing from it is a move no assistant will ever suggest, which is a
+   quieter failure than a missing README row and a more expensive one. Prose
+   lists are allowed here — the check is only that the name appears as code. */
+test('agents.md names every move that ships', () => {
+  const agents = read('../agents.md');
+  const shipped = new Set(
+    rules
+      .filter((r) => decls(r.body).some(([p]) => p === 'animation-name'))
+      .flatMap((r) => [...r.selector.matchAll(/\[data-dolly="([^"]+)"\]/g)].map((m) => m[1]))
+  );
+  const missing = [...shipped].filter((name) => !agents.includes(`\`${name}\``));
+  assert.deepEqual(missing, [], 'missing from agents.md');
+});
+
 /* package.json drifted to "23 camera moves" while the library shipped 30.
    Three files now claim a count; all three are derived from one source. */
 test('package.json agrees with the stylesheet on the move count', () => {
