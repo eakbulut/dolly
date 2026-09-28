@@ -35,7 +35,7 @@ npm i @dollyjs/core
 Or link the file directly:
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@dollyjs/core/src/dolly.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.css">
 ```
 
 Nothing else runs. Drop it beside Tailwind, vanilla CSS, or any framework —

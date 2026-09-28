@@ -482,6 +482,13 @@ pre .c{color:#8B8B85}pre .k{color:#9DB4F5}pre .s{color:#C6E1A6}
   margin-top:clamp(22px,2.4vw,32px);font-weight:400;cursor:text}
 .install .cmd{user-select:all;-webkit-user-select:all;color:#EDEDE9}
 .install .dim{user-select:none;-webkit-user-select:none;color:#5E5E67}
+/* Two install paths, one headline. npm is the versioned path, but a single
+   stylesheet's first contact is usually a paste, so the no-build line sits
+   right under it — quiet, and reusing .label rather than a second panel.
+   Pinned to major: jsDelivr serves straight off the registry, and an
+   unpinned URL would drop a future 1.0 on everyone at once. */
+.install-alt{margin:14px 0 0;color:#8B8B85;overflow-wrap:anywhere;line-height:1.5}  /* .label is sized for one line; this one wraps to two on a phone. */
+.install-alt a{color:#C9C9C2;text-decoration-color:#5E5E67;text-underline-offset:3px}
 /* One structural event in the document half: a black band spanning the
    viewport, carrying the code and the install line. Reconnects the paper
    half to the film half's black. */
@@ -917,6 +924,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
         <code class="install">
           <span class="dim" aria-hidden="true">$</span><span class="cmd">npm i @dollyjs/core</span>
         </code>
+        <p class="install-alt label">or one file, no build step: <a href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.css">https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.css</a></p>
       </div>
     </div>
     <div class="wrap">
