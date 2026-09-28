@@ -41,6 +41,15 @@ Or link the file directly:
 Nothing else runs. Drop it beside Tailwind, vanilla CSS, or any framework —
 it only touches elements carrying a `data-dolly` attribute.
 
+Tailwind needs no plugin. Every `--dolly-*` is a custom property, so Tailwind's
+arbitrary properties set them straight from the class attribute — underscores
+become spaces:
+
+```html
+<h2 data-dolly="tilt-up" class="[--dolly-range:entry_0%_cover_40%]">Arrives early</h2>
+<img data-dolly="zoom" class="[--dolly-zoom:1.2]" src="shot.jpg" alt="">
+```
+
 ## Usage
 
 Add the attribute to markup you already have:
