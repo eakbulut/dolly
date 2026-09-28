@@ -20,6 +20,7 @@ keeps the hidden state inside `@keyframes` only, so a browser without scroll
 timelines renders the page complete and just doesn't animate.
 
 - [usedolly.dev](https://usedolly.dev/) — the demo is the documentation
+- [usedolly.dev/moves.html](https://usedolly.dev/moves.html) — every move, playing as you scroll past it
 - MIT, zero dependencies, zero JavaScript
 
 ## Install
