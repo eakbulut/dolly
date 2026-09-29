@@ -94,6 +94,16 @@ section{padding:clamp(34px,6vh,72px) 0 0}
    card. A dashed frame says "the subject left" instead. */
 .demo.leaves::before{content:"";position:absolute;width:56%;height:46%;
   border:1px dashed #C9C9C4;border-radius:5px}
+/* Retimed for a dense grid, and the ranges are SYMMETRIC ABOUT cover 50%
+   on purpose: an element's centre crosses the viewport's centre at exactly
+   cover 50%, so a range centred there is half-played when the card reaches
+   eye level and the motion is visible on both sides of it. The library's
+   default, entry 0% -> cover 35%, finishes in the bottom quarter — correct
+   for a page where one section owns the screen, wrong for a grid the reader
+   scans. Moves that read the page scroller or run the full passage are
+   excluded in scripts/build-moves.py and keep their own range. */
+.demo.arrive [data-dolly]{--dolly-range:cover 30% cover 70%}
+.demo.scrub  [data-dolly]{--dolly-range:cover 20% cover 80%}
 .plate{width:56%;height:46%;border-radius:5px;background:var(--accent)}
 .plate.tall{width:70%;height:150%}
 .clip{width:72%;height:70%;border-radius:6px;overflow:clip;display:grid;place-items:center}
@@ -159,79 +169,79 @@ footer{margin-top:clamp(60px,10vh,120px);padding:clamp(30px,5vh,60px) 0;
       </header>
       <div class="grid">
       <article class="card" id="fade">
-        <div class="demo"><div class="plate" data-dolly="fade"></div></div>
+        <div class="demo arrive"><div class="plate" data-dolly="fade"></div></div>
         <h3>fade</h3>
         <p>Fades up from nothing.</p>
         <code>data-dolly="fade"</code>
       </article>
       <article class="card" id="tilt-up">
-        <div class="demo"><div class="plate" data-dolly="tilt-up"></div></div>
+        <div class="demo arrive"><div class="plate" data-dolly="tilt-up"></div></div>
         <h3>tilt-up</h3>
         <p>Rises 2.5rem into place.</p>
         <code>data-dolly="tilt-up"</code>
       </article>
       <article class="card" id="tilt-down">
-        <div class="demo"><div class="plate" data-dolly="tilt-down"></div></div>
+        <div class="demo arrive"><div class="plate" data-dolly="tilt-down"></div></div>
         <h3>tilt-down</h3>
         <p>Drops 2.5rem into place.</p>
         <code>data-dolly="tilt-down"</code>
       </article>
       <article class="card" id="pan-left">
-        <div class="demo"><div class="plate" data-dolly="pan-left"></div></div>
+        <div class="demo arrive"><div class="plate" data-dolly="pan-left"></div></div>
         <h3>pan-left</h3>
         <p>Enters from the right, travelling left.</p>
         <code>data-dolly="pan-left"</code>
       </article>
       <article class="card" id="pan-right">
-        <div class="demo"><div class="plate" data-dolly="pan-right"></div></div>
+        <div class="demo arrive"><div class="plate" data-dolly="pan-right"></div></div>
         <h3>pan-right</h3>
         <p>Enters from the left, travelling right.</p>
         <code>data-dolly="pan-right"</code>
       </article>
       <article class="card" id="dolly-in">
-        <div class="demo"><div class="plate" data-dolly="dolly-in"></div></div>
+        <div class="demo arrive"><div class="plate" data-dolly="dolly-in"></div></div>
         <h3>dolly-in</h3>
         <p>Pushes in from 0.9 scale.</p>
         <code>data-dolly="dolly-in"</code>
       </article>
       <article class="card" id="dolly-out">
-        <div class="demo"><div class="plate" data-dolly="dolly-out"></div></div>
+        <div class="demo arrive"><div class="plate" data-dolly="dolly-out"></div></div>
         <h3>dolly-out</h3>
         <p>Settles back from 1.1 scale.</p>
         <code>data-dolly="dolly-out"</code>
       </article>
       <article class="card" id="crane">
-        <div class="demo"><div class="plate" data-dolly="crane"></div></div>
+        <div class="demo arrive"><div class="plate" data-dolly="crane"></div></div>
         <h3>crane</h3>
         <p>Rises 5rem with a slight scale. The big arrival.</p>
         <code>data-dolly="crane"</code>
       </article>
       <article class="card" id="rack">
-        <div class="demo"><div class="plate" data-dolly="rack"></div></div>
+        <div class="demo arrive"><div class="plate" data-dolly="rack"></div></div>
         <h3>rack</h3>
         <p>Rack focus: a 14px blur clearing.</p>
         <code>data-dolly="rack"</code>
       </article>
       <article class="card" id="whip">
-        <div class="demo"><div class="plate" data-dolly="whip"></div></div>
+        <div class="demo arrive"><div class="plate" data-dolly="whip"></div></div>
         <h3>whip</h3>
         <p>Whip pan: lateral travel plus blur.</p>
         <code>data-dolly="whip"</code>
       </article>
       <article class="card" id="reveal">
-        <div class="demo"><div class="plate" data-dolly="reveal"></div></div>
+        <div class="demo arrive"><div class="plate" data-dolly="reveal"></div></div>
         <h3>reveal</h3>
         <p>Clip wipe, left edge to right.</p>
         <code>data-dolly="reveal"</code>
       </article>
       <article class="card" id="wipe-up">
-        <div class="demo"><div class="plate" data-dolly="wipe-up"></div></div>
+        <div class="demo arrive"><div class="plate" data-dolly="wipe-up"></div></div>
         <h3>wipe-up</h3>
         <p>Clip wipe, bottom edge upward.</p>
         <code>data-dolly="wipe-up"</code>
       </article>
       <article class="card" id="roll">
-        <div class="demo"><div class="plate" data-dolly="roll"></div></div>
+        <div class="demo arrive"><div class="plate" data-dolly="roll"></div></div>
         <h3>roll</h3>
         <p>Rotates -5deg to level.</p>
         <code>data-dolly="roll"</code>
@@ -279,19 +289,19 @@ footer{margin-top:clamp(60px,10vh,120px);padding:clamp(30px,5vh,60px) 0;
       </header>
       <div class="grid">
       <article class="card" id="beat">
-        <div class="demo leaves"><div class="plate" data-dolly="beat"></div></div>
+        <div class="demo leaves arrive"><div class="plate" data-dolly="beat"></div></div>
         <h3>beat</h3>
         <p>Rises in, holds, leaves upward.</p>
         <code>data-dolly="beat"</code>
       </article>
       <article class="card" id="beat-in">
-        <div class="demo leaves"><div class="plate" data-dolly="beat-in"></div></div>
+        <div class="demo leaves arrive"><div class="plate" data-dolly="beat-in"></div></div>
         <h3>beat-in</h3>
         <p>Arrives out of blur and scale, holds, leaves.</p>
         <code>data-dolly="beat-in"</code>
       </article>
       <article class="card" id="hold">
-        <div class="demo"><div class="plate" data-dolly="hold"></div></div>
+        <div class="demo arrive"><div class="plate" data-dolly="hold"></div></div>
         <h3>hold</h3>
         <p>Arrives and stays.</p>
         <code>data-dolly="hold"</code>
@@ -306,7 +316,7 @@ footer{margin-top:clamp(60px,10vh,120px);padding:clamp(30px,5vh,60px) 0;
       </header>
       <div class="grid">
       <article class="card" id="iris">
-        <div class="demo"><div class="plate" data-dolly="iris"></div></div>
+        <div class="demo arrive"><div class="plate" data-dolly="iris"></div></div>
         <h3>iris</h3>
         <p>The aperture opening: a circle clip growing.</p>
         <code>data-dolly="iris"</code>
@@ -318,13 +328,13 @@ footer{margin-top:clamp(60px,10vh,120px);padding:clamp(30px,5vh,60px) 0;
         <code>data-dolly="track"</code>
       </article>
       <article class="card" id="mask">
-        <div class="demo"><p class="masked" data-dolly="mask">MASK</p></div>
+        <div class="demo arrive"><p class="masked" data-dolly="mask">MASK</p></div>
         <h3>mask</h3>
         <p>Pushes a picture inside letterforms.</p>
         <code>data-dolly="mask"</code>
       </article>
       <article class="card" id="letter">
-        <div class="demo"><p class="letters" data-dolly="letter">letter</p></div>
+        <div class="demo arrive"><p class="letters" data-dolly="letter">letter</p></div>
         <h3>letter</h3>
         <p>Letter-spacing tightens from loose to tight.</p>
         <code>data-dolly="letter"</code>
@@ -339,25 +349,25 @@ footer{margin-top:clamp(60px,10vh,120px);padding:clamp(30px,5vh,60px) 0;
       </header>
       <div class="grid">
       <article class="card" id="push">
-        <div class="demo"><div class="space" data-dolly-space><div class="plate" data-dolly="push"></div></div></div>
+        <div class="demo arrive"><div class="space" data-dolly-space><div class="plate" data-dolly="push"></div></div></div>
         <h3>push</h3>
         <p>The camera travels toward it.</p>
         <code>data-dolly="push"</code>
       </article>
       <article class="card" id="pull">
-        <div class="demo"><div class="space" data-dolly-space><div class="plate" data-dolly="pull"></div></div></div>
+        <div class="demo arrive"><div class="space" data-dolly-space><div class="plate" data-dolly="pull"></div></div></div>
         <h3>pull</h3>
         <p>The camera draws back from it.</p>
         <code>data-dolly="pull"</code>
       </article>
       <article class="card" id="swing">
-        <div class="demo"><div class="space" data-dolly-space><div class="plate" data-dolly="swing"></div></div></div>
+        <div class="demo arrive"><div class="space" data-dolly-space><div class="plate" data-dolly="swing"></div></div></div>
         <h3>swing</h3>
         <p>Rotates in from the side on Y.</p>
         <code>data-dolly="swing"</code>
       </article>
       <article class="card" id="tumble">
-        <div class="demo"><div class="space" data-dolly-space><div class="plate" data-dolly="tumble"></div></div></div>
+        <div class="demo arrive"><div class="space" data-dolly-space><div class="plate" data-dolly="tumble"></div></div></div>
         <h3>tumble</h3>
         <p>Pitches in from above on X.</p>
         <code>data-dolly="tumble"</code>
@@ -390,19 +400,19 @@ footer{margin-top:clamp(60px,10vh,120px);padding:clamp(30px,5vh,60px) 0;
       </header>
       <div class="grid">
       <article class="card" id="sequence">
-        <div class="demo"><div class="sheet" data-dolly="sequence" role="img" aria-label="A countdown leader" style="--dolly-cols:12;--dolly-rows:3"></div></div>
+        <div class="demo scrub"><div class="sheet" data-dolly="sequence" role="img" aria-label="A countdown leader" style="--dolly-cols:12;--dolly-rows:3"></div></div>
         <h3>sequence</h3>
         <p>Steps through a sprite sheet, one cell per slice of scroll.</p>
         <code>data-dolly="sequence"</code>
       </article>
       <article class="card" id="draw">
-        <div class="demo"><svg class="scribble" viewBox="0 0 200 80" fill="none" aria-hidden="true"><path data-dolly="draw" pathLength="1" stroke="currentColor" stroke-width="6" stroke-linecap="round" d="M14 58C30 20 46 18 62 46s28 32 44 8 26-26 40-12"/></svg></div>
+        <div class="demo arrive"><svg class="scribble" viewBox="0 0 200 80" fill="none" aria-hidden="true"><path data-dolly="draw" pathLength="1" stroke="currentColor" stroke-width="6" stroke-linecap="round" d="M14 58C30 20 46 18 62 46s28 32 44 8 26-26 40-12"/></svg></div>
         <h3>draw</h3>
         <p>A stroke draws itself along its own path.</p>
         <code>data-dolly="draw"</code>
       </article>
       <article class="card" id="count">
-        <div class="demo"><p class="tally"><span data-dolly="count" role="img" aria-label="240" style="--dolly-count-to:240"></span></p></div>
+        <div class="demo arrive"><p class="tally"><span data-dolly="count" role="img" aria-label="240" style="--dolly-count-to:240"></span></p></div>
         <h3>count</h3>
         <p>A number counts up as it scrolls into place.</p>
         <code>data-dolly="count"</code>

@@ -220,6 +220,13 @@ There is no Tailwind plugin and none is needed.
 8. **Set a scene's height with `--dolly-scene`, not `height`.** The scene needs
    its own min-height to have scroll to spend.
 
+9. **Match the range to the layout.** The default `entry 0% cover 35%` suits a
+   section that owns the screen. In a dense grid the reader scans the middle,
+   and an element's centre crosses the viewport's centre at exactly
+   `cover 50%` — so use `--dolly-range: cover 30% cover 70%` there and the
+   move is half-played at eye level. Never apply a `cover` range to `progress`
+   or `travel`.
+
 ## What it cannot do
 
 Do not generate these; reach for JavaScript instead, and say so.

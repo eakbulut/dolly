@@ -98,9 +98,34 @@ if len(listed) != len(set(listed)):
 
 LEAVES = {'beat', 'beat-in', 'fly', 'drop', 'pass'}
 
+# The library's default, entry 0% -> cover 35%, is tuned for a page where a
+# section owns the screen. This page is a dense grid: a card finishes moving
+# while it is still in the bottom quarter, so by the time the reader's eye
+# reaches it, it has been static for a third of a screen. These cards retime
+# the move to land as the card arrives at eye level instead.
+#
+# Two groups keep their own range and must never be retimed:
+#   - progress and travel read the page scroller; cover/entry phases are
+#     meaningless there and would silently break them.
+#   - parallax, zoom, track, fly, drop and pass are continuous or travel
+#     straight through; their whole point is to run the full passage.
+KEEP_OWN_RANGE = {'progress', 'travel', 'parallax', 'zoom', 'track',
+                  'fly', 'drop', 'pass'}
+SCRUB = {'sequence'}   # 36 cells need a longer window than a single gesture
+
+unknown = (KEEP_OWN_RANGE | SCRUB) - set(order)
+if unknown:
+    sys.exit('ABORT: timing list names moves that do not ship: %s' % sorted(unknown))
+if KEEP_OWN_RANGE & SCRUB:
+    sys.exit('ABORT: a move is both retimed and left alone')
+
+def timing(n):
+    if n in KEEP_OWN_RANGE: return ''
+    return ' scrub' if n in SCRUB else ' arrive'
+
 def card(n):
     subj = SUBJECT.get(n, PLATE).format(n=n)
-    cls = 'demo leaves' if n in LEAVES else 'demo'
+    cls = ('demo leaves' if n in LEAVES else 'demo') + timing(n)
     return (f'      <article class="card" id="{n}">\n'
             f'        <div class="{cls}">{subj}</div>\n'
             f'        <h3>{n}</h3>\n'

@@ -94,6 +94,16 @@ section{padding:clamp(34px,6vh,72px) 0 0}
    card. A dashed frame says "the subject left" instead. */
 .demo.leaves::before{content:"";position:absolute;width:56%;height:46%;
   border:1px dashed #C9C9C4;border-radius:5px}
+/* Retimed for a dense grid, and the ranges are SYMMETRIC ABOUT cover 50%
+   on purpose: an element's centre crosses the viewport's centre at exactly
+   cover 50%, so a range centred there is half-played when the card reaches
+   eye level and the motion is visible on both sides of it. The library's
+   default, entry 0% -> cover 35%, finishes in the bottom quarter — correct
+   for a page where one section owns the screen, wrong for a grid the reader
+   scans. Moves that read the page scroller or run the full passage are
+   excluded in scripts/build-moves.py and keep their own range. */
+.demo.arrive [data-dolly]{--dolly-range:cover 30% cover 70%}
+.demo.scrub  [data-dolly]{--dolly-range:cover 20% cover 80%}
 .plate{width:56%;height:46%;border-radius:5px;background:var(--accent)}
 .plate.tall{width:70%;height:150%}
 .clip{width:72%;height:70%;border-radius:6px;overflow:clip;display:grid;place-items:center}

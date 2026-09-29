@@ -406,6 +406,25 @@ It animates `letter-spacing`, which changes the text's width. On a line that
 can wrap, the line count changes mid-scrub and the layout jumps. Give it
 `white-space: nowrap` and size the type to fit at the widest tracking value.
 
+### A dense grid needs a later range
+
+The default, `entry 0% cover 35%`, is tuned for a page where one section owns
+the screen: it finishes while the element is still low, which is right when
+the reader is scrolling toward it. In a tightly packed grid the reader scans
+the middle of the screen instead, and a move that ends at `cover 35%` has been
+static for a third of a screen by the time their eye arrives.
+
+An element's centre crosses the viewport's centre at exactly `cover 50%`, so
+centre the range there and the move is half-played at eye level:
+
+```css
+.card [data-dolly] { --dolly-range: cover 30% cover 70% }
+```
+
+This page's own [moves reference](https://usedolly.dev/moves.html) does that.
+Leave `progress` and `travel` out of any such rule — they read the page
+scroller, where `cover` means nothing.
+
 ### `loading="lazy"` does not work on a depth layer
 
 A plate pushed back on Z inside a clipped container is, as far as the
