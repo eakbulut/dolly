@@ -25,7 +25,7 @@ jobs:
       - name: Assemble site
         run: |
           mkdir -p _site/src
-          cp index.html moves.html _site/
+          cp index.html moves.html agents.md _site/
           cp src/dolly.css _site/src/
           cp -r assets _site/
           # Pages serves index.html for 10 minutes but css/images for 4 hours,
@@ -48,7 +48,7 @@ jobs:
           grep -qF "url(\"assets/leader.png?v=$PNG_V\")" _site/moves.html || { echo "::error::fingerprint missed in moves.html: leader.png"; exit 1; }
           echo "usedolly.dev" > _site/CNAME
           printf 'User-agent: *\nAllow: /\nSitemap: https://usedolly.dev/sitemap.xml\n' > _site/robots.txt
-          printf '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n<url><loc>https://usedolly.dev/</loc></url>\n</urlset>\n' > _site/sitemap.xml
+          printf '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n<url><loc>https://usedolly.dev/</loc></url>\n<url><loc>https://usedolly.dev/moves.html</loc></url>\n<url><loc>https://usedolly.dev/agents.md</loc></url>\n</urlset>\n' > _site/sitemap.xml
       - uses: actions/configure-pages@v6
         with:
           enablement: true
