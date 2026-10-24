@@ -77,6 +77,7 @@ section{padding:clamp(34px,6vh,72px) 0 0}
   box-shadow:0 1px 2px rgba(11,11,12,.04),0 12px 28px -22px rgba(11,11,12,.5)}
 .card h3{margin:14px 0 4px;font-family:var(--mono);font-size:var(--t-02);
   font-weight:500;letter-spacing:.01em}
+.card h3 .cost{margin-left:.6em;font-size:var(--t-00);font-weight:400;color:var(--ink-soft)}
 /* Reserved text zone: two lines everywhere, so every card is the same height
    and the snippet row lines up across a row. */
 /* Child combinator, not descendant: `.card p` is (0,1,1) and silently beat
@@ -175,6 +176,9 @@ footer{margin-top:clamp(60px,10vh,120px);padding:clamp(30px,5vh,60px) 0;
     <p>Each move plays as it crosses your screen. Scroll back up to see one
       again. The page has no JavaScript, so what you see here is what the
       stylesheet does on its own.</p>
+    <p>Moves tagged <em>repaints</em> animate something other than transform or
+      opacity, so the browser redraws them on the main thread every frame.
+      They can stutter on phones, so use them on a few elements, not a whole grid.</p>
     <span class="label">34 moves · 0 kB of JavaScript · one attribute</span>
     <p class="nosupport">This browser doesn&rsquo;t support scroll-driven animation, so the
       moves below are shown at their finished state. Pages using Dolly look the
@@ -238,25 +242,25 @@ footer{margin-top:clamp(60px,10vh,120px);padding:clamp(30px,5vh,60px) 0;
       </article>
       <article class="card" id="rack">
         <div class="demo arrive"><div class="plate" data-dolly="rack"></div></div>
-        <h3>rack</h3>
+        <h3>rack <span class="cost">repaints · filter</span></h3>
         <p>Rack focus: a 14px blur clearing.</p>
         <code>data-dolly="rack"</code>
       </article>
       <article class="card" id="whip">
         <div class="demo arrive"><div class="plate" data-dolly="whip"></div></div>
-        <h3>whip</h3>
+        <h3>whip <span class="cost">repaints · filter</span></h3>
         <p>Whip pan: lateral travel plus blur.</p>
         <code>data-dolly="whip"</code>
       </article>
       <article class="card" id="reveal">
         <div class="demo arrive"><div class="plate" data-dolly="reveal"></div></div>
-        <h3>reveal</h3>
+        <h3>reveal <span class="cost">repaints · clip-path</span></h3>
         <p>Clip wipe, left edge to right.</p>
         <code>data-dolly="reveal"</code>
       </article>
       <article class="card" id="wipe-up">
         <div class="demo arrive"><div class="plate" data-dolly="wipe-up"></div></div>
-        <h3>wipe-up</h3>
+        <h3>wipe-up <span class="cost">repaints · clip-path</span></h3>
         <p>Clip wipe, bottom edge upward.</p>
         <code>data-dolly="wipe-up"</code>
       </article>
@@ -316,7 +320,7 @@ footer{margin-top:clamp(60px,10vh,120px);padding:clamp(30px,5vh,60px) 0;
       </article>
       <article class="card" id="beat-in">
         <div class="demo leaves arrive"><div class="plate" data-dolly="beat-in"></div></div>
-        <h3>beat-in</h3>
+        <h3>beat-in <span class="cost">repaints · filter</span></h3>
         <p>Arrives out of blur and scale, holds, leaves.</p>
         <code>data-dolly="beat-in"</code>
       </article>
@@ -337,7 +341,7 @@ footer{margin-top:clamp(60px,10vh,120px);padding:clamp(30px,5vh,60px) 0;
       <div class="grid">
       <article class="card" id="iris">
         <div class="demo arrive"><div class="plate" data-dolly="iris"></div></div>
-        <h3>iris</h3>
+        <h3>iris <span class="cost">repaints · clip-path</span></h3>
         <p>The aperture opening: a circle clip growing.</p>
         <code>data-dolly="iris"</code>
       </article>
@@ -349,13 +353,13 @@ footer{margin-top:clamp(60px,10vh,120px);padding:clamp(30px,5vh,60px) 0;
       </article>
       <article class="card" id="mask">
         <div class="demo arrive"><p class="masked" data-dolly="mask">MASK</p></div>
-        <h3>mask</h3>
+        <h3>mask <span class="cost">repaints · background-size</span></h3>
         <p>Pushes a picture inside letterforms.</p>
         <code>data-dolly="mask"</code>
       </article>
       <article class="card" id="letter">
         <div class="demo arrive"><p class="letters" data-dolly="letter">letter</p></div>
-        <h3>letter</h3>
+        <h3>letter <span class="cost">repaints · letter-spacing</span></h3>
         <p>Letter-spacing tightens from loose to tight.</p>
         <code>data-dolly="letter"</code>
       </article>
@@ -421,19 +425,19 @@ footer{margin-top:clamp(60px,10vh,120px);padding:clamp(30px,5vh,60px) 0;
       <div class="grid">
       <article class="card" id="sequence">
         <div class="demo scrub"><div class="sheet" data-dolly="sequence" role="img" aria-label="A countdown leader" style="--dolly-cols:12;--dolly-rows:3"></div></div>
-        <h3>sequence</h3>
+        <h3>sequence <span class="cost">repaints · background-position</span></h3>
         <p>Steps through a sprite sheet, one cell per slice of scroll.</p>
         <code>data-dolly="sequence"</code>
       </article>
       <article class="card" id="draw">
         <div class="demo arrive"><svg class="scribble" viewBox="0 0 200 80" fill="none" aria-hidden="true"><path data-dolly="draw" pathLength="1" stroke="currentColor" stroke-width="6" stroke-linecap="round" d="M14 58C30 20 46 18 62 46s28 32 44 8 26-26 40-12"/></svg></div>
-        <h3>draw</h3>
+        <h3>draw <span class="cost">repaints · stroke-dashoffset</span></h3>
         <p>A stroke draws itself along its own path.</p>
         <code>data-dolly="draw"</code>
       </article>
       <article class="card" id="count">
         <div class="demo arrive"><p class="tally"><span data-dolly="count" role="img" aria-label="240" style="--dolly-count-to:240"></span></p></div>
-        <h3>count</h3>
+        <h3>count <span class="cost">repaints · counter</span></h3>
         <p>A number counts up as it scrolls into place.</p>
         <code>data-dolly="count"</code>
       </article>

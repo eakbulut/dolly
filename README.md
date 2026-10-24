@@ -148,8 +148,8 @@ extremely well: this site's own leader is forty-eight cells at 384px — a
 sequences the choice flips to WebP, which additionally caps any dimension at
 16383px. PNG has no such limit.
 
-This is also the one move whose animated property is not compositor-friendly —
-but it repaints once per cell across the whole scroll, not once a frame.
+It is one of the moves that repaints (see [Performance](#performance)), but
+it only repaints once per cell across the whole scroll, not once a frame.
 
 Knobs: `--dolly-cols` (default 6), `--dolly-rows` (default 1). `--dolly-ease`
 does not apply: stepping is the move, and an eased sheet reads as a stutter.
@@ -312,6 +312,29 @@ Set these as inline styles or in your own CSS. `data-dolly-range` and
 
 Ranges use the standard `animation-range` syntax: `entry`, `exit`, `cover`,
 `contain`, with percentages.
+
+## Performance
+
+Browsers can run animations of `transform` and `opacity` on the GPU, where
+they stay smooth even when the page is busy. Animating any other property
+makes the browser repaint on the main thread every frame, and on a phone that
+is where scroll animation starts to stutter.
+
+23 of the 34 moves only use transform and opacity. These 11 repaint:
+
+| Move | Animates |
+| --- | --- |
+| `rack`, `whip`, `beat-in` | `filter: blur()` |
+| `reveal`, `wipe-up`, `iris` | `clip-path` |
+| `mask` | `background-size` |
+| `sequence` | `background-position`, once per cell |
+| `letter` | `letter-spacing`, which also reflows the line |
+| `draw` | `stroke-dashoffset` |
+| `count` | a registered custom property, printed by `counter()` |
+
+Use them on a few elements at a time rather than every card in a grid, and
+check them on a real phone. The [moves page](https://usedolly.dev/moves.html)
+tags each one.
 
 ## Browser support
 

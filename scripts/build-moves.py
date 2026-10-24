@@ -12,11 +12,24 @@ import re, json, os, sys
 
 css = open('src/dolly.css', encoding='utf-8').read()
 nocom = re.sub(r'/\*[\s\S]*?\*/', '', css)
-order, seen = [], set()
+order, seen, anims = [], set(), {}
 for m in re.finditer(r'\[data-dolly="([^"]+)"\]([^{]*)\{([^}]*)\}', nocom):
     n = m.group(1)
     if 'animation-name' in m.group(3) and n not in seen:
         seen.add(n); order.append(n)
+        anims[n] = re.search(r'animation-name\s*:\s*([^;]+)', m.group(3)).group(1)
+
+# Anything a move's keyframes animate beyond these runs on the main thread and
+# repaints every frame. The cards tag those moves, read from the CSS so the
+# tag cannot drift from what actually ships.
+COMPOSITED = {'opacity', 'transform', 'translate', 'scale', 'rotate'}
+keyframe_props = {
+    m.group(1): set(re.findall(r'([a-z-]+)\s*:', m.group(2))) - COMPOSITED
+    for m in re.finditer(r'@keyframes\s+([\w-]+)\s*\{((?:[^{}]*\{[^{}]*\})*[^{}]*)\}', nocom)}
+
+def repaints(n):
+    props = set().union(*(keyframe_props.get(a.strip(), set()) for a in anims[n].split(',')))
+    return sorted({'counter' if p.startswith('--') else re.sub(r'-[xy]$', '', p) for p in props})
 
 PLATE = '<div class="plate" data-dolly="{n}"></div>'
 CLIP  = '<div class="clip"><div class="plate tall" data-dolly="{n}"></div></div>'
@@ -126,9 +139,11 @@ def timing(n):
 def card(n):
     subj = SUBJECT.get(n, PLATE).format(n=n)
     cls = ('demo leaves' if n in LEAVES else 'demo') + timing(n)
+    r = repaints(n)
+    cost = f' <span class="cost">repaints · {", ".join(r)}</span>' if r else ''
     return (f'      <article class="card" id="{n}">\n'
             f'        <div class="{cls}">{subj}</div>\n'
-            f'        <h3>{n}</h3>\n'
+            f'        <h3>{n}{cost}</h3>\n'
             f'        <p>{DESC[n]}</p>\n'
             f'        <code>data-dolly="{n}"</code>\n'
             f'      </article>')
