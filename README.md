@@ -316,8 +316,8 @@ Ranges use the standard `animation-range` syntax: `entry`, `exit`, `cover`,
 ## Browser support
 
 `animation-timeline` is supported in Chrome and Edge 115+, Safari 26+, and
-Opera 101+ — about 87% of global traffic. Firefox does not support it through
-158; it lands in 159.
+Opera 101+ — about 87% of global traffic. Firefox does not support it: checked
+in 158.0.1 on 2026-10-23, nothing animates.
 
 There is no shim, and there will not be one. Unsupported browsers get the page
 with all its content, unanimated. That is the design, not a gap:
@@ -379,9 +379,9 @@ Honest limits, verified rather than assumed:
 - **No number counters with formatting.** `@property` can animate an integer
   and `counter()` can print it, but preserving `42,350` is string work.
 - **No looping.** Scroll position is the clock; there is nothing to loop.
-- **Firefox, until 159.** Everyone else gets a complete, still page — which is
-  the design — but "it degrades gracefully" is a weaker answer than "it works"
-  if a stakeholder opens it in Firefox today.
+- **Firefox.** Everyone else gets a complete, still page — which is the design
+  — but "it degrades gracefully" is a weaker answer than "it works" if a
+  stakeholder opens it in Firefox today.
 
 ## Stagger
 
