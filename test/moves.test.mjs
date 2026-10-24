@@ -344,6 +344,29 @@ test('the no-timeline safety block cannot be overridden by a later move rule', (
   }
 });
 
+/* The social card said "31 moves" while the library shipped 34, and no test
+   could see it because the claim lives in a PNG. scripts/make-og.py now
+   stamps the count it rendered into a tEXt chunk, which is plain ASCII in
+   the file, so this reads it back without an image library. */
+test('the social card was rendered from the current move count', () => {
+  const png = readFileSync(new URL('../assets/og-image.png', import.meta.url));
+  const i = png.indexOf('dolly-moves');
+  assert.ok(i > 0,
+    'assets/og-image.png carries no move count — rerun scripts/make-og.py');
+
+  /* tEXt chunk: keyword, NUL, then the value, to the end of the chunk. */
+  const start = i + 'dolly-moves'.length + 1;
+  const stamped = Number(png.subarray(start, start + 8).toString('ascii').match(/^\d+/)?.[0]);
+
+  const shipped = new Set(
+    rules
+      .filter((r) => decls(r.body).some(([p]) => p === 'animation-name'))
+      .flatMap((r) => [...r.selector.matchAll(/\[data-dolly="([^"]+)"\]/g)].map((m) => m[1]))
+  );
+  assert.equal(stamped, shipped.size,
+    'the social card is stale — rerun scripts/make-og.py');
+});
+
 test('the page binding is declared after every move that sets a range', () => {
   /* [data-dolly-on="page"] carries one attribute selector, exactly like a
      move rule, so nothing but source order decides which animation-range
