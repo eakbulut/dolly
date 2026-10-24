@@ -1,7 +1,7 @@
 {
   "name": "@dollyjs/core",
   "version": "0.3.0",
-  "description": "Scroll-driven motion, in CSS. 34 camera moves on one attribute — no JavaScript, and content stays visible where scroll timelines aren't supported.",
+  "description": "Scroll animations in plain CSS: 34 camera moves, each set with one attribute. Ships no JavaScript, and content stays visible in browsers without scroll timelines.",
   "type": "module",
   "style": "./src/dolly.css",
   "exports": {

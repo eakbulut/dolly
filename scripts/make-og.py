@@ -87,7 +87,7 @@ def main():
     # ---- type ----
     tx = 332
     d.text((tx * SS, 243 * SS), 'Dolly', font=font(96, 800), fill=CREAM)
-    d.text((tx * SS, 352 * SS), 'Scroll-driven motion, in CSS.',
+    d.text((tx * SS, 352 * SS), 'Scroll animations in plain CSS.',
            font=font(31, 400), fill=GREY)
     d.text((tx * SS, 408 * SS), f'{n} moves  ·  0 kB of JavaScript',
            font=font(21, 500), fill=LIT)

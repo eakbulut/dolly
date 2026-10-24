@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dolly — scroll-driven motion, in CSS</title>
-<meta name="description" content="Dolly is a CSS library of 34 scroll-driven camera moves, with pinned scenes. No JavaScript, no IntersectionObserver, no runtime. Add one attribute.">
-<meta property="og:title" content="Dolly — scroll-driven motion, in CSS">
-<meta property="og:description" content="Everything that moves on this page was moved by the library. Nothing on it runs JavaScript.">
+<title>Dolly — scroll animations in plain CSS</title>
+<meta name="description" content="Dolly is a CSS library of 34 scroll animations and pinned scenes. Add a data-dolly attribute to an element and it animates as you scroll. It ships no JavaScript.">
+<meta property="og:title" content="Dolly — scroll animations in plain CSS">
+<meta property="og:description" content="Every animation on this page comes from one CSS file.">
 <meta property="og:url" content="https://usedolly.dev/">
 <link rel="canonical" href="https://usedolly.dev/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,7 +18,7 @@
 <meta property="og:image" content="https://usedolly.dev/assets/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Dolly — scroll-driven motion, in CSS">
+<meta property="og:image:alt" content="Dolly — scroll animations in plain CSS">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://usedolly.dev/assets/og-image.png">
 <meta name="theme-color" content="#0B0B0C">
@@ -452,7 +452,7 @@ h2 .lit{color:var(--accent)}
 .card:hover{border-color:var(--ink)}
 .card h3{margin:0 0 12px;font-size:var(--t-05);line-height:1.25;letter-spacing:-.015em;font-weight:700}
 .card p{margin:0;color:var(--ink-soft);font-size:var(--t-03);line-height:1.6;max-width:62ch}
-.card code{font-family:var(--mono);font-size:.9em}
+.card code,.quiet code,.note code{font-family:var(--mono);font-size:.9em}
 
 .index{width:100%;max-width:74ch;border-collapse:collapse;margin-top:28px;font-size:var(--t-02)}
 .index th{text-align:left;font-family:var(--mono);
@@ -628,8 +628,8 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
         </div>
         <div class="stack">
           <div class="quiet">
-            <h1>Nobody is filming <span class="lit">your page.</span></h1>
-            <p>There is no camera, so every camera move on the web had to be invented. Dolly invents 34 of them in CSS, and scrolling back up rewinds them.</p>
+            <h1>Scroll animations, <span class="lit">in&nbsp;plain&nbsp;CSS.</span></h1>
+            <p>Put <code>data-dolly="tilt-up"</code> on a heading and it rises into place as you scroll to it. Scroll back up and it plays in reverse.</p>
           </div>
           <div class="subject" data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:1.14">
             <img src="https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=1200&q=78&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=480&q=78&auto=format&fit=crop 480w, https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=800&q=78&auto=format&fit=crop 800w, https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=1200&q=78&auto=format&fit=crop 1200w" sizes="(max-width: 820px) 92vw, 46vw"
@@ -679,8 +679,8 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
         </div>
         <div class="stack">
           <div class="quiet">
-            <h2>Fourteen kilobytes, <span class="lit">watching a scrollbar.</span></h2>
-            <p>AOS ships 14 kB of JavaScript to notice where you are. Dolly ships a stylesheet, and a stylesheet cannot fail to boot.</p>
+            <h2>AOS is 14 kB <span class="lit">of JavaScript.</span></h2>
+            <p>That buys a script that watches the scrollbar and toggles classes. Dolly hands the same job to the browser. The number below counts down to how much JavaScript Dolly ships.</p>
           </div>
           <p class="figure"><span class="kb" data-dolly="count" data-dolly-on="scene"
                  role="img" aria-label="14 kilobytes, counting down to zero"
@@ -719,7 +719,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
                   style="background-position:88% 50%;--dolly-mask-from:130%;--dolly-mask-to:215%;--dolly-range: contain 0% contain 100%">Y</span></span>
           </p>
           <div class="quiet">
-            <p>It is named after a cart. A dolly carries a camera through a shot and never appears in one. Sibling to <a href="https://usefoley.dev">Foley</a>, which does the sound.</p>
+            <p>Named after the camera dolly, the cart a camera rides on during a shot. Its sibling, <a href="https://usefoley.dev">Foley</a>, handles the sound.</p>
           </div>
         </div>
         <span class="m credit">push · five letters, five depths</span>
@@ -758,8 +758,8 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
         </div>
         <div class="stack">
           <div class="quiet">
-            <h2>You already know <span class="lit">these words.</span></h2>
-            <p>Cinema named these moves before the web existed. Knowing what they do is most of the documentation.</p>
+            <h2>Named after <span class="lit">camera moves.</span></h2>
+            <p>Tilt, pan, crane, rack focus, whip pan. If you know the film term, you can guess what the move does. The <a href="moves.html">moves page</a> plays every one.</p>
           </div>
         </div>
         <!-- one line of names, carried sideways by scrolling down -->
@@ -787,8 +787,8 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
                there leaves the whole first screen of the act blank. -->
           <div class="quiet" data-dolly="beat" data-dolly-on="scene"
                style="--dolly-range: entry 0% contain 42%">
-            <h2>Every film ever made <span class="lit">is a flipbook.</span></h2>
-            <p>This one is thirty-six pictures on a single sheet. Scrolling picks which one you see — no canvas, no decode loop, nothing running. The browser is moving a background by one cell.</p>
+            <h2>A flipbook, <span class="lit">turned by scrolling.</span></h2>
+            <p>The countdown coming up is 36 frames on one image. As you scroll, CSS shifts the background along by one frame at a time. It doesn&rsquo;t use canvas or video.</p>
           </div>
         </div>
         <!-- three moves, three elements, one scene timeline: the gate pushes
@@ -807,7 +807,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
           <figcaption class="parton-card m" data-dolly="fade" data-dolly-on="scene"
                       style="--dolly-range: contain 84% contain 98%">Dolly Parton</figcaption>
         </figure>
-        <!-- the file itself, whole: twenty-four cells on one sheet. The gate
+        <!-- the file itself, whole: thirty-six cells on one sheet. The gate
              above is a window onto exactly this. -->
         <figure class="sheet" aria-hidden="true">
           <img src="assets/leader.png" alt="" decoding="async" fetchpriority="low">
@@ -824,32 +824,32 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
 
       <section>
         <div class="head-row">
-          <h2 data-dolly="tilt-up">What it refuses <span class="lit">to do.</span></h2>
+          <h2 data-dolly="tilt-up">The fine <span class="lit">print.</span></h2>
           <span class="tag">"tilt-up"</span>
         </div>
         <div class="duo">
           <div class="card" data-dolly="tumble" style="--dolly-angle:7deg">
-            <h3>It never hides your content.</h3>
-            <p>AOS, ScrollReveal and sal all put <code>opacity: 0</code> in a base rule and reveal it from script. Block the script and the page is blank. Dolly puts the hidden state only in <code>@keyframes</code>, so no support means <em>it didn't animate</em>, never <em>it didn't appear</em>. The worst it can do is nothing.</p>
+            <h3>Your content stays visible.</h3>
+            <p>AOS, ScrollReveal and sal set <code>opacity: 0</code> in a normal CSS rule and use JavaScript to reveal each element. If the script fails or gets blocked, the page stays blank. Dolly only sets the hidden state inside <code>@keyframes</code>, so a browser that can&rsquo;t run the animation shows the element as written.</p>
           </div>
           <div class="card" data-dolly="tumble" style="--dolly-angle:7deg">
-            <h3>Nothing runs, so nothing runs late.</h3>
-            <p>No IntersectionObserver, no scroll listener, no rAF loop, no init call, no provider, no hydration. There is no boot sequence to wait on and no script tag to block — including for the pinned chapters you just scrolled through.</p>
+            <h3>There&rsquo;s no script to load.</h3>
+            <p>Dolly doesn&rsquo;t use IntersectionObserver or scroll listeners, and you never call an init function. The browser runs every animation itself, including the pinned sections you scrolled through above.</p>
           </div>
           <div class="card" data-dolly="tumble" style="--dolly-angle:7deg">
-            <h3>Reduced motion means off, not slower.</h3>
-            <p>Under <code>prefers-reduced-motion</code> every move switches off, scenes stop pinning, and the page renders exactly as authored — because the authored state was never the hidden one.</p>
+            <h3>Reduced motion turns it off.</h3>
+            <p>When someone has <code>prefers-reduced-motion</code> set, every move stops and pinned sections scroll like normal content. The page looks the way you wrote it.</p>
           </div>
           <div class="card" data-dolly="tumble" style="--dolly-angle:7deg">
-            <h3>Firefox is fine, today.</h3>
-            <p>Scroll timelines run in Chrome 115+, Edge, Safari 26+ and Opera — about 87% of the web. Firefox does not, yet. The other 13% get a complete, still page, which is the design, not the degradation. There is no shim to ship.</p>
+            <h3>Firefox doesn&rsquo;t animate yet.</h3>
+            <p>Scroll timelines work in Chrome and Edge 115+, Safari 26+ and Opera, which is about 87% of visitors. Firefox doesn&rsquo;t support them yet, so Firefox users get the finished page without the motion. You don&rsquo;t need a polyfill.</p>
           </div>
         </div>
       </section>
 
       <section id="index">
         <div class="head-row">
-          <h2 data-dolly="tilt-up">The full set.</h2>
+          <h2 data-dolly="tilt-up">All 34 moves.</h2>
           <span class="label">the reference</span>
         </div>
         <table class="index" data-dolly="fade">
@@ -897,7 +897,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
     <div class="band-dark">
       <div class="wrap">
         <div class="head-row" style="border-color:transparent">
-          <h2 data-dolly="tilt-up">There is no step two.</h2>
+          <h2 data-dolly="tilt-up">How to use it.</h2>
           <span class="label">one attribute, plus scenes</span>
         </div>
         <svg class="rule-draw" viewBox="0 0 1200 10" aria-hidden="true" focusable="false">
@@ -905,7 +905,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
                 stroke-width="2.5" stroke-linecap="round"
                 d="M3 7 C 280 2, 620 9.5, 1197 3.5"/>
         </svg>
-        <p class="note" data-dolly="fade">Link the stylesheet, then annotate markup you already have. No init call, no wrapper component, no configuration object, because nothing is running that could read one.</p>
+        <p class="note" data-dolly="fade">Link the stylesheet and add <code>data-dolly</code> to any element you already have. For a pinned section like the ones above, wrap it in <code>data-dolly-scene</code> and <code>data-dolly-pin</code>.</p>
 <figure class="editor" data-dolly="reveal">
   <figcaption class="editor-bar">
     <span class="m">index.html</span>
@@ -916,7 +916,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
 <span class="k">&lt;h1</span> data-dolly=<span class="s">"tilt-up"</span><span class="k">&gt;</span>Arrives as you reach it<span class="k">&lt;/h1&gt;</span>
 <span class="k">&lt;img</span> data-dolly=<span class="s">"rack"</span> src=<span class="s">"still.jpg"</span> alt=<span class="s">""</span><span class="k">&gt;</span>
 
-<span class="c">&lt;!-- a pinned scene: the chapters above are all this --&gt;</span>
+<span class="c">&lt;!-- a pinned scene, like the sections above --&gt;</span>
 <span class="k">&lt;div</span> data-dolly-scene<span class="k">&gt;</span>
   <span class="k">&lt;div</span> data-dolly-pin<span class="k">&gt;</span>
     <span class="k">&lt;img</span> data-dolly=<span class="s">"zoom"</span> data-dolly-on=<span class="s">"scene"</span> src=<span class="s">"shot.jpg"</span> alt=<span class="s">""</span><span class="k">&gt;</span>
@@ -930,18 +930,18 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
         <code class="install">
           <span class="dim" aria-hidden="true">$</span><span class="cmd">npm i @dollyjs/core</span>
         </code>
-        <p class="install-alt label">or one file, no build step: <a href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.css">https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.css</a></p>
+        <p class="install-alt label">or one file, no build step: <a href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.min.css">https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.min.css</a></p>
       </div>
     </div>
     <div class="wrap">
 
       <div class="sign-off">
-        <p class="sign-off-line" data-dolly="letter" style="--dolly-letter-from:.14em;--dolly-letter-to:-.02em">that is the whole library</p>
+        <p class="sign-off-line" data-dolly="letter" style="--dolly-letter-from:.14em;--dolly-letter-to:-.02em">now go delete some JavaScript</p>
         <span class="m">34 moves · 0 kB of JavaScript · one attribute</span>
       </div>
 
       <div class="ded">
-        <p>Dolly is named for the camera dolly, the cart that carries a camera through a shot. The name came first and stands on its own. It is also, this year, a word that is hard to write down without thinking of someone else. <a href="https://imaginationlibrary.com">Dolly Parton's Imagination Library</a> has sent a book to a child every month since 1995, and still sends them. It takes donations. This library does not.</p>
+        <p>The name came from the camera cart, before this year. Since August it&rsquo;s been hard to read without thinking of Dolly Parton. Her <a href="https://imaginationlibrary.com">Imagination Library</a> has mailed a free book to children every month since 1995, and it accepts donations.</p>
         <span class="m">1946–2026</span>
       </div>
 

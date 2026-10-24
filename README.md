@@ -1,26 +1,26 @@
 # Dolly
 
-Scroll-driven motion, in CSS. One attribute, 34 camera moves, no JavaScript.
+Scroll animations in plain CSS: 34 camera moves, each set with one attribute,
+and no JavaScript.
 
 ```html
 <h2 data-dolly="tilt-up">This rises into place as you scroll to it.</h2>
 ```
 
-That is the whole API. No init call, no observer, no wrapper component, no
-runtime. The stylesheet is the product.
+That attribute is the whole API. You don't call or wrap anything, and the
+browser runs the animation itself.
 
 Named for the camera dolly, the cart that carries a camera through a shot.
 Sibling to [Foley](https://usefoley.dev) ([repo](https://github.com/eakbulut/foley)),
-which does the sound the same way — synthesized live, no files.
+which does the same for UI sound and synthesizes every sound live.
 
-The other half of the pitch is the failure mode. Every mainstream scroll
-library hides content in a base rule and reveals it from script; when the
-script fails or the browser can't help, the content is simply gone. Dolly
-keeps the hidden state inside `@keyframes` only, so a browser without scroll
-timelines renders the page complete and just doesn't animate.
+It also fails safely. Most scroll libraries hide content with a CSS rule and
+reveal it with JavaScript, so if the script fails or the browser can't run it,
+the content stays hidden. Dolly only hides content inside `@keyframes`. A
+browser without scroll timelines shows the whole page and skips the motion.
 
-- [usedolly.dev](https://usedolly.dev/) — the demo is the documentation
-- [usedolly.dev/moves.html](https://usedolly.dev/moves.html) — every move, playing as you scroll past it
+- [usedolly.dev](https://usedolly.dev/) — the demo site
+- [usedolly.dev/moves.html](https://usedolly.dev/moves.html) — all 34 moves, playing as you scroll
 - [`agents.md`](./agents.md) — point your coding agent at it
 - MIT, zero dependencies, zero JavaScript
 
@@ -37,11 +37,11 @@ npm i @dollyjs/core
 Or link the file directly:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.min.css">
 ```
 
-Nothing else runs. Drop it beside Tailwind, vanilla CSS, or any framework —
-it only touches elements carrying a `data-dolly` attribute.
+It works next to Tailwind, plain CSS or any framework, and only touches
+elements with a `data-dolly` attribute.
 
 Tailwind needs no plugin. Every `--dolly-*` is a custom property, so Tailwind's
 arbitrary properties set them straight from the class attribute — underscores
@@ -106,7 +106,7 @@ see below.
 | `beat-in` | Arrives out of blur and scale, holds, leaves. |
 | `hold` | Arrives and stays. |
 
-The cinematic three, plus one.
+Cinematic. Effects that usually need a JavaScript library.
 
 | Move | What it does |
 | --- | --- |
@@ -117,8 +117,8 @@ The cinematic three, plus one.
 
 ### Frame sequences
 
-Scrubbing a frame sequence with scroll — the effect everyone still reaches for
-canvas to do. One sprite sheet, no canvas and no decode loop.
+Steps through a frame sequence as you scroll, using one sprite sheet. This is
+usually done with canvas.
 
 | Move | What it does |
 | --- | --- |
@@ -215,9 +215,9 @@ Knobs: `--dolly-perspective`, `--dolly-vanish`, `--dolly-z-from`, `--dolly-z-to`
 
 ## Pinned scenes
 
-The move scroll libraries need JavaScript for: pin an element to the viewport
-and let scroll scrub a transformation through it. Here it is `position: sticky`
-plus a named view timeline.
+Pinning is where most scroll libraries need JavaScript: an element sticks to
+the viewport while scrolling plays an animation on it. Here it is
+`position: sticky` plus a named view timeline.
 
 ```html
 <div data-dolly-scene>
@@ -319,20 +319,18 @@ Ranges use the standard `animation-range` syntax: `entry`, `exit`, `cover`,
 Opera 101+ — about 87% of global traffic. Firefox does not support it: checked
 in 158.0.1 on 2026-10-23, nothing animates.
 
-There is no shim, and there will not be one. Unsupported browsers get the page
-with all its content, unanimated. That is the design, not a gap:
-`animation-fill-mode: both` with no timeline resolves every move to its end
-state immediately, and the end state is the element as you authored it. The
-failure mode is "didn't animate", never "didn't appear".
+There is no polyfill, and there won't be one. Unsupported browsers get the page
+with all its content, unanimated. With no timeline, `animation-fill-mode: both`
+resolves every move to its end state immediately, and the end state is the
+element as you wrote it.
 
 The same holds for an unknown attribute value, a typo, or a partially loaded
 stylesheet.
 
 ## Reduced motion
 
-`prefers-reduced-motion: reduce` disables every move. Content renders exactly
-as authored, because the authored state was never the hidden one — there is
-nothing to un-hide.
+`prefers-reduced-motion: reduce` disables every move. Content renders as you
+wrote it, since Dolly never hid it in the first place.
 
 ## Where this sits
 
@@ -340,15 +338,14 @@ nothing to un-hide.
 author's words. Word-by-word and letter-by-letter animation needs `<span>`s
 inserted into a text node, which CSS cannot do at all. So that is genuinely
 their territory, not a gap to close: if you need text splitting or number
-counters, use usal and use it without apology.
+counters, use usal.
 
-What CSS answers is the objection its own thread opened with — *"9kb is too
-much for scroll animation"* — which the author granted, pointing simple cases
-at sal.js instead. For a fade, a reveal, a parallax or a pinned scrub, this
-stylesheet is the smaller answer, and nothing executes.
+The same thread opened with *"9kb is too much for scroll animation"*, and the
+author agreed, pointing simple cases at sal.js. For a fade, a reveal, a
+parallax or a pinned scrub, Dolly does the job without running any code.
 
-Worth knowing about the neighbours, all verified from their published
-packages rather than their marketing:
+How the alternatives compare, checked against their published packages.
+Sizes are minified and gzipped.
 
 | | ships | hides content first | reduced motion | maintained |
 | --- | --- | --- | --- | --- |
@@ -357,7 +354,7 @@ packages rather than their marketing:
 | sal.js | 1.8 kB JS + CSS | yes | no | last published 2021 |
 | usal | 7.5 kB JS | **no** | **no** | active |
 | Motion | 43.8 kB (React) | yes, in SSR HTML | yes | active |
-| Dolly | 1.6 kB CSS | no | yes | — |
+| Dolly | 2.3 kB CSS | no | yes | — |
 
 Two of those deserve credit: usal never pre-hides, and ScrollReveal's
 `html.sr` scoping is the least-bad version of hiding. Motion is a different
@@ -366,7 +363,7 @@ scroll-linked work to the same `ViewTimeline` this library is built on.
 
 ## What it cannot do
 
-Honest limits, verified rather than assumed:
+Each of these was tested, not assumed:
 
 - **No text splitting.** `split-letter` / `split-word` effects need `<span>`s
   inserted into a text node. CSS has no text-node access, so per-letter
@@ -379,9 +376,8 @@ Honest limits, verified rather than assumed:
 - **No number counters with formatting.** `@property` can animate an integer
   and `counter()` can print it, but preserving `42,350` is string work.
 - **No looping.** Scroll position is the clock; there is nothing to loop.
-- **Firefox.** Everyone else gets a complete, still page — which is the design
-  — but "it degrades gracefully" is a weaker answer than "it works" if a
-  stakeholder opens it in Firefox today.
+- **Firefox.** Firefox users get the complete page without motion. If someone
+  reviews your site in Firefox today, they won't see any of the animation.
 
 ## Stagger
 
@@ -454,7 +450,7 @@ shorthand, and the test suite enforces that.
 
 `npm test` is the spec. The suite derives its expectations from `src/dolly.css`
 rather than from a hardcoded list, so a new move must appear in this README's
-table or the tests fail. That is deliberate.
+table or the tests fail.
 
 ## License
 
@@ -462,5 +458,5 @@ MIT.
 
 ---
 
-Named for the camera dolly, and for Dolly Parton (1946–2026), who funded
+Named for the camera dolly. Dedicated to Dolly Parton (1946–2026), who founded
 [the Imagination Library](https://imaginationlibrary.com/).

@@ -79,9 +79,9 @@ GROUPS = [
   ['progress','travel','parallax','zoom']),
  ('beats','Beats','Enter, hold long enough to read, leave. Built for pinned scenes.',
   ['beat','beat-in','hold']),
- ('cinematic','Cinematic','The three that usually cost a JavaScript library, plus one.',
+ ('cinematic','Cinematic','The effects people usually install a JavaScript library for.',
   ['iris','track','mask','letter']),
- ('depth','Depth','Real Z translation under a perspective, not scale. Needs '
+ ('depth','Depth','Moves elements toward and away from the camera in 3D. Needs '
   '<code>data-dolly-space</code> on an ancestor.',
   ['push','pull','swing','tumble','fly','drop','pass']),
  ('data','Drawing and data','A sprite sheet, a pen line, and a number.',

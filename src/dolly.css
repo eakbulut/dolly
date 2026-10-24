@@ -1,4 +1,4 @@
-/* Dolly — scroll-driven motion, in CSS.
+/* Dolly — scroll animations in plain CSS.
    https://usedolly.dev · MIT
 
    Three rules govern everything in this file:
@@ -8,7 +8,7 @@
       drops `animation-timeline`, falls back to the default 0s duration, and
       `animation-fill-mode: both` lands the element on its `to` state
       immediately — visible. The failure mode is "didn't animate", never
-      "didn't appear". This is the bug every scroll library ships.
+      "didn't appear". Most scroll libraries ship this bug.
 
    2. Longhands only, never the `animation` shorthand. The shorthand resets
       `animation-timeline` to `auto`, which silently converts a scroll-driven
