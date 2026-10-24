@@ -3,6 +3,22 @@
 All notable changes to `@dollyjs/core`. Dates are release dates; the library
 follows [semantic versioning](https://semver.org).
 
+## 0.3.1 — 2026-10-24
+
+### Fixed
+
+- In browsers without scroll timelines (Firefox), `beat`, `beat-in`, `iris`,
+  `letter`, `mask`, `sequence` and `track` stayed on their last keyframe
+  instead of switching off, which could leave content at opacity 0. The
+  no-timeline block now uses `!important`, like the reduced-motion block.
+
+### Changed
+
+- Rewrote the README and package description in plainer language, and
+  corrected the size comparison table: Dolly is 2.3 kB of CSS, minified and
+  gzipped.
+- The CDN link in the docs now points at `dolly.min.css`.
+
 ## 0.3.0 — 2026-09-18
 
 ### Added
