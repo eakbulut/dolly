@@ -532,7 +532,7 @@ pre .c{color:#8B8B85}pre .k{color:#9DB4F5}pre .s{color:#C6E1A6}
    box never changes. */
 .sign-off-line{margin:0;font-weight:700;line-height:1.05;color:var(--ink);
   white-space:nowrap;letter-spacing:-.02em;
-  font-size:min(3.2rem,calc((100vw - 2*var(--gutter))/17))}
+  font-size:min(3.2rem,calc((100vw - 2*var(--gutter))/20))}
 .sign-off .m{color:var(--ink-soft)}
 
 .ded{margin-top:clamp(40px,6vh,70px);border-top:1px solid var(--ink);padding:28px 0 0;
@@ -549,8 +549,16 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
      number ticking on scroll — that is motion, and it has to stop. */
   :root{animation-name:none !important}
   /* count parks on --dolly-count-to, which is 0 — no override needed */
-  [data-dolly-pin]{position:static;height:auto;min-height:70svh}
-  [data-dolly-scene]{min-height:0 !important}
+  [data-dolly-pin]{min-height:70svh}
+  /* the beat that would have cleared Act V's copy before the photograph
+     landed never runs, so stack the copy above it instead of on it */
+  .act5-copy{position:static;padding-top:clamp(64px,11vh,120px)}
+}
+/* The library releases pins with no timeline; give each act a screen's worth
+   of room, the same as under reduced motion. */
+@supports not (animation-timeline: view()){
+  [data-dolly-pin]{min-height:70svh}
+  .act5-copy{position:static;padding-top:clamp(64px,11vh,120px)}
 }
 </style>
 </head>

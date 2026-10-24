@@ -277,11 +277,6 @@
 /* Printing has no scrollport, so an entrance stuck at `from` prints blank. */
 @media (prefers-reduced-motion: reduce), print {
   [data-dolly] { animation-name: none !important }
-  /* `track` parks at its untranslated state — a row wider than the
-     viewport. Inside overflow:clip that content is unreachable, and clip
-     makes no scrollbar. The library promises it never hides content, so
-     the pin has to release its clip when the motion is off. */
-  [data-dolly-pin] { overflow: visible }
 }
 
 /* ---------- scenes: pinned, scrubbed sequences ---------- *
@@ -320,6 +315,25 @@
   overflow: clip;   /* clip, never hidden — see the note above */
   display: grid;
   place-items: center;
+}
+
+/* With no timeline, or with motion off, nothing scrubs. A pin would then hold
+   one still frame for the whole track: three or four screens of scrolling
+   where the page looks frozen, which on a phone reads as "it won't scroll".
+   So the pin lets go and the track collapses, and a scene becomes an ordinary
+   section. The clip goes too: `track` parks untranslated, a row wider than
+   the viewport, and clip would hide the rest of it with no scrollbar.
+   !important for the same reason as the blocks above: nothing here may
+   depend on source order. */
+@supports not (animation-timeline: view()) {
+  [data-dolly-scene] { min-height: 0 !important }
+  [data-dolly-pin] { position: static !important; height: auto !important;
+                     overflow: visible !important }
+}
+@media (prefers-reduced-motion: reduce), print {
+  [data-dolly-scene] { min-height: 0 !important }
+  [data-dolly-pin] { position: static !important; height: auto !important;
+                     overflow: visible !important }
 }
 
 /* `contain` spans exactly the time the track is pinned: from the track's

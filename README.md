@@ -235,6 +235,11 @@ the viewport while scrolling plays an animation on it. Here it is
   move inside a scene still behaves like an ordinary entrance, which is
   usually what you want for anything that isn't part of the sequence.
 
+In a browser without scroll timelines, or with reduced motion on, nothing
+scrubs, so scenes stop pinning and collapse to their content height. Without
+that, a pin would hold one still frame for several screens of scrolling, and
+on a phone the page looks like it won't scroll.
+
 ### Staging beats
 
 Give each beat its own slice of the scene with `--dolly-range`, and they play
