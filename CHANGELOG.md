@@ -3,6 +3,17 @@
 All notable changes to `@dollyjs/core`. Dates are release dates; the library
 follows [semantic versioning](https://semver.org).
 
+## 0.3.2 — 2026-10-24
+
+### Fixed
+
+- In browsers without scroll timelines (Firefox, Safari before 26), pinned
+  scenes no longer leave several screens of tall, static track to scroll
+  through. `[data-dolly-scene]` drops its height and `[data-dolly-pin]`
+  stops sticking, so the scene scrolls like normal content. The same applies
+  under `prefers-reduced-motion` and in print, replacing a reduced-motion
+  `overflow` rule that had no effect.
+
 ## 0.3.1 — 2026-10-24
 
 ### Fixed
