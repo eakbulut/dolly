@@ -308,6 +308,42 @@ test('package.json agrees with the stylesheet on the move count', () => {
   assert.equal(claimed, shipped.size, 'package.json description has a stale move count');
 });
 
+/* The @supports-not block is the library's whole promise for the 13% of
+   traffic with no scroll timelines: moves whose `to` is not the authored
+   state must turn themselves OFF. Its selectors are (0,1,0) and so are the
+   move rules, so whichever comes last wins — and the move rules come last.
+   That shipped: seven of thirteen moves (beat, beat-in, iris, letter, mask,
+   sequence, track) had their safety net silently defeated, and Act V's copy
+   rendered at opacity 0 in Firefox 158. Caught by a console check, not by a
+   test, which is why this exists. */
+test('the no-timeline safety block cannot be overridden by a later move rule', () => {
+  const supportsBlocks = blocks(css).filter(
+    (b) => b.within.some((at) => /^@supports\s+not\s*\(animation-timeline/.test(at))
+  );
+  const guarded = supportsBlocks.filter((b) => /\[data-dolly="/.test(b.selector || ''));
+  assert.ok(guarded.length > 0, 'no @supports-not block turning moves off — the promise is gone');
+
+  for (const b of guarded) {
+    const names = [...b.selector.matchAll(/\[data-dolly="([^"]+)"\]/g)].map((m) => m[1]);
+    const decl = decls(b.body).find(([p]) => p === 'animation-name');
+    assert.ok(decl, `@supports-not block for ${names.join(', ')} sets no animation-name`);
+
+    /* Either it wins by !important, or every move it names is declared
+       nowhere after it. Anything else and the net is defeated.
+       NB: decls() strips !important, so this reads the raw body. */
+    const wins = /animation-name\s*:[^;]*!important/.test(b.body);
+    if (!wins) {
+      const laterNames = rules
+        .filter((r) => r.order > b.order)
+        .filter((r) => decls(r.body).some(([p]) => p === 'animation-name'))
+        .flatMap((r) => [...r.selector.matchAll(/\[data-dolly="([^"]+)"\]/g)].map((m) => m[1]));
+      const defeated = names.filter((n) => laterNames.includes(n));
+      assert.deepEqual(defeated, [],
+        'these moves re-declare animation-name after the safety block, defeating it');
+    }
+  }
+});
+
 test('the page binding is declared after every move that sets a range', () => {
   /* [data-dolly-on="page"] carries one attribute selector, exactly like a
      move rule, so nothing but source order decides which animation-range

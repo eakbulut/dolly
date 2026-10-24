@@ -262,7 +262,15 @@
      where it parks, showing the end of a sequence nobody watched. Off, and
      the authored background-position-x (frame 1) stands. */
   [data-dolly="sequence"] {
-    animation-name: none;
+    /* !important, not source order. These selectors are (0,1,0) and so are
+       the move rules below them, so without it every move re-declared later
+       in the file silently defeats this block — which is what shipped:
+       beat, beat-in, iris, letter, mask, sequence and track all parked on
+       their last keyframe in Firefox, and the Act V copy rendered at
+       opacity 0. The file's own closing note says nothing should depend on
+       source order; this is that rule applied here, and it matches the
+       reduced-motion block below, which has always used !important. */
+    animation-name: none !important;
   }
 }
 
