@@ -248,7 +248,7 @@ authored. The same holds for a typo in a move name.
 
 `prefers-reduced-motion: reduce` and printing disable every move.
 
-Support: Chrome/Edge 115+, Safari 26+, Opera 101+. Firefox lands in 159.
+Support: Chrome/Edge 115+, Safari 26+, Firefox 159+, Opera 101+.
 
 ---
 

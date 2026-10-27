@@ -343,9 +343,8 @@ tags each one.
 
 ## Browser support
 
-`animation-timeline` is supported in Chrome and Edge 115+, Safari 26+, and
-Opera 101+ — about 87% of global traffic. Firefox does not support it: checked
-in 158.0.1 on 2026-10-23, nothing animates.
+`animation-timeline` is supported in Chrome and Edge 115+, Safari 26+,
+Firefox 159+, and Opera 101+.
 
 There is no polyfill, and there won't be one. Unsupported browsers get the page
 with all its content, unanimated. With no timeline, `animation-fill-mode: both`
@@ -404,8 +403,6 @@ Each of these was tested, not assumed:
 - **No number counters with formatting.** `@property` can animate an integer
   and `counter()` can print it, but preserving `42,350` is string work.
 - **No looping.** Scroll position is the clock; there is nothing to loop.
-- **Firefox.** Firefox users get the complete page without motion. If someone
-  reviews your site in Firefox today, they won't see any of the animation.
 
 ## Stagger
 
