@@ -122,7 +122,7 @@ img{display:block;max-width:100%}
 .film a{color:#F2F2EE;text-decoration:underline;
   text-decoration-color:color-mix(in srgb,#8FA6FF 55%,transparent);
   text-decoration-thickness:1px;text-underline-offset:.2em;
-  transition:text-decoration-color .22s cubic-bezier(.22,1,.36,1),color .22s cubic-bezier(.22,1,.36,1)}
+  transition:text-decoration-color var(--duration-fast, 250ms) cubic-bezier(.22,1,.36,1),color var(--duration-fast, 250ms) cubic-bezier(.22,1,.36,1)}
 .film a:hover{color:#fff;text-decoration-color:#8FA6FF}
 .film a:focus-visible{outline:2px solid #8FA6FF;outline-offset:3px;text-decoration-color:transparent}
 @media(max-width:700px){.mast-spec{display:none}}
@@ -448,7 +448,7 @@ h2 .lit{color:var(--accent)}
 @media(max-width:860px){.duo{grid-template-columns:1fr}}
 .duo{perspective:1200px;perspective-origin:50% 40%}
 .card{background:var(--surface);border:1px solid var(--rule);padding:clamp(22px,3vw,40px);
-  transition:border-color .3s cubic-bezier(.22,1,.36,1)}
+  transition:border-color var(--duration-fast, 250ms) cubic-bezier(.22,1,.36,1)}
 .card:hover{border-color:var(--ink)}
 .card h3{margin:0 0 12px;font-size:var(--t-05);line-height:1.25;letter-spacing:-.015em;font-weight:700}
 .card p{margin:0;color:var(--ink-soft);font-size:var(--t-03);line-height:1.6;max-width:62ch}
@@ -459,7 +459,7 @@ h2 .lit{color:var(--accent)}
   text-transform:uppercase;color:var(--ink-soft);font-weight:500;padding:0 14px 10px 0;
   letter-spacing:.10em;font-size:var(--t-00);border-bottom:1px solid var(--ink)}
 .index td{padding:12px 14px 12px 0;border-bottom:1px solid var(--rule);vertical-align:baseline;
-  transition:background .2s cubic-bezier(.22,1,.36,1)}
+  transition:background var(--duration-fast, 250ms) cubic-bezier(.22,1,.36,1),color var(--duration-fast, 250ms) cubic-bezier(.22,1,.36,1)}
 .index tbody tr{counter-increment:move}
 .index tbody tr td:first-child::before{content:counter(move,decimal-leading-zero);
   font-size:10px;color:var(--rule-strong);margin-right:12px;letter-spacing:.08em}
