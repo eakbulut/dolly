@@ -61,10 +61,12 @@ code,pre{font-family:var(--mono);font-variant-ligatures:none}
 /* the screen in the picture: x 21.4–74%, y 18.8–52.4% */
 .onscreen{position:absolute;z-index:1;left:21.4%;width:52.6%;top:18.8%;height:33.6%;
   display:grid;place-content:center;justify-items:center;text-align:center;color:#1B1A17;padding:0 3%}
+.onscreen::before{content:"";position:absolute;inset:4% 2%;z-index:-1;
+  background:radial-gradient(ellipse 60% 70% at 50% 48%,rgba(255,252,244,.62),rgba(255,252,244,.42) 60%,rgba(255,252,244,0) 100%)}
 .onscreen h1{margin:0;font-weight:700;text-transform:uppercase;letter-spacing:.02em;line-height:.96;
   font-size:min(4.4cqi,10.5vw);max-width:13ch;text-wrap:balance}
 .onscreen p{margin:1.4cqi 0 0;font-size:max(11px,min(.9cqi,3vw));letter-spacing:.2em;text-transform:uppercase;
-  color:#3A3833}
+  color:#2A2824}
 .foot{position:relative;z-index:2;text-align:center;padding:0 var(--gutter) 34px}
 .foot .sub{margin:0 auto;max-width:42ch;font-size:var(--t-04);line-height:1.45}
 .row{margin-top:20px;display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap}
