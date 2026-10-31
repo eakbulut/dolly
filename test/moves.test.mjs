@@ -509,7 +509,9 @@ test('the homepage stays inside its motion budget', () => {
   const allCss = (pageCss + '\n' + site).replace(/\/\*[\s\S]*?\*\//g, '');
   const pageRules = blocks(allCss).filter((b) => b.selector);
   const markup = page.replace(/<!--[\s\S]*?-->/g, '').replace(/<style[\s\S]*?<\/style>/g, '');
-  const titleEnd = markup.indexOf('</section>', markup.indexOf('class="title"'));
+  const titleAt = markup.indexOf('class="screening"');
+  assert.ok(titleAt > 0, 'the homepage has no first-screen section (class="screening")');
+  const titleEnd = markup.indexOf('</section>', titleAt);
   const found = [];
 
   for (const m of markup.matchAll(/<[a-z][^>]*>/gi)) {
