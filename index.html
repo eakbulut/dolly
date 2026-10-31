@@ -53,8 +53,11 @@ code,pre{font-family:var(--mono);font-variant-ligatures:none}
    claim lands on the cinema screen at any window shape. */
 .screening{position:relative;min-height:100svh;overflow:clip;display:flex;flex-direction:column;
   justify-content:flex-end;background:var(--cinema)}
-.stage{position:absolute;left:50%;top:0;width:max(100vw,151.5svh);aspect-ratio:2400/1584;
-  translate:-50% 0;container-type:inline-size}
+/* The photographed screen is centred at 47.7% of the picture, not 50%: the
+   stage is shifted by that, and is 5% wider than the viewport so neither edge
+   of the photo comes into view. */
+.stage{position:absolute;left:50%;top:0;width:max(105vw,151.5svh);aspect-ratio:2400/1584;
+  translate:-47.7% 0;container-type:inline-size}
 .stage img{width:100%;height:100%;object-fit:cover}
 .stage::after{content:"";position:absolute;inset:0;
   background:linear-gradient(180deg,rgba(11,10,9,.3),rgba(11,10,9,0) 14%,rgba(11,10,9,0) 50%,rgba(11,10,9,.88) 74%)}
@@ -92,9 +95,6 @@ code,pre{font-family:var(--mono);font-variant-ligatures:none}
 .bill dt,.bill dd{display:inline;margin:0}
 .bill dt{font-size:11px;letter-spacing:.08em;color:#BDB5A5;margin-right:.35em}
 .bill dd{font-size:clamp(13px,1.1vw,16px);font-weight:700;letter-spacing:0}
-.bill .promise{display:block;white-space:normal;margin-top:8px}
-.bill .promise dt{display:block;margin:0 0 2px}
-.bill .promise dd{display:block;font-weight:500;text-transform:none}
 @media(max-width:620px){
   /* On a phone the stage is exactly one screen tall, so the screen ends at
      52.4% of it: the copy starts below that and the card grows if it must. */
@@ -173,7 +173,7 @@ main [data-dolly]{--dolly-range:cover 30% cover 70%}
 .tickets::after{content:"";position:absolute;inset:0;background:rgba(11,10,9,.72)}
 .tickets .wrap{position:relative;z-index:1}
 .tickets h2{margin:0;font-weight:700;text-transform:uppercase;letter-spacing:.03em;line-height:1;font-size:var(--t-08)}
-.tickets p{max-width:44ch;margin:20px auto 0;font-size:var(--t-04)}
+.tickets h2 + p{max-width:44ch;margin:20px auto 0;font-size:var(--t-04);text-wrap:balance}
 .tickets .row{margin-top:30px}
 .links{margin:30px auto 0;display:flex;gap:22px;justify-content:center;flex-wrap:wrap;font-size:var(--t-02)}
 
@@ -216,9 +216,7 @@ footer .credit{margin-top:14px;font-size:var(--t-00);color:#8F8778}
         <div><dt>Starring</dt><dd>34 moves, 13 exits</dd></div>
         <div><dt>Directed by</dt><dd>Your browser</dd></div>
         <div><dt>JavaScript</dt><dd>None</dd></div>
-        <div><dt>Licence</dt><dd>MIT</dd></div>
-        <div class="wrap-ok"><dt>Showing in</dt><dd>Chrome 115 · Safari 26 · Firefox 159</dd></div>
-        <div class="promise"><dt>If the projector breaks</dt><dd>The page shows exactly as written.</dd></div>
+        <div class="wrap-ok"><dt>Showing in</dt><dd>Chrome&nbsp;115&nbsp;· Safari&nbsp;26&nbsp;· Firefox&nbsp;159</dd></div>
       </dl>
     </div>
   </section>
@@ -227,8 +225,8 @@ footer .credit{margin-top:14px;font-size:var(--t-00);color:#8F8778}
     <div class="wrap seat">
       <div class="ph"><img src="assets/photos/seat-23.webp" alt="A red cinema seat with the number 23" loading="lazy" decoding="async" width="1200" height="795" data-dolly="dolly-in"></div>
       <div>
-        <h2 id="seat" data-dolly="tilt-up">Take a seat.<br>Add one attribute.</h2>
-        <p class="lede" data-dolly="fade">Put <code>data-dolly</code> on an element you already have and name a camera move. That is the whole integration: no wrapper, no provider, no init call. The title card you scrolled past left with <code>data-dolly-exit</code>.</p>
+        <h2 id="seat">Take a seat.<br>Add one attribute.</h2>
+        <p class="lede">Put <code>data-dolly</code> on an element you already have and name a camera move. That is the whole integration: no wrapper, no provider, no init call. The title card you scrolled past left with <code>data-dolly-exit</code>.</p>
         <div class="pair">
           <pre><code><span class="t">&lt;link</span> rel="stylesheet"
       href="dolly.css"<span class="t">&gt;</span>
@@ -244,8 +242,8 @@ footer .credit{margin-top:14px;font-size:var(--t-00);color:#8F8778}
 
   <section class="chapter" aria-labelledby="showing">
     <div class="wrap">
-      <h2 id="showing" data-dolly="tilt-up">Now showing.</h2>
-      <p class="lede" data-dolly="fade">Each move is named for what a camera does. If you know the film term, you can guess the attribute.</p>
+      <h2 id="showing">Now showing.</h2>
+      <p class="lede">Each move is named for what a camera does. If you know the film term, you can guess the attribute.</p>
       <div class="tableau">
         <figure class="shot"><div class="still"><img src="assets/photos/audience.webp" alt="A full cinema audience" loading="lazy" decoding="async" width="800" height="533" data-dolly="tilt-up"></div>
           <figcaption><code>tilt-up</code> rises into place</figcaption></figure>
@@ -264,8 +262,8 @@ footer .credit{margin-top:14px;font-size:var(--t-00);color:#8F8778}
 
   <section class="chapter" aria-labelledby="projector">
     <div class="wrap">
-      <h2 id="projector" data-dolly="tilt-up">If the projector breaks.</h2>
-      <p class="lede" data-dolly="fade">Most scroll libraries set <code>opacity: 0</code> on your content and wait for JavaScript to bring it back. When the script fails, so does the page. Dolly keeps the hidden state inside the animation, so a browser that can&rsquo;t run it, or a reader who turned motion off, gets the page exactly as you wrote it.</p>
+      <h2 id="projector">If the projector breaks.</h2>
+      <p class="lede">Most scroll libraries set <code>opacity: 0</code> on your content and wait for JavaScript to bring it back. When the script fails, so does the page. Dolly keeps the hidden state inside the animation, so a browser that can&rsquo;t run it, or a reader who turned motion off, gets the page exactly as you wrote it.</p>
       <div class="diptych">
         <figure><div class="still"><img src="assets/photos/projector.webp" alt="A slide projector throwing a beam of light" loading="lazy" decoding="async" width="900" height="600" data-dolly="dolly-in"></div>
           <figcaption>With scroll timelines: <code>dolly-in</code>.</figcaption></figure>
@@ -277,12 +275,12 @@ footer .credit{margin-top:14px;font-size:var(--t-00);color:#8F8778}
 
   <section class="chapter" aria-labelledby="runtime">
     <div class="wrap">
-      <h2 id="runtime" data-dolly="tilt-up">Running time.</h2>
+      <h2 id="runtime">Running time.</h2>
       <div class="runtime" data-dolly="reveal">
         <div><b>0 kB</b><span>of JavaScript in Dolly</span></div>
         <div><b>4.7 kB</b><span>of JavaScript in AOS</span></div>
       </div>
-      <p class="note">This table wiped in with <code>reveal</code>. Sizes are minified and gzipped. Dolly 0.4.0 is 2.7 kB of CSS; AOS 2.3.4 adds 2.2 kB of CSS to its JavaScript.</p>
+      <p class="note">This table wiped in with <code>reveal</code>. Sizes are minified and gzipped. Dolly is 2.7 kB of CSS; AOS 2.3.4 adds 2.2 kB of CSS to its JavaScript.</p>
     </div>
   </section>
 
@@ -302,7 +300,7 @@ footer .credit{margin-top:14px;font-size:var(--t-00);color:#8F8778}
 <footer>
   <div class="wrap">
     <span class="mark">Dolly</span>
-    <p>The name came from the camera cart, before this year. Since August it&rsquo;s been hard to read without thinking of Dolly Parton. Her <a href="https://imaginationlibrary.com">Imagination Library</a> has mailed a free book to children every month since 1995, and it accepts donations.</p>
+    <p>Named for the camera cart.</p>
     <p class="credit">Photographs from Unsplash.</p>
   </div>
 </footer>
