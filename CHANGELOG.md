@@ -3,6 +3,16 @@
 All notable changes to `@dollyjs/core`. Dates are release dates; the library
 follows [semantic versioning](https://semver.org).
 
+## 0.4.1 — unreleased
+
+### Fixed
+
+- `reveal` and `wipe-up` swapped from hidden to visible halfway through their
+  range instead of wiping, in every browser and every release so far. Their
+  keyframes left the far end implicit, the element's own `clip-path: none`,
+  which does not interpolate with `inset()`. They now get `clip-path: inset(0)`,
+  which clips nothing. The same applies to the `reveal` and `wipe-up` exits.
+
 ## 0.4.0 — 2026-10-30
 
 ### Added

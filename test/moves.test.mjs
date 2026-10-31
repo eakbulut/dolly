@@ -331,6 +331,36 @@ test('the moves page has a live card for every move that ships', () => {
   );
 });
 
+/* A clip-path with only one end written takes its other end from the
+   element, whose clip-path is `none` unless something sets it, and `none` does
+   not interpolate with inset() or circle(): the move swaps halfway instead of
+   wiping. `reveal` shipped like that from the start. Every one-ended clip move
+   needs a base clip-path of the same shape. */
+test('clip wipes have an end state of the same shape to interpolate to', () => {
+  const shapeOf = (v) => v.match(/^\s*(inset|circle|ellipse|polygon)\(/)?.[1];
+  const steps = (body) => [...body.matchAll(/(from|to|\d+%)\s*\{([^}]*)\}/g)]
+    .map((m) => ({ at: m[1], decls: decls(m[2]) }));
+  const broken = [];
+  const check = (attr, map) => {
+    for (const [name, anims] of map) {
+      for (const kf of [anims].flat()) {
+        const body = keyframes.find((k) => k.keyframes === kf)?.body || '';
+        const clips = steps(body).filter((st) => st.decls.some(([p]) => p === 'clip-path'));
+        if (clips.length !== 1) continue;
+        const shape = shapeOf(clips[0].decls.find(([p]) => p === 'clip-path')[1]);
+        const sel = `[${attr}="${name}"]`;
+        const base = rules.find((r) => !r.within.length &&
+          r.selector.split(',').map((x) => x.trim()).includes(sel) &&
+          decls(r.body).some(([p, v]) => p === 'clip-path' && shapeOf(v) === shape));
+        if (!base) broken.push(`${sel} (${kf})`);
+      }
+    }
+  };
+  check('data-dolly', moves);
+  check('data-dolly-exit', exits);
+  assert.deepEqual(broken, [], 'these clip moves swap instead of wiping');
+});
+
 /* Exits are documented in their own section, because every exit name is
    also an entrance name and would already "appear" in the move tables. */
 test('the README documents every exit that ships', () => {
