@@ -19,6 +19,15 @@ for m in re.finditer(r'\[data-dolly="([^"]+)"\]([^{]*)\{([^}]*)\}', nocom):
         seen.add(n); order.append(n)
         anims[n] = re.search(r'animation-name\s*:\s*([^;]+)', m.group(3)).group(1)
 
+# Exits get their own list and map. Their names repeat the entrance names on
+# purpose, so folding them into GROUPS would trip the duplicate check below.
+exit_order, exit_anims = [], {}
+for m in re.finditer(r'\[data-dolly-exit="([^"]+)"\]([^{]*)\{([^}]*)\}', nocom):
+    n = m.group(1)
+    if 'animation-name' in m.group(3) and n not in exit_anims:
+        exit_order.append(n)
+        exit_anims[n] = re.search(r'animation-name\s*:\s*([^;]+)', m.group(3)).group(1)
+
 # Anything a move's keyframes animate beyond these runs on the main thread and
 # repaints every frame. The cards tag those moves, read from the CSS so the
 # tag cannot drift from what actually ships.
@@ -27,8 +36,8 @@ keyframe_props = {
     m.group(1): set(re.findall(r'([a-z-]+)\s*:', m.group(2))) - COMPOSITED
     for m in re.finditer(r'@keyframes\s+([\w-]+)\s*\{((?:[^{}]*\{[^{}]*\})*[^{}]*)\}', nocom)}
 
-def repaints(n):
-    props = set().union(*(keyframe_props.get(a.strip(), set()) for a in anims[n].split(',')))
+def repaints(n, amap=anims):
+    props = set().union(*(keyframe_props.get(a.strip(), set()) for a in amap[n].split(',')))
     return sorted({'counter' if p.startswith('--') else re.sub(r'-[xy]$', '', p) for p in props})
 
 PLATE = '<div class="plate" data-dolly="{n}"></div>'
@@ -84,6 +93,16 @@ DESC = {
  'count':'A number counts up as it scrolls into place.',
 }
 
+EXIT_DESC = {
+ 'fade':'Fades out.','tilt-up':'Keeps rising 2.5rem as it goes.',
+ 'tilt-down':'Keeps sinking 2.5rem as it goes.','pan-left':'Keeps travelling left.',
+ 'pan-right':'Keeps travelling right.','dolly-in':'The camera pushes past it, to 1.1 scale.',
+ 'dolly-out':'The camera pulls away, to 0.9 scale.','crane':'Keeps craning up 5rem.',
+ 'roll':'Keeps rolling, to 5deg.','reveal':'Clip wipe off to the right.',
+ 'wipe-up':'Clip wipe off the top.','rack':'Focus pulls away into a 14px blur.',
+ 'whip':'Whips out to the left, with blur.',
+}
+
 GROUPS = [
  ('entrances','Entrances','Resolve once, as the element enters the viewport.',
   ['fade','tilt-up','tilt-down','pan-left','pan-right','dolly-in','dolly-out',
@@ -108,6 +127,9 @@ if missing or extra:
     sys.exit('ABORT: group coverage mismatch. missing=%s extra=%s' % (missing, extra))
 if len(listed) != len(set(listed)):
     sys.exit('ABORT: a move is listed in two groups')
+if set(exit_order) != set(EXIT_DESC):
+    sys.exit('ABORT: exit coverage mismatch. missing=%s extra=%s' % (
+        sorted(set(exit_order) - set(EXIT_DESC)), sorted(set(EXIT_DESC) - set(exit_order))))
 
 LEAVES = {'beat', 'beat-in', 'fly', 'drop', 'pass'}
 
@@ -148,6 +170,18 @@ def card(n):
             f'        <code>data-dolly="{n}"</code>\n'
             f'      </article>')
 
+# No arrive/scrub class: those retime [data-dolly] only. Exit cards get
+# .exits, which moves-head.html retimes for this page (see the comment there).
+def exit_card(n):
+    r = repaints(n, exit_anims)
+    cost = f' <span class="cost">repaints · {", ".join(r)}</span>' if r else ''
+    return (f'      <article class="card" id="exit-{n}">\n'
+            f'        <div class="demo leaves exits"><div class="plate" data-dolly-exit="{n}"></div></div>\n'
+            f'        <h3>{n}{cost}</h3>\n'
+            f'        <p>{EXIT_DESC[n]}</p>\n'
+            f'        <code>data-dolly-exit="{n}"</code>\n'
+            f'      </article>')
+
 sections = []
 for slug, title, blurb, names in GROUPS:
     sections.append(
@@ -160,14 +194,26 @@ for slug, title, blurb, names in GROUPS:
       f'      <div class="grid">\n' + '\n'.join(card(n) for n in names) + '\n      </div>\n'
       f'    </section>')
 
-nav = ' '.join(f'<a href="#{s}">{t}</a>' for s, t, _, _ in GROUPS)
+sections.append(
+  f'    <section id="exits">\n'
+  f'      <header class="sec">\n'
+  f'        <h2>Exits</h2>\n'
+  f'        <p>The other half of an entrance: keep going as the element leaves. '
+  f'Set with <code>data-dolly-exit</code>.</p>\n'
+  f'        <span class="label">{len(exit_order)}</span>\n'
+  f'      </header>\n'
+  f'      <div class="grid">\n' + '\n'.join(exit_card(n) for n in exit_order) + '\n      </div>\n'
+  f'    </section>')
+
+nav = ' '.join(f'<a href="#{s}">{t}</a>' for s, t, _, _ in GROUPS) + ' <a href="#exits">Exits</a>'
 
 HEAD = open(os.path.join(os.path.dirname(__file__), 'moves-head.html'), encoding='utf-8').read()
 html = HEAD.replace('{{COUNT}}', str(len(order))) \
+           .replace('{{EXITS}}', str(len(exit_order))) \
            .replace('{{NAV}}', nav) \
            .replace('{{SECTIONS}}', '\n'.join(sections))
 
 tmp = 'moves.html.tmp'
 open(tmp, 'w', encoding='utf-8').write(html)
 os.replace(tmp, 'moves.html')
-print('ok: %d moves across %d groups' % (len(order), len(GROUPS)))
+print('ok: %d moves across %d groups, %d exits' % (len(order), len(GROUPS), len(exit_order)))

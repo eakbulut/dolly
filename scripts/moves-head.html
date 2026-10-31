@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dolly — every move</title>
-<meta name="description" content="All {{COUNT}} Dolly moves, each one playing as you scroll past it. A reference page for choosing a move.">
+<meta name="description" content="All {{COUNT}} Dolly moves and {{EXITS}} exits, each one playing as you scroll past it. A reference page for choosing a move.">
 <meta property="og:title" content="Dolly — every move">
-<meta property="og:description" content="All {{COUNT}} moves, each one playing as you scroll past it.">
+<meta property="og:description" content="All {{COUNT}} moves and {{EXITS}} exits, each one playing as you scroll past it.">
 <meta property="og:url" content="https://usedolly.dev/moves.html">
 <link rel="canonical" href="https://usedolly.dev/moves.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -105,6 +105,12 @@ section{padding:clamp(34px,6vh,72px) 0 0}
    excluded in scripts/build-moves.py and keep their own range. */
 .demo.arrive [data-dolly]{--dolly-range:cover 30% cover 70%}
 .demo.scrub  [data-dolly]{--dolly-range:cover 20% cover 80%}
+/* An exit plays over the subject's own height once its top reaches the top
+   of the viewport: on a 60px plate that is a flick, and here it would happen
+   under the sticky header. Exit cards start 35vh early and finish as the
+   plate slides under the header. Still exit offsets only, which is the rule
+   the README gives authors. */
+.demo.exits [data-dolly-exit]{--dolly-range:exit -35vh exit calc(100% - 60px)}
 .plate{width:56%;height:46%;border-radius:5px;background:var(--accent)}
 .plate.tall{width:70%;height:150%}
 .clip{width:72%;height:70%;border-radius:6px;overflow:clip;display:grid;place-items:center}
@@ -172,13 +178,15 @@ footer{margin-top:clamp(60px,10vh,120px);padding:clamp(30px,5vh,60px) 0;
 <main class="wrap">
 
   <div class="lede">
-    <h1>All {{COUNT}} moves.</h1>
+    <h1>All {{COUNT}} moves, and {{EXITS}} exits.</h1>
     <p>Each move plays as it crosses your screen. Scroll back up to see one
       again. The page has no JavaScript, so what you see here is what the
       stylesheet does on its own.</p>
     <p>Moves tagged <em>repaints</em> animate something other than transform or
       opacity, so the browser redraws them on the main thread every frame.
       They can stutter on phones, so use them on a few elements, not a whole grid.</p>
+    <p>Exits, at the bottom, play as a card leaves the top of the screen. Keep
+      scrolling past one to see it go.</p>
     <span class="label">{{COUNT}} moves · 0 kB of JavaScript · one attribute</span>
     <p class="nosupport">This browser doesn&rsquo;t support scroll-driven animation, so the
       moves below are shown at their finished state. Pages using Dolly look the
