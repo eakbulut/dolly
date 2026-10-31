@@ -28,10 +28,11 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
   font-size:var(--t-03);line-height:1.55;-webkit-font-smoothing:antialiased}
 ::selection{background:var(--accent);color:#fff}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.mast :focus-visible,.title :focus-visible{outline-color:#fff}
 a{color:inherit;text-underline-offset:.22em;text-decoration-thickness:1px}
 a:hover{color:var(--accent)}
 img,svg{display:block;max-width:100%}
-code,pre{font-family:var(--mono)}
+code,pre{font-family:var(--mono);font-variant-ligatures:none}
 .wrap{max-width:1180px;margin:0 auto;padding:0 var(--gutter)}
 
 /* Title-sequence lettering: capitals, open tracking, weight not colour. */
@@ -74,27 +75,29 @@ code,pre{font-family:var(--mono)}
   font-size:clamp(12px,3.2vw,17px);color:#fff;max-width:100%;min-width:0;
   overflow-x:auto;white-space:nowrap;text-align:left}
 .slate .a{color:#FFE08A}
-.installs{margin:0 auto;display:grid;gap:8px;justify-items:center;
+.installs{margin:22px auto 0;display:grid;gap:8px;justify-items:center;
   font-size:var(--t-02)}
 .cmd{display:inline-flex;gap:10px;align-items:baseline;font-family:var(--mono);
   background:#fff;color:var(--ink);padding:10px 16px}
 .cmd .p{color:var(--ink-soft);user-select:none;-webkit-user-select:none}
 .cmd .c{user-select:all;-webkit-user-select:all}
-.cdn{color:#F3EEE3;font-family:var(--mono);font-size:var(--t-00);overflow-wrap:anywhere}
+.cdn{color:#F3EEE3;font-size:var(--t-02)}
+.cdn a{font-family:var(--mono);font-size:var(--t-00)}
 .cdn a:hover{color:#fff}
 
-/* The poster's billing block: credits set small and tight. */
-.bill{display:grid;grid-template-columns:repeat(3,auto);justify-content:center;
-  column-gap:clamp(18px,4vw,52px);row-gap:10px;margin:26px 0 0;font-size:var(--t-00);
-  line-height:1.35;border-top:1px solid rgba(255,255,255,.55);padding-top:16px;
-  max-width:860px;width:100%}
-.bill div{display:flex;flex-direction:column;align-items:center}
-.bill dt{text-transform:uppercase;letter-spacing:.18em;color:#D9E0FF;font-weight:500}
-.bill dd{margin:2px 0 0;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
-.bill .promise{grid-column:1/-1}
-.bill .promise dd{font-weight:500;text-transform:none;letter-spacing:.02em;font-size:var(--t-02)}
+/* The poster's billing block: run-on credit lines, the role words small and
+   light beside the names, leading pulled tight the way a one-sheet sets it. */
+.bill{margin:0;max-width:820px;width:100%;border-top:1px solid rgba(255,255,255,.55);
+  padding-top:16px;line-height:1.15;text-transform:uppercase;text-wrap:balance}
+.bill div{display:inline-block;white-space:nowrap;margin:0 .5em 4px}
+.bill dt,.bill dd{display:inline;margin:0}
+.bill dt{font-size:11px;font-weight:400;letter-spacing:.06em;color:#D9E0FF;margin-right:.35em}
+.bill dd{font-size:clamp(14px,1.2vw,17px);font-weight:700;letter-spacing:-.01em;
+  margin-right:0}
+.bill .promise{display:block;white-space:normal;margin-top:10px}
+.bill .promise dt{display:block;margin:0 0 2px}
+.bill .promise dd{display:block;font-weight:500;text-transform:none;letter-spacing:0;margin:0}
 @media(max-width:620px){
-  .bill{grid-template-columns:repeat(2,auto)}
   .layer-claim{padding-top:92px;padding-bottom:36px}
 }
 
@@ -103,7 +106,8 @@ code,pre{font-family:var(--mono)}
    static background, painted once. */
 .board{display:inline-block;background:var(--board);color:var(--ink);
   border:1.5px solid var(--ink);padding:.35em .9em .3em;
-  background-image:repeating-linear-gradient(180deg,transparent 0 calc(1.25em - 1px),var(--groove) calc(1.25em - 1px) 1.25em);
+  background-image:repeating-linear-gradient(180deg,transparent 0 calc(1.25em - 1.5px),var(--rule) calc(1.25em - 1.5px) 1.25em);
+  background-position:0 .35em;
   font-family:var(--display);font-weight:500;text-transform:uppercase;
   letter-spacing:.16em;line-height:1.25;font-size:var(--t-06);margin:0}
 .board span{display:inline-block}
@@ -116,7 +120,7 @@ code,pre{font-family:var(--mono)}
 /* One attribute: the snippet and the element it moves, side by side. */
 .pair{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,3vw,32px);
   margin:44px auto 0;max-width:900px;text-align:left}
-.pair pre{margin:0;background:var(--ink);color:#EDE8DC;padding:22px;overflow-x:auto;
+.pair pre{margin:0;background:var(--ink);color:#EDE8DC;padding:22px;white-space:pre-wrap;overflow-wrap:break-word;
   font-size:var(--t-02);line-height:1.7}
 .pair pre .a{color:#FFE08A}.pair pre .t{color:#A9B9FF}
 .stagebox{background:var(--block);display:grid;place-items:center;padding:28px;
@@ -144,8 +148,8 @@ code,pre{font-family:var(--mono)}
 .prop{display:block}
 .prop.card{width:46%;aspect-ratio:3/2;background:var(--paper)}
 .prop.disc{width:34%;aspect-ratio:1;border-radius:50%;background:var(--ink)}
-.prop.bars{display:flex;gap:8%;width:70%}
-.prop.bars i{flex:1;height:44px;background:var(--ink)}
+.prop.bars{display:flex;gap:6%;width:82%;height:38%}
+.prop.bars i{flex:1;background:var(--ink)}
 .prop.sq{width:30%;aspect-ratio:1;background:var(--accent)}
 .prop.tile{width:40%;aspect-ratio:3/4;background:var(--block)}
 @media(max-width:760px){
@@ -187,6 +191,7 @@ code,pre{font-family:var(--mono)}
 .tickets .cmd .p{color:#B8B2A4}
 .tickets .cdn{color:var(--ink)}
 .tickets .cdn a:hover{color:var(--ink)}
+.links a:hover{color:var(--ink);text-decoration-thickness:2px}
 .links{margin:30px auto 0;display:flex;gap:22px;justify-content:center;flex-wrap:wrap;
   font-size:var(--t-02)}
 
@@ -212,12 +217,12 @@ footer .mark{color:var(--ink);display:block;margin-bottom:14px}
       <h1 id="claim">Scroll animations in plain CSS</h1>
       <p class="sub">One attribute per element. No JavaScript, so there is nothing to load, block or break.</p>
       <pre class="slate"><code>&lt;h2 <span class="a">data-dolly="tilt-up"</span>&gt;…&lt;/h2&gt;</code></pre>
-    </div>
-    <div class="layer layer-bill" data-dolly-exit="dolly-in">
       <div class="installs">
         <code class="cmd"><span class="p" aria-hidden="true">$</span><span class="c">npm i @dollyjs/core</span></code>
-        <span class="cdn">or one file: <a href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.min.css">cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.min.css</a></span>
+        <span class="cdn">or one file: <a href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.min.css">cdn.jsdelivr.net/<wbr>npm/<wbr>@dollyjs/<wbr>core@0/<wbr>src/<wbr>dolly.min.css</a></span>
       </div>
+    </div>
+    <div class="layer layer-bill" data-dolly-exit="dolly-in">
       <dl class="bill">
         <div><dt>Starring</dt><dd>34 moves, 13 exits</dd></div>
         <div><dt>Directed by</dt><dd>Your browser</dd></div>
@@ -235,7 +240,8 @@ footer .mark{color:var(--ink);display:block;margin-bottom:14px}
       <h2 class="board" id="one" data-dolly-stagger><span data-dolly="tilt-up">One</span> <span data-dolly="tilt-up">attribute.</span></h2>
       <p data-dolly="fade">Put <code>data-dolly</code> on an element you already have and name a camera move. That is the whole integration: no wrapper, no provider, no init call. The title card you scrolled past left with <code>data-dolly-exit</code>.</p>
       <div class="pair">
-        <pre><code><span class="t">&lt;link</span> rel="stylesheet" href="dolly.css"<span class="t">&gt;</span>
+        <pre><code><span class="t">&lt;link</span> rel="stylesheet"
+      href="dolly.css"<span class="t">&gt;</span>
 
 <span class="t">&lt;h2</span> <span class="a">data-dolly="crane"</span><span class="t">&gt;</span>
   Enter the hero
@@ -309,7 +315,7 @@ footer .mark{color:var(--ink);display:block;margin-bottom:14px}
       <p data-dolly="fade">One install. Then delete whichever scroll library you were using.</p>
       <div class="installs">
         <code class="cmd"><span class="p" aria-hidden="true">$</span><span class="c">npm i @dollyjs/core</span></code>
-        <span class="cdn">or one file: <a href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.min.css">cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.min.css</a></span>
+        <span class="cdn">or one file: <a href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.min.css">cdn.jsdelivr.net/<wbr>npm/<wbr>@dollyjs/<wbr>core@0/<wbr>src/<wbr>dolly.min.css</a></span>
       </div>
       <nav class="links caps" aria-label="More"><a href="moves.html">Moves</a><a href="agents.md">agents.md</a><a href="https://github.com/eakbulut/dolly">GitHub</a><a href="https://www.npmjs.com/package/@dollyjs/core">npm</a></nav>
     </div>
