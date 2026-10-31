@@ -545,5 +545,4 @@ MIT.
 
 ---
 
-Named for the camera dolly. Dedicated to Dolly Parton (1946–2026), who founded
-[the Imagination Library](https://imaginationlibrary.com/).
+Named for the camera dolly.
