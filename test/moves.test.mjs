@@ -438,6 +438,12 @@ test('the social card was rendered from the current move count', () => {
   );
   assert.equal(stamped, shipped.size,
     'the social card is stale — rerun scripts/make-og.py');
+
+  const j = png.indexOf('dolly-exits');
+  assert.ok(j > 0, 'assets/og-image.png carries no exit count — rerun scripts/make-og.py');
+  const exitsStamped = Number(png.subarray(j + 'dolly-exits'.length + 1, j + 'dolly-exits'.length + 9)
+    .toString('ascii').match(/^\d+/)?.[0]);
+  assert.equal(exitsStamped, exits.size, 'the social card has a stale exit count — rerun scripts/make-og.py');
 });
 
 test('the page binding is declared after every move that sets a range', () => {
