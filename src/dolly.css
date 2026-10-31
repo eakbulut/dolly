@@ -79,6 +79,13 @@
 [data-dolly="wipe-up"]   { animation-name: dolly-wipe-up }
 [data-dolly="roll"]      { animation-name: dolly-roll }
 
+/* The clip wipes need an end state of the same shape. Their keyframes leave
+   the far end implicit, i.e. the element's own clip-path, which is `none`,
+   and `none` does not interpolate with inset(): the browser swaps halfway
+   through instead of wiping. inset(0) clips nothing, so the element looks
+   exactly as authored, but gives the wipe something to travel to. */
+[data-dolly="reveal"], [data-dolly="wipe-up"] { clip-path: inset(0) }
+
 /* Scroll-linked rather than element-linked: these track the scrollport
    itself, so they run the whole length of the page instead of resolving
    once on entry. */
@@ -661,6 +668,9 @@
 [data-dolly-exit="wipe-up"]   { animation-name: dolly-wipe-up-exit }
 [data-dolly-exit="rack"]      { animation-name: dolly-rack-exit }
 [data-dolly-exit="whip"]      { animation-name: dolly-whip-exit }
+
+/* Same reason as the entrance wipes: something of the same shape to leave from. */
+[data-dolly-exit="reveal"], [data-dolly-exit="wipe-up"] { clip-path: inset(0) }
 
 /* ---------- authoring knobs ---------- *
 
