@@ -1,6 +1,6 @@
 {
   "name": "@dollyjs/core",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Scroll animations in plain CSS: 34 camera moves and 13 exits, each set with one attribute. Ships no JavaScript, and content stays visible in browsers without scroll timelines.",
   "type": "module",
   "style": "./src/dolly.css",
