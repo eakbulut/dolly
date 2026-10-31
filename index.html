@@ -68,6 +68,13 @@ code,pre{font-family:var(--mono);font-variant-ligatures:none}
 .onscreen p{margin:1.4cqi 0 0;font-size:max(11px,min(.9cqi,3vw));letter-spacing:.2em;text-transform:uppercase;
   color:#2A2824}
 .foot{position:relative;z-index:2;text-align:center;padding:0 var(--gutter) 34px}
+/* Exits start when an element's top reaches the top of the screen, which for
+   the hero is after most of it has already gone. These start them early, so
+   the title switches off and the credits rise away while you can see them.
+   Still exit offsets only, and both start no earlier than scroll 0: the
+   claim's top sits at least 18% of a screen down, the credits' at least 50%. */
+.onscreen{--dolly-range:exit -18vh exit 45%}
+.foot{--dolly-range:exit -48vh exit 35%}
 .foot .sub{margin:0 auto;max-width:42ch;font-size:var(--t-04);line-height:1.45}
 .row{margin-top:20px;display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap}
 .slate{font-size:15px;border:1px solid rgba(243,238,227,.45);padding:10px 16px;white-space:nowrap}
@@ -92,7 +99,10 @@ code,pre{font-family:var(--mono);font-variant-ligatures:none}
   /* On a phone the stage is exactly one screen tall, so the screen ends at
      52.4% of it: the copy starts below that and the card grows if it must. */
   .screening{justify-content:flex-start}
-  .foot{padding-top:calc(52.4svh + 18px);padding-bottom:26px}
+  /* a spacer, not padding on .foot: the credits' exit is measured from their
+     own top, which has to sit below the screen as it does on desktop */
+  .screening::before{content:"";flex:none;height:calc(52.4svh + 18px)}
+  .foot{padding-bottom:26px}
   .slate{font-size:13px}
 }
 .bill .wrap-ok{white-space:normal}
@@ -120,7 +130,7 @@ main [data-dolly]{--dolly-range:cover 30% cover 70%}
 .pair pre{margin:0;background:#17150F;border:1px solid #2E2A24;color:#EDE8DC;padding:20px;
   font-size:var(--t-02);line-height:1.7;white-space:pre-wrap}
 .pair pre .a{color:#FFE08A}.pair pre .t{color:#A9B9FF}
-.demo{border:1px solid #2E2A24;padding:26px;display:grid;place-items:center;min-height:120px}
+.demo{border:1px solid #2E2A24;padding:26px;display:grid;place-items:center;min-height:200px;overflow:clip}
 .demo p{margin:0;font-weight:700;font-size:var(--t-06);text-transform:uppercase;letter-spacing:.04em;line-height:1}
 @media(max-width:760px){.seat{grid-template-columns:1fr}.seat .ph{aspect-ratio:4/3}}
 
