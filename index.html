@@ -97,13 +97,13 @@ code,pre{font-family:var(--mono);font-variant-ligatures:none}
 }
 .bill .wrap-ok{white-space:normal}
 
-/* Entrances land at eye level. The library's default, entry 0% -> cover 35%,
-   finishes while an element is still in the bottom third of the screen,
-   which suits a page where one section owns the screen. Here the reader
-   watches the middle: an element's centre crosses the viewport's centre at
-   exactly cover 50%, so each move starts as it comes into view and settles
-   there. Exits keep their own range. */
-main [data-dolly]{--dolly-range:cover 10% cover 50%}
+/* Entrances play through eye level, the same timing as moves.html. The
+   library's default, entry 0% -> cover 35%, finishes while an element is
+   still in the bottom third of the screen. An element's centre crosses the
+   viewport's centre at exactly cover 50%, so a range symmetric about it is
+   half-played there: the reader sees the move happening, not its end state.
+   Exits keep their own range. */
+main [data-dolly]{--dolly-range:cover 30% cover 70%}
 
 /* ================= CHAPTERS ================= */
 .chapter{padding:clamp(90px,15vh,170px) 0 0}
