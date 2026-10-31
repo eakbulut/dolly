@@ -22,7 +22,7 @@
 <link rel="stylesheet" href="assets/site.css">
 <style>
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;scroll-padding-top:64px;
+html{-webkit-text-size-adjust:100%;
   scrollbar-color:var(--ink-soft) var(--paper);caret-color:var(--accent)}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
   font-size:var(--t-03);line-height:1.55;-webkit-font-smoothing:antialiased}
@@ -208,15 +208,15 @@ footer .mark{color:var(--ink);display:block;margin-bottom:14px}
 <main id="top">
 
   <section class="title" aria-labelledby="claim">
-    <div class="layer layer-claim">
+    <div class="layer layer-claim" data-dolly-exit="tilt-up">
       <h1 id="claim">Scroll animations in plain CSS</h1>
       <p class="sub">One attribute per element. No JavaScript, so there is nothing to load, block or break.</p>
       <pre class="slate"><code>&lt;h2 <span class="a">data-dolly="tilt-up"</span>&gt;…&lt;/h2&gt;</code></pre>
     </div>
-    <div class="layer layer-bill">
+    <div class="layer layer-bill" data-dolly-exit="dolly-in">
       <div class="installs">
         <code class="cmd"><span class="p" aria-hidden="true">$</span><span class="c">npm i @dollyjs/core</span></code>
-        <span class="cdn">or one file: <a href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.css">cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.css</a></span>
+        <span class="cdn">or one file: <a href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.min.css">cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.min.css</a></span>
       </div>
       <dl class="bill">
         <div><dt>Starring</dt><dd>34 moves, 13 exits</dd></div>
@@ -232,42 +232,42 @@ footer .mark{color:var(--ink);display:block;margin-bottom:14px}
 
   <section class="chapter" aria-labelledby="one">
     <div class="wrap">
-      <h2 class="board" id="one"><span>One</span> <span>attribute.</span></h2>
-      <p>Put <code>data-dolly</code> on an element you already have and name a camera move. That is the whole integration: no wrapper, no provider, no init call.</p>
+      <h2 class="board" id="one" data-dolly-stagger><span data-dolly="tilt-up">One</span> <span data-dolly="tilt-up">attribute.</span></h2>
+      <p data-dolly="fade">Put <code>data-dolly</code> on an element you already have and name a camera move. That is the whole integration: no wrapper, no provider, no init call. The title card you scrolled past left with <code>data-dolly-exit</code>.</p>
       <div class="pair">
         <pre><code><span class="t">&lt;link</span> rel="stylesheet" href="dolly.css"<span class="t">&gt;</span>
 
 <span class="t">&lt;h2</span> <span class="a">data-dolly="crane"</span><span class="t">&gt;</span>
   Enter the hero
 <span class="t">&lt;/h2&gt;</span></code></pre>
-        <div class="stagebox"><p>Enter the hero</p></div>
+        <div class="stagebox"><p data-dolly="crane">Enter the hero</p></div>
       </div>
     </div>
   </section>
 
   <section class="chapter" aria-labelledby="showing">
     <div class="wrap">
-      <h2 class="board" id="showing"><span>Now</span> <span>showing.</span></h2>
-      <p>Each move is named for what a camera does. If you know the film term, you can guess the attribute.</p>
+      <h2 class="board" id="showing" data-dolly-stagger><span data-dolly="tilt-up">Now</span> <span data-dolly="tilt-up">showing.</span></h2>
+      <p data-dolly="fade">Each move is named for what a camera does. If you know the film term, you can guess the attribute.</p>
       <div class="tableau">
         <figure class="shot">
-          <div class="frame f-blue"><span class="prop card"></span></div>
+          <div class="frame f-blue"><span class="prop card" data-dolly="tilt-up"></span></div>
           <figcaption><code>tilt-up</code> rises into place</figcaption>
         </figure>
         <figure class="shot">
-          <div class="frame f-ochre"><span class="prop disc"></span></div>
+          <div class="frame f-ochre"><span class="prop disc" data-dolly="dolly-in"></span></div>
           <figcaption><code>dolly-in</code> pushes in toward it</figcaption>
         </figure>
         <figure class="shot">
-          <div class="frame f-paper"><span class="prop bars"><i></i><i></i><i></i></span></div>
+          <div class="frame f-paper"><span class="prop bars" data-dolly="pan-left"><i></i><i></i><i></i></span></div>
           <figcaption><code>pan-left</code> travels in from the right</figcaption>
         </figure>
         <figure class="shot">
-          <div class="frame f-ink"><span class="prop sq"></span></div>
+          <div class="frame f-ink"><span class="prop sq" data-dolly="crane"></span></div>
           <figcaption><code>crane</code> lifts and settles</figcaption>
         </figure>
         <figure class="shot">
-          <div class="frame f-blue"><span class="prop tile"></span></div>
+          <div class="frame f-blue"><span class="prop tile" data-dolly="roll"></span></div>
           <figcaption><code>roll</code> rotates level</figcaption>
         </figure>
       </div>
@@ -277,12 +277,12 @@ footer .mark{color:var(--ink);display:block;margin-bottom:14px}
 
   <section class="chapter" aria-labelledby="projector">
     <div class="wrap">
-      <h2 class="board" id="projector"><span>If</span> <span>the</span> <span>projector</span> <span>breaks.</span></h2>
-      <p>Most scroll libraries set <code>opacity: 0</code> on your content and wait for JavaScript to bring it back. When the script fails, so does the page. Dolly keeps the hidden state inside the animation, so a browser that can&rsquo;t run it, or a reader who turned motion off, gets the page exactly as you wrote it.</p>
+      <h2 class="board" id="projector" data-dolly-stagger><span data-dolly="tilt-up">If</span> <span data-dolly="tilt-up">the</span> <span data-dolly="tilt-up">projector</span> <span data-dolly="tilt-up">breaks.</span></h2>
+      <p data-dolly="fade">Most scroll libraries set <code>opacity: 0</code> on your content and wait for JavaScript to bring it back. When the script fails, so does the page. Dolly keeps the hidden state inside the animation, so a browser that can&rsquo;t run it, or a reader who turned motion off, gets the page exactly as you wrote it.</p>
       <div class="diptych">
         <figure>
-          <div class="frame f-blue"><div class="mini"><b>Your heading</b><i></i><i></i></div></div>
-          <figcaption>With scroll timelines: it moves.</figcaption>
+          <div class="frame f-blue"><div class="mini" data-dolly="tilt-up"><b>Your heading</b><i></i><i></i></div></div>
+          <figcaption>With scroll timelines: <code>tilt-up</code>.</figcaption>
         </figure>
         <figure>
           <div class="frame f-blue"><div class="mini"><b>Your heading</b><i></i><i></i></div></div>
@@ -294,22 +294,22 @@ footer .mark{color:var(--ink);display:block;margin-bottom:14px}
 
   <section class="chapter" aria-labelledby="runtime">
     <div class="wrap">
-      <h2 class="board" id="runtime"><span>Running</span> <span>time.</span></h2>
-      <div class="runtime">
+      <h2 class="board" id="runtime" data-dolly-stagger><span data-dolly="tilt-up">Running</span> <span data-dolly="tilt-up">time.</span></h2>
+      <div class="runtime" data-dolly="reveal">
         <div><b>0 kB</b><span>of JavaScript in Dolly</span></div>
         <div><b>4.7 kB</b><span>of JavaScript in AOS</span></div>
       </div>
-      <p class="runtime-note">Minified and gzipped. Dolly 0.4.0 is 2.7 kB of CSS; AOS 2.3.4 adds 2.2 kB of CSS to its JavaScript.</p>
+      <p class="runtime-note">This table wiped in with <code>reveal</code>. Sizes are minified and gzipped. Dolly 0.4.0 is 2.7 kB of CSS; AOS 2.3.4 adds 2.2 kB of CSS to its JavaScript.</p>
     </div>
   </section>
 
   <section class="tickets" aria-labelledby="tickets">
     <div class="wrap">
-      <h2 class="board" id="tickets"><span>Tickets.</span></h2>
-      <p>One install. Then delete whichever scroll library you were using.</p>
+      <h2 class="board" id="tickets" data-dolly-stagger><span data-dolly="tilt-up">Tickets.</span></h2>
+      <p data-dolly="fade">One install. Then delete whichever scroll library you were using.</p>
       <div class="installs">
         <code class="cmd"><span class="p" aria-hidden="true">$</span><span class="c">npm i @dollyjs/core</span></code>
-        <span class="cdn">or one file: <a href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.css">cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.css</a></span>
+        <span class="cdn">or one file: <a href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.min.css">cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.min.css</a></span>
       </div>
       <nav class="links caps" aria-label="More"><a href="moves.html">Moves</a><a href="agents.md">agents.md</a><a href="https://github.com/eakbulut/dolly">GitHub</a><a href="https://www.npmjs.com/package/@dollyjs/core">npm</a></nav>
     </div>
