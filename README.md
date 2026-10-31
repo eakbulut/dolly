@@ -1,7 +1,7 @@
 # Dolly
 
-Scroll animations in plain CSS: 34 camera moves, each set with one attribute,
-and no JavaScript.
+Scroll animations in plain CSS: 34 camera moves and 13 exits, each set with one
+attribute, and no JavaScript.
 
 ```html
 <h2 data-dolly="tilt-up">This rises into place as you scroll to it.</h2>
@@ -20,7 +20,7 @@ the content stays hidden. Dolly only hides content inside `@keyframes`. A
 browser without scroll timelines shows the whole page and skips the motion.
 
 - [usedolly.dev](https://usedolly.dev/) — the demo site
-- [usedolly.dev/moves.html](https://usedolly.dev/moves.html) — all 34 moves, playing as you scroll
+- [usedolly.dev/moves.html](https://usedolly.dev/moves.html) — all 34 moves and 13 exits, playing as you scroll
 - [`agents.md`](./agents.md) — point your coding agent at it
 - MIT, zero dependencies, zero JavaScript
 
@@ -37,7 +37,7 @@ npm i @dollyjs/core
 Or link the file directly:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.css">
 ```
 
 It works next to Tailwind, plain CSS or any framework, and only touches
@@ -213,6 +213,61 @@ on the ancestor that should hold the camera.
 Knobs: `--dolly-perspective`, `--dolly-vanish`, `--dolly-z-from`, `--dolly-z-to`,
 `--dolly-angle`.
 
+## Exits
+
+Every move above plays as the element arrives. An exit plays as it leaves:
+the element sits exactly where your layout put it until its top reaches the
+top of the viewport, then keeps going the way it came in. A `tilt-up` exit
+keeps rising; a `pan-left` exit keeps moving left.
+
+```html
+<header data-dolly-exit="tilt-up">…</header>
+```
+
+| Exit | What it does |
+| --- | --- |
+| `fade` | Fades out. |
+| `tilt-up` | Keeps rising 2.5rem as it goes. |
+| `tilt-down` | Keeps sinking 2.5rem as it goes. |
+| `pan-left` | Keeps travelling left. |
+| `pan-right` | Keeps travelling right. |
+| `dolly-in` | The camera pushes past it, to 1.1 scale. |
+| `dolly-out` | The camera pulls away, to 0.9 scale. |
+| `crane` | Keeps craning up 5rem. |
+| `roll` | Keeps rolling, to 5deg. |
+| `reveal` | Clip wipe off to the right. |
+| `wipe-up` | Clip wipe off the top. |
+| `rack` | Focus pulls away into a 14px blur. |
+| `whip` | Whips out to the left, with blur. |
+
+To arrive with one move and leave with another, nest two elements. Their
+transforms combine:
+
+```html
+<section data-dolly-exit="dolly-in">
+  <h2 data-dolly="tilt-up">Enters rising, leaves past the camera.</h2>
+</section>
+```
+
+Rules worth knowing:
+
+- **One attribute per element.** `data-dolly` and `data-dolly-exit` on the
+  same element is not supported; nest instead.
+- **Exit offsets only.** A custom `--dolly-range` on an exit uses `exit`
+  values, such as `exit 0% exit 45%`. An `entry` or `cover` range copied off
+  an entrance fades the element out while it arrives.
+- **Not in the last screen of the page.** An element there never scrolls far
+  enough to finish leaving, so it stays half-faded.
+- **Not taller than the viewport.** A tall element starts its exit while its
+  bottom is still being read.
+- **`overflow: clip`, never `hidden`, on the container.** `pan-*`, `dolly-in`,
+  `crane` and `whip` carry the element past its box; `hidden` would make the
+  container its own scroller and stop the exit playing.
+- **Not yet:** exits ignore `data-dolly-on`, `data-dolly-stagger` and scenes.
+
+Like every move, an exit renders the element exactly as authored under
+reduced motion, in print, and in browsers without scroll timelines.
+
 ## Pinned scenes
 
 Pinning is where most scroll libraries need JavaScript: an element sticks to
@@ -248,11 +303,11 @@ in sequence instead of all at once:
 ```html
 <div data-dolly-scene style="--dolly-scene: 400vh">
   <div data-dolly-pin>
-    <p data-dolly="beat" data-dolly-on="scene" data-dolly-range
+    <p data-dolly="beat" data-dolly-on="scene"
        style="--dolly-range: contain 0% contain 34%">First.</p>
-    <p data-dolly="beat" data-dolly-on="scene" data-dolly-range
+    <p data-dolly="beat" data-dolly-on="scene"
        style="--dolly-range: contain 30% contain 64%">Then this.</p>
-    <p data-dolly="hold" data-dolly-on="scene" data-dolly-range
+    <p data-dolly="hold" data-dolly-on="scene"
        style="--dolly-range: contain 60% contain 96%">And it stays.</p>
   </div>
 </div>
@@ -300,13 +355,13 @@ attribute; they have nowhere else to read from.
 
 ## Knobs
 
-Set these as inline styles or in your own CSS. `data-dolly-range` and
-`data-dolly-ease` are attributes you add; the rest are plain custom properties.
+Set these as inline styles or in your own CSS. `data-dolly-ease` is an
+attribute you add; the rest are plain custom properties.
 
 | Knob | Applies to | Default |
 | --- | --- | --- |
-| `data-dolly-range` + `--dolly-range` | any move | the move's own range |
-| `data-dolly-ease` + `--dolly-ease` | any move | `cubic-bezier(.22,1,.36,1)` |
+| `--dolly-range` | any move or exit | the move's own range |
+| `data-dolly-ease` + `--dolly-ease` | any move or exit | `linear` |
 | `--dolly-scene` | `data-dolly-scene` | `300vh` |
 | `--dolly-depth` | `parallax` | `4rem` |
 | `--dolly-zoom` | `zoom` | `1.12` |
@@ -324,12 +379,13 @@ they stay smooth even when the page is busy. Animating any other property
 makes the browser repaint on the main thread every frame, and on a phone that
 is where scroll animation starts to stutter.
 
-23 of the 34 moves only use transform and opacity. These 11 repaint:
+23 of the 34 moves, and 9 of the 13 exits, only use transform and opacity.
+These repaint:
 
 | Move | Animates |
 | --- | --- |
-| `rack`, `whip`, `beat-in` | `filter: blur()` |
-| `reveal`, `wipe-up`, `iris` | `clip-path` |
+| `rack`, `whip`, `beat-in`, and the `rack` and `whip` exits | `filter: blur()` |
+| `reveal`, `wipe-up`, `iris`, and the `reveal` and `wipe-up` exits | `clip-path` |
 | `mask` | `background-size` |
 | `sequence` | `background-position`, once per cell |
 | `letter` | `letter-spacing`, which also reflows the line |

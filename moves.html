@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dolly — every move</title>
-<meta name="description" content="All 34 Dolly moves, each one playing as you scroll past it. A reference page for choosing a move.">
+<meta name="description" content="All 34 Dolly moves and 13 exits, each one playing as you scroll past it. A reference page for choosing a move.">
 <meta property="og:title" content="Dolly — every move">
-<meta property="og:description" content="All 34 moves, each one playing as you scroll past it.">
+<meta property="og:description" content="All 34 moves and 13 exits, each one playing as you scroll past it.">
 <meta property="og:url" content="https://usedolly.dev/moves.html">
 <link rel="canonical" href="https://usedolly.dev/moves.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -105,6 +105,12 @@ section{padding:clamp(34px,6vh,72px) 0 0}
    excluded in scripts/build-moves.py and keep their own range. */
 .demo.arrive [data-dolly]{--dolly-range:cover 30% cover 70%}
 .demo.scrub  [data-dolly]{--dolly-range:cover 20% cover 80%}
+/* An exit plays over the subject's own height once its top reaches the top
+   of the viewport: on a 60px plate that is a flick, and here it would happen
+   under the sticky header. Exit cards start 35vh early and finish as the
+   plate slides under the header. Still exit offsets only, which is the rule
+   the README gives authors. */
+.demo.exits [data-dolly-exit]{--dolly-range:exit -35vh exit calc(100% - 60px)}
 .plate{width:56%;height:46%;border-radius:5px;background:var(--accent)}
 .plate.tall{width:70%;height:150%}
 .clip{width:72%;height:70%;border-radius:6px;overflow:clip;display:grid;place-items:center}
@@ -166,19 +172,21 @@ footer{margin-top:clamp(60px,10vh,120px);padding:clamp(30px,5vh,60px) 0;
 
 <div class="top"><div class="wrap">
   <a class="home" href="./">Dolly<span>.</span></a>
-  <nav><a href="#entrances">Entrances</a> <a href="#continuous">Continuous</a> <a href="#beats">Beats</a> <a href="#cinematic">Cinematic</a> <a href="#depth">Depth</a> <a href="#data">Drawing and data</a></nav>
+  <nav><a href="#entrances">Entrances</a> <a href="#continuous">Continuous</a> <a href="#beats">Beats</a> <a href="#cinematic">Cinematic</a> <a href="#depth">Depth</a> <a href="#data">Drawing and data</a> <a href="#exits">Exits</a></nav>
 </div></div>
 
 <main class="wrap">
 
   <div class="lede">
-    <h1>All 34 moves.</h1>
+    <h1>All 34 moves, and 13 exits.</h1>
     <p>Each move plays as it crosses your screen. Scroll back up to see one
       again. The page has no JavaScript, so what you see here is what the
       stylesheet does on its own.</p>
     <p>Moves tagged <em>repaints</em> animate something other than transform or
       opacity, so the browser redraws them on the main thread every frame.
       They can stutter on phones, so use them on a few elements, not a whole grid.</p>
+    <p>Exits, at the bottom, play as a card leaves the top of the screen. Keep
+      scrolling past one to see it go.</p>
     <span class="label">34 moves · 0 kB of JavaScript · one attribute</span>
     <p class="nosupport">This browser doesn&rsquo;t support scroll-driven animation, so the
       moves below are shown at their finished state. Pages using Dolly look the
@@ -440,6 +448,93 @@ footer{margin-top:clamp(60px,10vh,120px);padding:clamp(30px,5vh,60px) 0;
         <h3>count <span class="cost">repaints · counter</span></h3>
         <p>A number counts up as it scrolls into place.</p>
         <code>data-dolly="count"</code>
+      </article>
+      </div>
+    </section>
+    <section id="exits">
+      <header class="sec">
+        <h2>Exits</h2>
+        <p>The other half of an entrance: keep going as the element leaves. Set with <code>data-dolly-exit</code>.</p>
+        <span class="label">13</span>
+      </header>
+      <div class="grid">
+      <article class="card" id="exit-fade">
+        <div class="demo leaves exits"><div class="plate" data-dolly-exit="fade"></div></div>
+        <h3>fade</h3>
+        <p>Fades out.</p>
+        <code>data-dolly-exit="fade"</code>
+      </article>
+      <article class="card" id="exit-tilt-up">
+        <div class="demo leaves exits"><div class="plate" data-dolly-exit="tilt-up"></div></div>
+        <h3>tilt-up</h3>
+        <p>Keeps rising 2.5rem as it goes.</p>
+        <code>data-dolly-exit="tilt-up"</code>
+      </article>
+      <article class="card" id="exit-tilt-down">
+        <div class="demo leaves exits"><div class="plate" data-dolly-exit="tilt-down"></div></div>
+        <h3>tilt-down</h3>
+        <p>Keeps sinking 2.5rem as it goes.</p>
+        <code>data-dolly-exit="tilt-down"</code>
+      </article>
+      <article class="card" id="exit-pan-left">
+        <div class="demo leaves exits"><div class="plate" data-dolly-exit="pan-left"></div></div>
+        <h3>pan-left</h3>
+        <p>Keeps travelling left.</p>
+        <code>data-dolly-exit="pan-left"</code>
+      </article>
+      <article class="card" id="exit-pan-right">
+        <div class="demo leaves exits"><div class="plate" data-dolly-exit="pan-right"></div></div>
+        <h3>pan-right</h3>
+        <p>Keeps travelling right.</p>
+        <code>data-dolly-exit="pan-right"</code>
+      </article>
+      <article class="card" id="exit-dolly-in">
+        <div class="demo leaves exits"><div class="plate" data-dolly-exit="dolly-in"></div></div>
+        <h3>dolly-in</h3>
+        <p>The camera pushes past it, to 1.1 scale.</p>
+        <code>data-dolly-exit="dolly-in"</code>
+      </article>
+      <article class="card" id="exit-dolly-out">
+        <div class="demo leaves exits"><div class="plate" data-dolly-exit="dolly-out"></div></div>
+        <h3>dolly-out</h3>
+        <p>The camera pulls away, to 0.9 scale.</p>
+        <code>data-dolly-exit="dolly-out"</code>
+      </article>
+      <article class="card" id="exit-crane">
+        <div class="demo leaves exits"><div class="plate" data-dolly-exit="crane"></div></div>
+        <h3>crane</h3>
+        <p>Keeps craning up 5rem.</p>
+        <code>data-dolly-exit="crane"</code>
+      </article>
+      <article class="card" id="exit-roll">
+        <div class="demo leaves exits"><div class="plate" data-dolly-exit="roll"></div></div>
+        <h3>roll</h3>
+        <p>Keeps rolling, to 5deg.</p>
+        <code>data-dolly-exit="roll"</code>
+      </article>
+      <article class="card" id="exit-reveal">
+        <div class="demo leaves exits"><div class="plate" data-dolly-exit="reveal"></div></div>
+        <h3>reveal <span class="cost">repaints · clip-path</span></h3>
+        <p>Clip wipe off to the right.</p>
+        <code>data-dolly-exit="reveal"</code>
+      </article>
+      <article class="card" id="exit-wipe-up">
+        <div class="demo leaves exits"><div class="plate" data-dolly-exit="wipe-up"></div></div>
+        <h3>wipe-up <span class="cost">repaints · clip-path</span></h3>
+        <p>Clip wipe off the top.</p>
+        <code>data-dolly-exit="wipe-up"</code>
+      </article>
+      <article class="card" id="exit-rack">
+        <div class="demo leaves exits"><div class="plate" data-dolly-exit="rack"></div></div>
+        <h3>rack <span class="cost">repaints · filter</span></h3>
+        <p>Focus pulls away into a 14px blur.</p>
+        <code>data-dolly-exit="rack"</code>
+      </article>
+      <article class="card" id="exit-whip">
+        <div class="demo leaves exits"><div class="plate" data-dolly-exit="whip"></div></div>
+        <h3>whip <span class="cost">repaints · filter</span></h3>
+        <p>Whips out to the left, with blur.</p>
+        <code>data-dolly-exit="whip"</code>
       </article>
       </div>
     </section>

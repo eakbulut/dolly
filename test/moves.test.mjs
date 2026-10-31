@@ -74,10 +74,28 @@ for (const rule of rules) {
   if (named.length) moves.set(name, named);
 }
 
+/* exit name -> animation-name, out of the [data-dolly-exit="…"] rules. Exit
+   names repeat entrance names on purpose, so they get their own map. */
+const exits = new Map();
+for (const rule of rules) {
+  const name = rule.selector.match(/^\[data-dolly-exit="([^"]+)"\]$/)?.[1];
+  if (!name) continue;
+  const animation = decls(rule.body).find(([p]) => p === 'animation-name')?.[1];
+  if (animation && animation !== 'none') exits.set(name, animation);
+}
+
 test('every move has keyframes and every keyframes block has a move', () => {
   const defined = [...new Set(keyframes.map((k) => k.keyframes))].sort();
-  const referenced = [...new Set([...moves.values()].flat())].sort();
+  const referenced = [...new Set([...[...moves.values()].flat(), ...exits.values()])].sort();
   assert.deepEqual(referenced, defined, 'orphaned keyframes or a move pointing at nothing');
+
+  /* An exit is `to` only: its start is the element as authored, which is
+     what lets it sit untouched until it leaves. A `from` would hide it. */
+  for (const [name, kf] of exits) {
+    const body = keyframes.find((k) => k.keyframes === kf)?.body || '';
+    const steps = [...body.matchAll(/([\w%.,\s]+)\{/g)].map((m) => m[1].trim());
+    assert.deepEqual(steps, ['to'], `exit ${name} must have a single \`to\` keyframe`);
+  }
 });
 
 test('no base rule hides an element — the hidden state lives in @keyframes only', () => {
@@ -128,6 +146,16 @@ test('reduced motion turns every move off', () => {
       decls(rule.body).some(([p, v]) => p === 'animation-name' && v === 'none')
   );
   assert.ok(off, 'no @media (prefers-reduced-motion: reduce) rule setting animation-name: none');
+
+  /* The rule above is satisfied by [data-dolly] alone, so it cannot see
+     exits. They need their own. */
+  const exitOff = rules.find(
+    (rule) =>
+      rule.within.some((at) => /prefers-reduced-motion\s*:\s*reduce/.test(at)) &&
+      rule.selector.includes('[data-dolly-exit]') &&
+      decls(rule.body).some(([p, v]) => p === 'animation-name' && v === 'none')
+  );
+  assert.ok(exitOff, 'reduced motion does not turn exits off');
 });
 
 /* `[data-dolly-range]` and `[data-dolly-ease]` are per-element overrides made
@@ -204,12 +232,20 @@ test('moves whose `to` is not the authored state turn off without a timeline', (
   const moveOf = (kf) =>
     rules
       .filter((r) => decls(r.body).some(([p, v]) => p === 'animation-name' && v === kf))
-      .map((r) => (r.selector.match(/\[data-dolly="([^"]+)"\]/) || [])[1])
+      .map((r) => {
+        const exit = r.selector.match(/\[data-dolly-exit="([^"]+)"\]/)?.[1];
+        return exit ? `exit:${exit}` : (r.selector.match(/\[data-dolly="([^"]+)"\]/) || [])[1];
+      })
       .filter(Boolean)[0];
 
-  const guarded = rules
-    .filter((r) => r.within.some((a) => a.includes('@supports') && a.includes('not')))
+  const inSupportsNot = rules.filter((r) => r.within.some((a) => a.includes('@supports') && a.includes('not')));
+  const guarded = inSupportsNot
     .flatMap((r) => [...r.selector.matchAll(/\[data-dolly="([^"]+)"\]/g)].map((m) => m[1]));
+  /* One bare [data-dolly-exit] rule turns every exit off at once. */
+  if (inSupportsNot.some((r) => /(^|,)\s*\[data-dolly-exit\]\s*(,|$)/.test(r.selector) &&
+      /animation-name\s*:\s*none\s*!important/.test(r.body))) {
+    guarded.push(...[...exits.keys()].map((n) => `exit:${n}`));
+  }
 
   const unguarded = explicitTo
     .map(moveOf)
@@ -295,6 +331,31 @@ test('the moves page has a live card for every move that ships', () => {
   );
 });
 
+/* Exits are documented in their own section, because every exit name is
+   also an entrance name and would already "appear" in the move tables. */
+test('the README documents every exit that ships', () => {
+  const section = readme.match(/\n## Exits\n([\s\S]*?)(\n## |$)/)?.[1];
+  assert.ok(section, 'the README has no "## Exits" section');
+  const rows = [...section.matchAll(/^\| `([^`]+)` \|/gm)].map((m) => m[1]).sort();
+  assert.deepEqual(rows, [...exits.keys()].sort(), 'the README exit table disagrees with the stylesheet');
+});
+
+test('agents.md documents every exit that ships', () => {
+  const agents = read('../agents.md');
+  const missing = [...exits.keys()].filter((n) => !agents.includes(`data-dolly-exit="${n}"`));
+  assert.deepEqual(missing, [], 'missing from agents.md');
+});
+
+test('the moves page has a live card for every exit', () => {
+  const page = read('../moves.html');
+  const missing = [...exits.keys()].filter((n) => {
+    const at = page.indexOf(`id="exit-${n}"`);
+    const next = page.indexOf('<article', at + 1);
+    return at < 0 || !page.slice(at, next < 0 ? undefined : next).includes(`data-dolly-exit="${n}"`);
+  });
+  assert.deepEqual(missing, [], 'moves.html is missing an exit card — rerun scripts/build-moves.py');
+});
+
 /* package.json drifted to "23 camera moves" while the library shipped 30.
    Three files now claim a count; all three are derived from one source. */
 test('package.json agrees with the stylesheet on the move count', () => {
@@ -320,13 +381,13 @@ test('the no-timeline safety block cannot be overridden by a later move rule', (
   const supportsBlocks = blocks(css).filter(
     (b) => b.within.some((at) => /^@supports\s+not\s*\(animation-timeline/.test(at))
   );
-  const guarded = supportsBlocks.filter((b) => /\[data-dolly="/.test(b.selector || ''));
+  const guarded = supportsBlocks.filter((b) => /\[data-dolly(-exit)?(="|\])/.test(b.selector || ''));
   assert.ok(guarded.length > 0, 'no @supports-not block turning moves off — the promise is gone');
 
   for (const b of guarded) {
-    const names = [...b.selector.matchAll(/\[data-dolly="([^"]+)"\]/g)].map((m) => m[1]);
+    const names = [...b.selector.matchAll(/\[data-dolly(?:-exit)?="([^"]+)"\]/g)].map((m) => m[1]);
     const decl = decls(b.body).find(([p]) => p === 'animation-name');
-    assert.ok(decl, `@supports-not block for ${names.join(', ')} sets no animation-name`);
+    assert.ok(decl, `@supports-not block for ${names.join(', ') || b.selector} sets no animation-name`);
 
     /* Either it wins by !important, or every move it names is declared
        nowhere after it. Anything else and the net is defeated.

@@ -3,6 +3,30 @@
 All notable changes to `@dollyjs/core`. Dates are release dates; the library
 follows [semantic versioning](https://semver.org).
 
+## 0.4.0 — unreleased
+
+### Added
+
+- `data-dolly-exit`: the other half of an entrance. An element keeps going as
+  it scrolls off the top of the viewport — `tilt-up` keeps rising, `pan-left`
+  keeps moving left — and sits exactly as authored until then. 13 exits:
+  `fade`, `tilt-up`, `tilt-down`, `pan-left`, `pan-right`, `dolly-in`,
+  `dolly-out`, `crane`, `roll`, `reveal`, `wipe-up`, `rack`, `whip`. Off under
+  reduced motion, in print, and in browsers without scroll timelines, like
+  every move. Nothing existing changed: every line of 0.3.2 is still in the
+  file.
+
+### Changed
+
+- The CDN snippets now point at `src/dolly.css`, the file npm ships, rather
+  than jsDelivr's generated `dolly.min.css`.
+
+### Fixed
+
+- The docs gave the `--dolly-ease` default as a bezier; it is `linear`.
+- The docs described a `data-dolly-range` attribute that nothing reads.
+  `--dolly-range` on its own is the knob.
+
 ## 0.3.2 — 2026-10-24
 
 ### Fixed

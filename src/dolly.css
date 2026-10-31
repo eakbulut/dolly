@@ -9,6 +9,9 @@
       `animation-fill-mode: both` lands the element on its `to` state
       immediately — visible. The failure mode is "didn't animate", never
       "didn't appear". Most scroll libraries ship this bug.
+      Exits (data-dolly-exit) are the one deliberate exception: they hide
+      an element only after it has left the viewport, and only where a
+      timeline drives them. Without one they switch off, below.
 
    2. Longhands only, never the `animation` shorthand. The shorthand resets
       `animation-timeline` to `auto`, which silently converts a scroll-driven
@@ -272,11 +275,15 @@
        reduced-motion block below, which has always used !important. */
     animation-name: none !important;
   }
+  /* Exits are `to`-only, so with no timeline they would park on the
+     hidden `to` state. Off, and the element stands as authored. */
+  [data-dolly-exit] { animation-name: none !important; }
 }
 
 /* Printing has no scrollport, so an entrance stuck at `from` prints blank. */
 @media (prefers-reduced-motion: reduce), print {
   [data-dolly] { animation-name: none !important }
+  [data-dolly-exit] { animation-name: none !important }
 }
 
 /* ---------- scenes: pinned, scrubbed sequences ---------- *
@@ -594,6 +601,66 @@
 [data-dolly-ease="out-expo"]  { --dolly-ease: cubic-bezier(.16,1,.3,1) }
 [data-dolly-ease="in-out"]    { --dolly-ease: cubic-bezier(.65,0,.35,1) }
 [data-dolly-ease="linear"]    { --dolly-ease: linear }
+
+/* ---------- exits ---------- *
+
+   The other half of an entrance: an element that keeps going as it leaves
+   the viewport, the way an actor walks out of shot. `tilt-up` keeps rising,
+   `pan-left` keeps moving left, `dolly-in` lets the camera push past it.
+
+     <header data-dolly-exit="tilt-up">…</header>
+
+   `to` only, played forwards over the exit phase. With no `from`, the start
+   of every exit is the element as authored, and fill-mode:both holds that
+   until its top reaches the top of the viewport. Deliberately not the
+   entrances run in reverse: a reversed element holds the move's LAST
+   keyframe while it waits (beat, fly and pass would sit invisible on
+   screen), its easing flips, and it reads like a tape rewinding.
+
+   Its own attribute, never alongside data-dolly on one element: nest two
+   elements to enter with one move and leave with another. data-dolly-on,
+   data-dolly-stagger and scenes do not apply to exits.
+
+   The four longhands repeat the [data-dolly] rule rather than share it, so
+   that adding exits changed no existing line of this file. */
+
+@keyframes dolly-fade-exit      { to { opacity: 0 } }
+@keyframes dolly-tilt-up-exit   { to { opacity: 0; translate: 0 -2.5rem } }
+@keyframes dolly-tilt-down-exit { to { opacity: 0; translate: 0 2.5rem } }
+@keyframes dolly-pan-left-exit  { to { opacity: 0; translate: -3rem 0 } }
+@keyframes dolly-pan-right-exit { to { opacity: 0; translate: 3rem 0 } }
+@keyframes dolly-in-exit        { to { opacity: 0; scale: 1.1 } }
+@keyframes dolly-out-exit       { to { opacity: 0; scale: 0.9 } }
+@keyframes dolly-crane-exit     { to { opacity: 0; translate: 0 -5rem; scale: 1.06 } }
+@keyframes dolly-roll-exit      { to { opacity: 0; rotate: 5deg; scale: 1.04 } }
+@keyframes dolly-reveal-exit    { to { clip-path: inset(0 0 0 100%) } }
+@keyframes dolly-wipe-up-exit   { to { clip-path: inset(0 0 100% 0) } }
+@keyframes dolly-rack-exit      { to { opacity: 0; filter: blur(14px) } }
+@keyframes dolly-whip-exit      { to { opacity: 0; translate: -4rem 0; filter: blur(8px) } }
+
+[data-dolly-exit] {
+  animation-name: none;
+  animation-fill-mode: both;
+  animation-timing-function: var(--dolly-ease, linear);
+  animation-timeline: view(var(--dolly-axis, block));
+  /* exit offsets only: an entry or cover range here fades the element out
+     while it arrives */
+  animation-range: var(--dolly-range, exit 0% exit 100%);
+}
+
+[data-dolly-exit="fade"]      { animation-name: dolly-fade-exit }
+[data-dolly-exit="tilt-up"]   { animation-name: dolly-tilt-up-exit }
+[data-dolly-exit="tilt-down"] { animation-name: dolly-tilt-down-exit }
+[data-dolly-exit="pan-left"]  { animation-name: dolly-pan-left-exit }
+[data-dolly-exit="pan-right"] { animation-name: dolly-pan-right-exit }
+[data-dolly-exit="dolly-in"]  { animation-name: dolly-in-exit }
+[data-dolly-exit="dolly-out"] { animation-name: dolly-out-exit }
+[data-dolly-exit="crane"]     { animation-name: dolly-crane-exit }
+[data-dolly-exit="roll"]      { animation-name: dolly-roll-exit }
+[data-dolly-exit="reveal"]    { animation-name: dolly-reveal-exit }
+[data-dolly-exit="wipe-up"]   { animation-name: dolly-wipe-up-exit }
+[data-dolly-exit="rack"]      { animation-name: dolly-rack-exit }
+[data-dolly-exit="whip"]      { animation-name: dolly-whip-exit }
 
 /* ---------- authoring knobs ---------- *
 

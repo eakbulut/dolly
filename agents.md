@@ -19,7 +19,7 @@ npm i @dollyjs/core
 Or without a build step:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.css">
 ```
 
 Nothing else runs. There is no JS entry point and no function to call. If you
@@ -34,11 +34,12 @@ stylesheet.
 
 That is a complete, working use. Everything below is refinement.
 
-Three attributes and a set of custom properties:
+Four attributes and a set of custom properties:
 
 | Attribute | Values | Purpose |
 | --- | --- | --- |
 | `data-dolly` | one of the 34 move names | what the element does |
+| `data-dolly-exit` | one of the 13 exit names | how the element leaves |
 | `data-dolly-on` | `scene`, `page` | which timeline drives it (default: the element's own trip across the viewport) |
 | `data-dolly-ease` | `linear`, `out`, `in-out`, `out-expo`, `out-back` | easing preset |
 
@@ -47,7 +48,7 @@ Structural attributes: `data-dolly-scene`, `data-dolly-pin`, `data-dolly-space`,
 
 ## Choosing a move
 
-Do not enumerate all 34 to the user. Pick one.
+Do not enumerate all 34 moves or 13 exits to the user. Pick one.
 
 **Something should appear as the reader reaches it** — this is the common case,
 and any of these is correct. Default to `fade` or `tilt-up` unless the user
@@ -74,6 +75,36 @@ asked for something with more character.
 | a marker riding the page | `travel` |
 | background drifting against scroll | `parallax` |
 | slow Ken Burns push on a photo | `zoom` |
+
+**Something should leave as the reader scrolls past it** — an exit. The
+element sits exactly as authored until its top reaches the top of the
+viewport, then keeps going the way its entrance came in.
+
+| Exit | What it does |
+| --- | --- |
+| `data-dolly-exit="fade"` | fades out |
+| `data-dolly-exit="tilt-up"` | keeps rising |
+| `data-dolly-exit="tilt-down"` | keeps sinking |
+| `data-dolly-exit="pan-left"` | keeps travelling left |
+| `data-dolly-exit="pan-right"` | keeps travelling right |
+| `data-dolly-exit="dolly-in"` | the camera pushes past it |
+| `data-dolly-exit="dolly-out"` | the camera pulls away |
+| `data-dolly-exit="crane"` | keeps craning up |
+| `data-dolly-exit="roll"` | keeps rolling |
+| `data-dolly-exit="reveal"` | clip wipe off to the right |
+| `data-dolly-exit="wipe-up"` | clip wipe off the top |
+| `data-dolly-exit="rack"` | focus pulls away into blur |
+| `data-dolly-exit="whip"` | whips out left, with blur |
+
+Default to `data-dolly-exit="fade"` or `data-dolly-exit="tilt-up"`. To enter
+and leave with different moves, nest two elements — never put both
+attributes on one:
+
+```html
+<section data-dolly-exit="dolly-in">
+  <h2 data-dolly="tilt-up">…</h2>
+</section>
+```
 
 **Something should enter, be read, then leave** — these are for pinned scenes.
 
@@ -166,8 +197,8 @@ Set as inline styles or in your own CSS.
 
 | Knob | Applies to | Default |
 | --- | --- | --- |
-| `--dolly-range` | any move | the move's own range |
-| `--dolly-ease` | any move | `cubic-bezier(.22,1,.36,1)` |
+| `--dolly-range` | any move or exit | the move's own range |
+| `--dolly-ease` | any move or exit | `linear` |
 | `--dolly-scene` | `data-dolly-scene` | `300vh` |
 | `--dolly-depth` | `parallax` | `4rem` |
 | `--dolly-zoom` | `zoom` | `1.12` |
@@ -226,6 +257,13 @@ There is no Tailwind plugin and none is needed.
    `cover 50%` — so use `--dolly-range: cover 30% cover 70%` there and the
    move is half-played at eye level. Never apply a `cover` range to `progress`
    or `travel`.
+
+10. **Exits follow their own rules.** Never put `data-dolly` and
+    `data-dolly-exit` on the same element. An exit's `--dolly-range` uses
+    `exit` offsets only (`exit 0% exit 45%`), never `entry` or `cover`. Do not
+    put an exit on an element in the last screen of the page (it never
+    finishes leaving), on an element taller than the viewport, or inside
+    `data-dolly-stagger` or a scene. Its container uses `overflow: clip`.
 
 ## What it cannot do
 
