@@ -43,9 +43,8 @@ jobs:
             sed -i "s|src=\"assets/leader.png\"|src=\"assets/leader.png?v=$PNG_V\"|" "_site/$f"
             grep -qF "dolly.css?v=$CSS_V" "_site/$f" || { echo "::error::fingerprint missed in $f: dolly.css"; exit 1; }
           done
-          # The shared tokens and fonts. moves.html joins this loop when it
-          # starts linking site.css.
-          for f in index.html; do
+          # The shared tokens and fonts, linked by both pages.
+          for f in index.html moves.html; do
             sed -i "s|href=\"assets/site.css\"|href=\"assets/site.css?v=$SITE_V\"|" "_site/$f"
             grep -qF "assets/site.css?v=$SITE_V" "_site/$f" || { echo "::error::fingerprint missed in $f: site.css"; exit 1; }
           done

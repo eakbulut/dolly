@@ -9,24 +9,14 @@
 <meta property="og:description" content="All {{COUNT}} moves and {{EXITS}} exits, each one playing as you scroll past it.">
 <meta property="og:url" content="https://usedolly.dev/moves.html">
 <link rel="canonical" href="https://usedolly.dev/moves.html">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%20role%3D%22img%22%20aria-label%3D%22Dolly%22%3E%20%3Cstyle%3E.r%7Bstroke%3A%230B0B0C%7D%40media%28prefers-color-scheme%3Adark%29%7B.r%7Bstroke%3A%23F2F2EE%7D%7D%3C%2Fstyle%3E%20%3Cpath%20class%3D%22r%22%20d%3D%22M9.5%203v26M22.5%203v26%22%20stroke-width%3D%223.2%22%20stroke-linecap%3D%22round%22%2F%3E%20%3Crect%20x%3D%224.5%22%20y%3D%2212.5%22%20width%3D%2223%22%20height%3D%228.5%22%20rx%3D%222.4%22%20fill%3D%22%232B4BE8%22%2F%3E%20%3C%2Fsvg%3E">
+<link rel="preload" href="assets/fonts/jost-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="src/dolly.css">
+<link rel="stylesheet" href="assets/site.css">
 <style>
-/* Tokens mirror index.html. This page is deliberately the calm half of the
-   site: the demo essay argues, this one answers "which move do I want?" */
-:root{
-  --paper:#FAFAF8; --ink:#0B0B0C; --ink-soft:#57574F;
-  --accent:#2B4BE8; --surface:#EFEFEC; --rule:#D7D7D3;
-  --mono:"Azeret Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
-  --sans:"Archivo",system-ui,-apple-system,sans-serif;
-  --gutter:clamp(20px,4vw,56px);
-  --t-00:12px; --t-02:clamp(14px,.8rem + .2vw,15.5px);
-  --t-03:clamp(16px,.9rem + .35vw,18px);
-  --t-06:clamp(28px,1.3rem + 2vw,44px);
-}
+/* Tokens and fonts come from assets/site.css, shared with index.html. This
+   page is deliberately the calm half of the site: the homepage sells, this
+   one answers "which move do I want?" */
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
@@ -41,7 +31,7 @@ a{color:inherit}
   position:sticky;top:0;z-index:10}
 .top .wrap{display:flex;align-items:center;gap:clamp(12px,2vw,28px);
   min-height:58px;flex-wrap:wrap}
-.home{font-weight:800;letter-spacing:-.02em;text-decoration:none;font-size:var(--t-03)}
+.home{font-weight:700;letter-spacing:-.02em;text-decoration:none;font-size:var(--t-03)}
 .home span{color:var(--accent)}
 /* Sheds to the right at narrow widths rather than wrapping the brand. */
 .top nav{display:flex;gap:clamp(10px,1.4vw,20px);margin-left:auto;flex-wrap:wrap}
@@ -52,9 +42,24 @@ a{color:inherit}
 
 .lede{padding:clamp(48px,9vh,110px) 0 clamp(30px,5vh,60px)}
 .lede h1{font-size:var(--t-06);line-height:1.02;letter-spacing:-.03em;margin:0 0 14px;
-  max-width:18ch;font-weight:800}
+  max-width:18ch;font-weight:700}
 .lede p{margin:0;max-width:56ch;color:var(--ink-soft)}
 .lede .label{display:block;margin-top:22px;color:var(--ink-soft)}
+
+/* ---------- the index ---------- *
+   Every move and exit on one screen, with what it costs to run. Plain text
+   in columns: no motion and no fills, so the page stays calm. */
+.index{columns:4 200px;column-gap:clamp(20px,3vw,40px);padding:clamp(20px,3vh,32px) 0;
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.index > div{break-inside:avoid;margin-bottom:18px}
+.index h2{margin:0 0 6px;font-size:var(--t-00);letter-spacing:.14em;text-transform:uppercase;
+  font-weight:500;color:var(--ink-soft)}
+.index ul{list-style:none;margin:0;padding:0}
+.index li{display:flex;justify-content:space-between;gap:12px;font-size:var(--t-02);line-height:1.7}
+.index a{text-decoration:none}
+.index a:hover code{text-decoration:underline}
+.index code{font-family:var(--mono)}
+.index span{color:var(--ink-soft);font-size:var(--t-00);white-space:nowrap}
 
 /* ---------- sections ---------- */
 section{padding:clamp(34px,6vh,72px) 0 0}
@@ -125,7 +130,7 @@ section{padding:clamp(34px,6vh,72px) 0 0}
 .rail i{display:block;width:100%;height:50%;border-radius:99px;background:var(--accent)}
 .row{display:flex;gap:7px}
 .row span{flex:0 0 58px;height:44px;border-radius:4px;background:var(--accent);opacity:.85}
-.masked{margin:0;font-size:46px;font-weight:900;letter-spacing:-.03em;
+.masked{margin:0;font-size:46px;font-weight:700;letter-spacing:-.03em;
   -webkit-background-clip:text;background-clip:text;color:transparent;
   background-image:linear-gradient(115deg,#2B4BE8,#8FA6FF 42%,#2B4BE8 78%);
   background-repeat:no-repeat;background-position:center}
@@ -151,7 +156,7 @@ section{padding:clamp(34px,6vh,72px) 0 0}
   display:grid;place-content:center;justify-items:center;
   gap:clamp(18px,2.6vh,28px);text-align:center;padding:clamp(40px,7vh,90px) 0 0}
 .outro p{margin:0;font-size:var(--t-06);line-height:1.05;letter-spacing:-.03em;
-  font-weight:800;max-width:14ch}
+  font-weight:700;max-width:14ch}
 .outro code{font-family:var(--mono);font-size:var(--t-02);background:var(--surface);
   border:1px solid var(--rule);border-radius:8px;padding:11px 15px;user-select:all}
 .outro code .dim{color:var(--ink-soft);user-select:none;margin-right:8px}
@@ -192,6 +197,8 @@ footer{margin-top:clamp(60px,10vh,120px);padding:clamp(30px,5vh,60px) 0;
       moves below are shown at their finished state. Pages using Dolly look the
       same way here, fully visible and still.</p>
   </div>
+
+{{INDEX}}
 
 {{SECTIONS}}
 

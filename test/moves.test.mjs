@@ -368,6 +368,23 @@ test('the moves page has a live card for every exit', () => {
   assert.deepEqual(missing, [], 'moves.html is missing an exit card — rerun scripts/build-moves.py');
 });
 
+/* The index at the top of moves.html is generated from the same groups as
+   the cards, so it cannot miss a move. What can break is a link. */
+test('every link in the moves page index resolves', () => {
+  const page = read('../moves.html');
+  const nav = page.match(/<nav class="index"[\s\S]*?<\/nav>/)?.[0];
+  assert.ok(nav, 'moves.html has no index');
+  const ids = new Set([...page.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
+  const dead = [...nav.matchAll(/href="#([^"]+)"/g)].map((m) => m[1]).filter((id) => !ids.has(id));
+  assert.deepEqual(dead, [], 'index links with no card');
+});
+
+test('moves.html loads the shared tokens and no third-party fonts', () => {
+  const page = read('../moves.html');
+  assert.match(page, /<link rel="stylesheet" href="assets\/site\.css">/);
+  assert.doesNotMatch(page, /fonts\.googleapis\.com|fonts\.gstatic\.com/);
+});
+
 /* package.json drifted to "23 camera moves" while the library shipped 30.
    Three files now claim a count; all three are derived from one source. */
 test('package.json agrees with the stylesheet on the move count', () => {
