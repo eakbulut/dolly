@@ -220,7 +220,7 @@ Fonts are self-hosted Latin subsets at fixed weights (Jost 400, 500, 700; Azeret
 - **Body** (400, 17px to 19px fluid, line-height 1.6, max 52ch in chapters).
 - **Small** (400, 14px to 15.5px fluid): captions, CDN line, link rows, footer.
 - **Label** (500, 12px, 0.14em, uppercase): masthead and link-row navigation.
-- **Credits** (role 400 at 11px, 0.08em, Usher Grey; name 700 at 13px to 16px, no tracking): the poster billing block, all uppercase except the final promise, which drops to sentence case at 500.
+- **Credits** (role 400 at 11px, 0.08em, Usher Grey; name 700 at 13px to 16px, no tracking): the poster billing block, all uppercase.
 - **Code** (Azeret Mono 400, ligatures off): 15px in the slate and install command (13px slate on phones), small size at line-height 1.7 in the code well, 0.88em inline.
 - **Reference Title** and **Reference Label** (moves page): sentence-case 700 with tight -0.03em tracking, and mono 12px labels, nav and card names.
 
@@ -259,7 +259,7 @@ On the homepage every container has square corners (0px): stills, the seat photo
 - **Character:** the house's sign over the seats.
 - **Style:** absolute over the first screen, transparent, 64px tall, three-column grid: links left, wordmark centred, links right. Links are paper Label caps, underlined on hover.
 - **Wordmark:** Jost 700, 15px, 0.32em tracking, uppercase, with matching left padding so the tracked word is optically centred. It repeats in the footer.
-- **Mobile (620px and below):** left links hidden, wordmark left. The box-office link row and footer repeat every link.
+- **Mobile (620px and below):** left links hidden, wordmark left. The box-office link row repeats every link.
 
 ### On-Screen Claim (signature)
 - **Character:** the title projected on the cinema screen.
@@ -268,7 +268,7 @@ On the homepage every container has square corners (0px): stills, the seat photo
 
 ### Credits Over The Seats (signature)
 - **Character:** the poster's billing under the screen.
-- **Style:** a centred stack: Subtitle line, then the slate and install command side by side, the CDN line, then the billing block: a definition list of run-on role and name pairs under a 1px translucent paper hairline, ending with the promise on its own line.
+- **Style:** a centred stack: Subtitle line, then the slate and install command side by side, the CDN line, then the billing block: a definition list of run-on role and name pairs under a 1px translucent paper hairline.
 - **Motion:** the whole stack leaves with `data-dolly-exit="tilt-up"` on an early range (`exit -48vh exit 35%`). The install line also exists at the box office, which never exits.
 
 ### Slate and Install Command
@@ -295,7 +295,7 @@ On the homepage every container has square corners (0px): stills, the seat photo
 - **Style:** white card, 1px Groove Grey border, 12px corners, card lift, holding a 132px Linen stage where the move plays, a mono name with its cost tag, a two-line reserved description in Faded Ink, and a select-all snippet chip pinned to the bottom.
 
 ### Motion
-Motion comes only from `src/dolly.css` through attributes, never page CSS. Entrances below the first screen run on `--dolly-range: cover 30% cover 70%`, symmetric about the moment an element's centre crosses the viewport's centre, so a move is half-played at eye level (the same timing as the moves-page cards). The budget is enforced by the test "the homepage stays inside its motion budget" in `test/moves.test.mjs`:
+Motion comes only from `src/dolly.css` through attributes, never page CSS. Entrances below the first screen run on `--dolly-range: cover 30% cover 70%`, symmetric about the moment an element's centre crosses the viewport's centre, so a move is half-played at eye level (the same timing as the moves-page cards). Chapter titles and paragraphs never animate: text that waits for its move leaves the bottom of the screen empty, so only the exhibits move. The budget is enforced by the test "the homepage stays inside its motion budget" in `test/moves.test.mjs`:
 - Anywhere, including the first screen: `fade`, `tilt-up`, `tilt-down`, `pan-left`, `pan-right`, `dolly-in`, `dolly-out`, `crane`, `roll`, `progress`, `travel`; exits from the same list minus `progress` and `travel`.
 - Below the first screen only: the repaint moves `reveal`, `wipe-up`, `iris`, `draw`, `count`, `mask`, and the exits `reveal` and `wipe-up`.
 - Never: `data-dolly-scene`, `data-dolly-pin`, `data-dolly-depth`; one element carrying both a move and an exit; a scroll-driven animation on `:root`; page CSS that hides `[data-dolly]` elements with `opacity: 0`, `visibility: hidden` or `clip-path`; fonts or photographs fetched from a third party.
