@@ -274,24 +274,6 @@ test('the README documents exactly the moves that ship', () => {
   assert.deepEqual(undocumented, [], 'missing from the README move tables');
 });
 
-/* The README guard exists; the PAGE had no equivalent, and drifted to
-   documenting 16 of 30 while demonstrating all of them. */
-test('the demo page documents every move that ships', () => {
-  const page = read('../index.html');
-  const shipped = rules
-    .filter((r) => decls(r.body).some(([p]) => p === 'animation-name'))
-    .flatMap((r) => [...r.selector.matchAll(/\[data-dolly="([^"]+)"\]/g)].map((m) => m[1]));
-
-  const body = page.slice(page.indexOf('<tbody>'), page.indexOf('</tbody>'));
-  const documented = [...body.matchAll(/<tr><td>([^<]+)<\/td>/g)].map((m) => m[1].trim());
-
-  assert.deepEqual(
-    [...new Set(shipped)].filter((m) => !documented.includes(m)),
-    [],
-    'the reference table on the page is missing moves the library ships'
-  );
-});
-
 /* agents.md is the file other people's agents read to write Dolly markup.
    A move missing from it is a move no assistant will ever suggest, which is a
    quieter failure than a missing README row and a more expensive one. Prose
@@ -386,6 +368,23 @@ test('the moves page has a live card for every exit', () => {
   assert.deepEqual(missing, [], 'moves.html is missing an exit card — rerun scripts/build-moves.py');
 });
 
+/* The index at the top of moves.html is generated from the same groups as
+   the cards, so it cannot miss a move. What can break is a link. */
+test('every link in the moves page index resolves', () => {
+  const page = read('../moves.html');
+  const nav = page.match(/<nav class="index"[\s\S]*?<\/nav>/)?.[0];
+  assert.ok(nav, 'moves.html has no index');
+  const ids = new Set([...page.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
+  const dead = [...nav.matchAll(/href="#([^"]+)"/g)].map((m) => m[1]).filter((id) => !ids.has(id));
+  assert.deepEqual(dead, [], 'index links with no card');
+});
+
+test('moves.html loads the shared tokens and no third-party fonts', () => {
+  const page = read('../moves.html');
+  assert.match(page, /<link rel="stylesheet" href="assets\/site\.css">/);
+  assert.doesNotMatch(page, /fonts\.googleapis\.com|fonts\.gstatic\.com/);
+});
+
 /* package.json drifted to "23 camera moves" while the library shipped 30.
    Three files now claim a count; all three are derived from one source. */
 test('package.json agrees with the stylesheet on the move count', () => {
@@ -456,6 +455,12 @@ test('the social card was rendered from the current move count', () => {
   );
   assert.equal(stamped, shipped.size,
     'the social card is stale — rerun scripts/make-og.py');
+
+  const j = png.indexOf('dolly-exits');
+  assert.ok(j > 0, 'assets/og-image.png carries no exit count — rerun scripts/make-og.py');
+  const exitsStamped = Number(png.subarray(j + 'dolly-exits'.length + 1, j + 'dolly-exits'.length + 9)
+    .toString('ascii').match(/^\d+/)?.[0]);
+  assert.equal(exitsStamped, exits.size, 'the social card has a stale exit count — rerun scripts/make-og.py');
 });
 
 test('the page binding is declared after every move that sets a range', () => {
@@ -481,34 +486,84 @@ test('the page binding is declared after every move that sets a range', () => {
   );
 });
 
-/* Reddit called the old homepage janky on phones and hated the pinning. These
-   are the things that were taken out for it, and they stay out. Only real
-   declarations and real start tags count: the page quotes `data-dolly-scene`
-   in an escaped code sample, and that is documentation, not markup. */
-test('the homepage keeps the removed effects out', () => {
-  const page = read('../index.html');
-  const pageCss = [...page.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)]
-    .map((m) => m[1]).join('\n').replace(/\/\*[\s\S]*?\*\//g, '');
-  const pageRules = blocks(pageCss).filter((b) => b.selector);
-  const tags = page.replace(/<!--[\s\S]*?-->/g, '').match(/<[a-z][^>]*>/gi) || [];
+/* Reddit called the old homepage janky on phones and hated the pinning. The
+   redesigned homepage runs on a written motion budget
+   (docs/designs/homepage-redesign-0.4.0.md, "Motion budget"); this holds it
+   there. The allow-list is homepage POLICY, not a list of library moves, so
+   holding it here does not break the derived-from-the-stylesheet rule above.
+   Only real declarations and real start tags count: code samples on the page
+   are HTML-escaped, so they never form a tag. */
+const BUDGET = {
+  anywhere: ['fade', 'tilt-up', 'tilt-down', 'pan-left', 'pan-right', 'dolly-in',
+             'dolly-out', 'crane', 'roll', 'progress', 'travel'],
+  exitsAnywhere: ['fade', 'tilt-up', 'tilt-down', 'pan-left', 'pan-right', 'dolly-in',
+                  'dolly-out', 'crane', 'roll'],
+  belowTitle: ['reveal', 'wipe-up', 'iris', 'draw', 'count', 'mask'],
+  exitsBelowTitle: ['reveal', 'wipe-up'],
+};
 
+test('the homepage stays inside its motion budget', () => {
+  const page = read('../index.html');
+  const site = read('../assets/site.css');
+  const pageCss = [...page.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map((m) => m[1]).join('\n');
+  const allCss = (pageCss + '\n' + site).replace(/\/\*[\s\S]*?\*\//g, '');
+  const pageRules = blocks(allCss).filter((b) => b.selector);
+  const markup = page.replace(/<!--[\s\S]*?-->/g, '').replace(/<style[\s\S]*?<\/style>/g, '');
+  const titleAt = markup.indexOf('class="screening"');
+  assert.ok(titleAt > 0, 'the homepage has no first-screen section (class="screening")');
+  const titleEnd = markup.indexOf('</section>', titleAt);
   const found = [];
-  for (const tag of tags) {
+
+  for (const m of markup.matchAll(/<[a-z][^>]*>/gi)) {
+    const tag = m[0];
+    const inTitle = m.index < titleEnd;
     for (const attr of ['data-dolly-scene', 'data-dolly-pin', 'data-dolly-depth']) {
       if (new RegExp(`\\s${attr}(=|\\s|>|$)`).test(tag)) found.push(`${attr} on ${tag.slice(0, 40)}`);
     }
     const move = tag.match(/\sdata-dolly="([^"]+)"/)?.[1];
-    if (['beat', 'letter'].includes(move)) found.push(`data-dolly="${move}"`);
+    const exit = tag.match(/\sdata-dolly-exit="([^"]+)"/)?.[1];
+    if (move && exit) found.push(`both data-dolly and data-dolly-exit on ${tag.slice(0, 40)}`);
+    if (move && !BUDGET.anywhere.includes(move) && (inTitle || !BUDGET.belowTitle.includes(move))) {
+      found.push(`data-dolly="${move}"${inTitle ? ' in the title card' : ''}`);
+    }
+    if (exit && !BUDGET.exitsAnywhere.includes(exit) && (inTitle || !BUDGET.exitsBelowTitle.includes(exit))) {
+      found.push(`data-dolly-exit="${exit}"${inTitle ? ' in the title card' : ''}`);
+    }
+    if (/(href|src)="https:\/\/(fonts\.googleapis\.com|fonts\.gstatic\.com|images\.unsplash\.com)/.test(tag)) {
+      found.push(`a third-party request: ${tag.slice(0, 60)}`);
+    }
   }
   for (const rule of pageRules) {
-    for (const [prop] of decls(rule.body)) {
+    for (const [prop, value] of decls(rule.body)) {
       if (['filter', 'backdrop-filter', '-webkit-backdrop-filter', 'mix-blend-mode'].includes(prop)) {
         found.push(`${prop} on ${rule.selector}`);
       }
-      if (prop === 'animation-timeline' && rule.selector.split(',').some((s) => s.trim() === ':root')) {
+      if (prop === 'animation-timeline' && rule.selector.split(',').some((x) => x.trim() === ':root')) {
         found.push('a scroll-driven animation on :root');
+      }
+      if (/overflow(-[xy])?/.test(prop) && /\bhidden\b/.test(value)) {
+        found.push(`overflow: hidden on ${rule.selector} (use clip)`);
+      }
+      if (/\[data-dolly/.test(rule.selector) &&
+          ((prop === 'opacity' && value === '0') || (prop === 'visibility' && value === 'hidden') || prop === 'clip-path')) {
+        found.push(`page CSS hides ${rule.selector}`);
       }
     }
   }
-  assert.deepEqual(found, [], 'the homepage brought back an effect that was removed for performance');
+  assert.deepEqual(found, [], 'the homepage broke its motion budget');
+
+  assert.match(page, /<link rel="stylesheet" href="assets\/site\.css">/, 'the homepage does not load assets/site.css');
+
+  /* The title card may leave on scroll; the install line must also exist
+     somewhere that never does. */
+  const installs = [...markup.matchAll(/npm i @dollyjs\/core/g)].map((m) => m.index);
+  const exitSpans = [];
+  for (const m of markup.matchAll(/<([a-z]+)[^>]*\sdata-dolly-exit="[^"]+"[^>]*>/gi)) {
+    let depth = 0, i = m.index;
+    const re = new RegExp(`<(/?)${m[1]}\\b[^>]*>`, 'gi');
+    re.lastIndex = i;
+    for (let t; (t = re.exec(markup)); ) { depth += t[1] ? -1 : 1; if (depth === 0) { exitSpans.push([i, t.index]); break; } }
+  }
+  assert.ok(installs.some((at) => !exitSpans.some(([a, b]) => at > a && at < b)),
+    'every install line sits inside an exit; one has to stay put');
 });

@@ -35,6 +35,7 @@ jobs:
           # the figcaption that prints the filename are deliberately not touched.
           CSS_V=$(sha1sum src/dolly.css | cut -c1-8)
           PNG_V=$(sha1sum assets/leader.png | cut -c1-8)
+          SITE_V=$(sha1sum assets/site.css | cut -c1-8)
           # moves.html links the same two assets, so it is fingerprinted too.
           for f in index.html moves.html; do
             sed -i "s|href=\"src/dolly.css\"|href=\"src/dolly.css?v=$CSS_V\"|" "_site/$f"
@@ -42,8 +43,10 @@ jobs:
             sed -i "s|src=\"assets/leader.png\"|src=\"assets/leader.png?v=$PNG_V\"|" "_site/$f"
             grep -qF "dolly.css?v=$CSS_V" "_site/$f" || { echo "::error::fingerprint missed in $f: dolly.css"; exit 1; }
           done
-          for want in "url(\"assets/leader.png?v=$PNG_V\")" "src=\"assets/leader.png?v=$PNG_V\""; do
-            grep -qF "$want" _site/index.html || { echo "::error::fingerprint missed: $want"; exit 1; }
+          # The shared tokens and fonts, linked by both pages.
+          for f in index.html moves.html; do
+            sed -i "s|href=\"assets/site.css\"|href=\"assets/site.css?v=$SITE_V\"|" "_site/$f"
+            grep -qF "assets/site.css?v=$SITE_V" "_site/$f" || { echo "::error::fingerprint missed in $f: site.css"; exit 1; }
           done
           grep -qF "url(\"assets/leader.png?v=$PNG_V\")" _site/moves.html || { echo "::error::fingerprint missed in moves.html: leader.png"; exit 1; }
           echo "usedolly.dev" > _site/CNAME

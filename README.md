@@ -37,7 +37,7 @@ npm i @dollyjs/core
 Or link the file directly:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.min.css">
 ```
 
 It works next to Tailwind, plain CSS or any framework, and only touches
@@ -476,6 +476,13 @@ Offset each child along the same timeline instead:
 `"edges"` lands the outermost pair last. `--dolly-step` sets the spacing.
 
 ## Gotchas
+
+### `scroll-padding` shifts every range
+
+View timelines treat the scroller's `scroll-padding` as an inset. With
+`scroll-padding-top: 64px` on `html`, every range starts 64px early: an exit
+on a hero at the top of the page is already 8% gone before anyone scrolls.
+Leave `scroll-padding` off the scroller, or account for it in `--dolly-range`.
 
 ### `letter` reflows unless the line cannot wrap
 

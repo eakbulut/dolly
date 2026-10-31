@@ -205,12 +205,32 @@ sections.append(
   f'      <div class="grid">\n' + '\n'.join(exit_card(n) for n in exit_order) + '\n      </div>\n'
   f'    </section>')
 
+# The index: every move and exit on one screen, name and cost, each linked
+# to its card. Built from GROUPS and exit_order, so it cannot miss one.
+# Only the moves that repaint get a label; the rest run on the compositor,
+# which the lede already says, so a label on every row would be noise.
+def cost(n, amap=anims):
+    r = repaints(n, amap)
+    if not r: return ''
+    return 'repaints · ' + ('filter' if 'filter' in r else ', '.join(r))
+
+def index_entry(n, href, amap=anims):
+    c = cost(n, amap)
+    return f'<li><a href="#{href}"><code>{n}</code></a>' + (f' <span>{c}</span>' if c else '') + '</li>'
+
+index = []
+for slug, title, _, names in GROUPS:
+    index.append(f'      <div><h2>{title}</h2><ul>' + ''.join(index_entry(n, n) for n in names) + '</ul></div>')
+index.append('      <div><h2>Exits</h2><ul>' + ''.join(index_entry(n, 'exit-' + n, exit_anims) for n in exit_order) + '</ul></div>')
+index_html = '    <nav class="index" aria-label="Every move">\n' + '\n'.join(index) + '\n    </nav>'
+
 nav = ' '.join(f'<a href="#{s}">{t}</a>' for s, t, _, _ in GROUPS) + ' <a href="#exits">Exits</a>'
 
 HEAD = open(os.path.join(os.path.dirname(__file__), 'moves-head.html'), encoding='utf-8').read()
 html = HEAD.replace('{{COUNT}}', str(len(order))) \
            .replace('{{EXITS}}', str(len(exit_order))) \
            .replace('{{NAV}}', nav) \
+           .replace('{{INDEX}}', index_html) \
            .replace('{{SECTIONS}}', '\n'.join(sections))
 
 tmp = 'moves.html.tmp'

@@ -19,7 +19,7 @@ npm i @dollyjs/core
 Or without a build step:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.min.css">
 ```
 
 Nothing else runs. There is no JS entry point and no function to call. If you
