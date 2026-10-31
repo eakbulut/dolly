@@ -3,7 +3,7 @@
 All notable changes to `@dollyjs/core`. Dates are release dates; the library
 follows [semantic versioning](https://semver.org).
 
-## 0.4.0 — unreleased
+## 0.4.0 — 2026-10-30
 
 ### Added
 
