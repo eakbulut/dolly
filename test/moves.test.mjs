@@ -389,3 +389,35 @@ test('the page binding is declared after every move that sets a range', () => {
     'these are declared below [data-dolly-on="page"] and take their range back from it'
   );
 });
+
+/* Reddit called the old homepage janky on phones and hated the pinning. These
+   are the things that were taken out for it, and they stay out. Only real
+   declarations and real start tags count: the page quotes `data-dolly-scene`
+   in an escaped code sample, and that is documentation, not markup. */
+test('the homepage keeps the removed effects out', () => {
+  const page = read('../index.html');
+  const pageCss = [...page.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)]
+    .map((m) => m[1]).join('\n').replace(/\/\*[\s\S]*?\*\//g, '');
+  const pageRules = blocks(pageCss).filter((b) => b.selector);
+  const tags = page.replace(/<!--[\s\S]*?-->/g, '').match(/<[a-z][^>]*>/gi) || [];
+
+  const found = [];
+  for (const tag of tags) {
+    for (const attr of ['data-dolly-scene', 'data-dolly-pin', 'data-dolly-depth']) {
+      if (new RegExp(`\\s${attr}(=|\\s|>|$)`).test(tag)) found.push(`${attr} on ${tag.slice(0, 40)}`);
+    }
+    const move = tag.match(/\sdata-dolly="([^"]+)"/)?.[1];
+    if (['beat', 'letter'].includes(move)) found.push(`data-dolly="${move}"`);
+  }
+  for (const rule of pageRules) {
+    for (const [prop] of decls(rule.body)) {
+      if (['filter', 'backdrop-filter', '-webkit-backdrop-filter', 'mix-blend-mode'].includes(prop)) {
+        found.push(`${prop} on ${rule.selector}`);
+      }
+      if (prop === 'animation-timeline' && rule.selector.split(',').some((s) => s.trim() === ':root')) {
+        found.push('a scroll-driven animation on :root');
+      }
+    }
+  }
+  assert.deepEqual(found, [], 'the homepage brought back an effect that was removed for performance');
+});

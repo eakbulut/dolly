@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dolly — scroll animations in plain CSS</title>
-<meta name="description" content="Dolly is a CSS library of 34 scroll animations and pinned scenes. Add a data-dolly attribute to an element and it animates as you scroll. It ships no JavaScript.">
+<meta name="description" content="Dolly is a CSS library of 34 scroll animations. Add a data-dolly attribute to an element and it animates as you scroll. It ships no JavaScript.">
 <meta property="og:title" content="Dolly — scroll animations in plain CSS">
 <meta property="og:description" content="Every animation on this page comes from one CSS file.">
 <meta property="og:url" content="https://usedolly.dev/">
@@ -56,34 +56,10 @@
   /* One measure, so the film and paper halves share a left edge. */
   --edge:max(var(--gutter),calc((100vw - 1320px)/2 + var(--gutter)));
 }
-/* ===== THE MASTER CLOCK =====
-   One timeline for the whole document. Registered properties (so they
-   INTERPOLATE rather than snap) inherit everywhere, which means tone,
-   light and grain are a continuous function of scroll position instead of
-   a per-section animation. This is what stops four acts reading as four
-   slides: there is no boundary to see, because nothing restarts at one. */
-@property --bg   { syntax:"<color>";  inherits:true; initial-value:#0B0B0C }
-@property --glow { syntax:"<color>";  inherits:true; initial-value:#0B0B0C }
-@property --grain{ syntax:"<number>"; inherits:true; initial-value:.06 }
-
-:root{
-  animation-name:world;animation-fill-mode:both;animation-timing-function:linear;
-  animation-timeline:scroll(root block);animation-range:normal;
-}
-@keyframes world{
-  0%   { --bg:#0B0B0C; --glow:#191922; --grain:.075 }
-  20%  { --bg:#0A0E1C; --glow:#1B2B52; --grain:.055 }
-  38%  { --bg:#101A3A; --glow:#2B4BE8; --grain:.045 }
-  52%  { --bg:#0B0B0C; --glow:#241E3A; --grain:.065 }
-  70%  { --bg:#0B0B0C; --glow:#14141C; --grain:.08 }
-  100% { --bg:#0B0B0C; --glow:#14141C; --grain:.08 }
-}
-
-/* Grain. Opacity only — feTurbulence is CPU-computed at paint, so animating
-   baseFrequency would burn the frame budget. Strength rides the clock. */
-.grain{position:fixed;inset:0;z-index:70;pointer-events:none;mix-blend-mode:overlay;
-  opacity:var(--grain);
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E")}
+/* Tone is fixed. It used to be a scroll-driven animation of inherited
+   custom properties on :root, which recalculated the style of every element
+   on the page every frame. */
+:root{--bg:#0B0B0C;--glow:#191922}
 
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-padding-top:56px;
@@ -102,7 +78,7 @@ img{display:block;max-width:100%}
 
 /* ================= MASTHEAD ================= */
 .mast{position:fixed;inset:0 0 auto;z-index:60;height:56px;display:flex;align-items:center;
-  color:#fff;mix-blend-mode:difference}
+  color:#fff;background:#0B0B0C}
 .mast-in{display:flex;align-items:center;gap:18px;width:100%}
 .mark{font-weight:900;letter-spacing:-.01em;font-size:var(--t-05);text-decoration:none;color:inherit;
   display:inline-flex;align-items:center;gap:9px}
@@ -126,20 +102,10 @@ img{display:block;max-width:100%}
 .film a:hover{color:#fff;text-decoration-color:#8FA6FF}
 .film a:focus-visible{outline:2px solid #8FA6FF;outline-offset:3px;text-decoration-color:transparent}
 @media(max-width:700px){.mast-spec{display:none}}
-@media(max-width:560px){.readout{display:none}}
 /* The last thing a human needs and the first thing an agent does: keep it
    in the header where there is room, and in the footer always. */
 @media(max-width:1000px){.mast-agents{display:none}}
-@media(max-width:410px){.readout-label{display:none}}
 
-@property --scroll-pct{syntax:"<integer>";initial-value:0;inherits:false}
-@keyframes read-out{from{--scroll-pct:0}to{--scroll-pct:100}}
-.readout{display:flex;align-items:baseline;gap:7px;
-  animation-name:read-out;animation-fill-mode:both;animation-timing-function:linear;
-  animation-timeline:scroll();animation-range:normal;counter-reset:pct var(--scroll-pct)}
-.readout::after{content:counter(pct) "%";font-family:var(--mono);font-size:var(--t-00);
-  font-weight:500;min-width:4ch;text-align:right;font-variant-numeric:tabular-nums}
-.readout-label{opacity:.72}
 .topbar{position:fixed;top:0;left:0;right:0;height:2px;background:var(--accent);
   transform-origin:0 50%;z-index:61}
 
@@ -158,11 +124,14 @@ img{display:block;max-width:100%}
 .stage-copy{position:relative;z-index:2;width:100%;max-width:none;padding:0 var(--edge)}
 /* Letterbox. Converts dead space into matte, gives every act a real
    aperture, and gives the slate a home instead of a watermark corner. */
-.film [data-dolly-pin]::before,.film [data-dolly-pin]::after{
+.film .act::before,.film .act::after{
   content:"";position:absolute;left:0;right:0;height:clamp(28px,7vh,86px);
   background:#000;z-index:6;pointer-events:none}
-.film [data-dolly-pin]::before{top:0}
-.film [data-dolly-pin]::after{bottom:0}
+.film .act::before{top:0}
+.film .act::after{bottom:0}
+/* Each act is one screen that scrolls past like any other content. */
+.act{position:relative}
+.film .stage{min-height:100svh}
 
 .giant{font-size:min(17vw,calc((100vw - 2*var(--edge))/5.35));line-height:.84;letter-spacing:-.055em;
   font-weight:900;margin:0;color:#fff}
@@ -203,8 +172,11 @@ img{display:block;max-width:100%}
 /* the countdown ends and she is what it was counting to */
 .parton{z-index:2;width:100%;height:100%;object-fit:cover;border-radius:50%}
 .parton-card{position:static;color:var(--film-quiet);letter-spacing:.18em}
-.act5-copy{position:absolute;left:0;right:0;top:clamp(64px,11vh,120px);
-  padding:0 var(--gutter);z-index:6;pointer-events:none}
+.act5-copy{position:static;padding:clamp(64px,11vh,120px) var(--gutter) 0;z-index:6}
+/* Unpinned, the copy and the gate share the screen: stack them. */
+.stage-act5{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:clamp(18px,3vh,36px);padding-bottom:clamp(64px,11vh,120px)}
+.stage-act5 .gate{width:min(48vh,78vw)}
 /* Capped so the strip is never upscaled far past 2x, which is where the
    numerals go soft. */
 .leader{border-radius:50%;background-image:url("assets/leader.png")}
@@ -250,8 +222,6 @@ img{display:block;max-width:100%}
 .masked{
   -webkit-background-clip:text;background-clip:text;color:transparent;
   background-repeat:no-repeat;background-position:center 42%;
-  /* the plate is a dark cinema; lift it so the picture reads inside type */
-  filter:brightness(1.55) contrast(1.3) saturate(1.25);
   font-size:min(20vh,min(26vw,calc((100vw - 2*var(--edge))/3.2)));line-height:.9;letter-spacing:-.05em;text-align:center;
   font-weight:900;margin:0;white-space:nowrap;
 }
@@ -278,8 +248,7 @@ img{display:block;max-width:100%}
   width:min(34ch,38vw);z-index:4;display:grid;
   padding:clamp(16px,1.6vw,22px) clamp(18px,1.8vw,26px);
   border-left:1px solid rgba(255,255,255,.22);
-  background:linear-gradient(90deg,rgba(11,11,12,.86),rgba(11,11,12,.5));
-  backdrop-filter:blur(18px) saturate(.85);
+  background:linear-gradient(90deg,rgba(11,11,12,.94),rgba(11,11,12,.8));
   -webkit-mask-image:linear-gradient(90deg,#000 62%,rgba(0,0,0,.72));
   mask-image:linear-gradient(90deg,#000 62%,rgba(0,0,0,.72))}
 .act1-beats > *{grid-area:1/1;margin:0}
@@ -295,7 +264,7 @@ img{display:block;max-width:100%}
     overflow:visible;flex:none}
   .act1-beats{position:static;width:auto;margin:0 var(--gutter);flex:none;
     border-left:2px solid var(--accent);mask-image:none;-webkit-mask-image:none;
-    background:rgba(11,11,12,.72);backdrop-filter:blur(12px)}
+    background:rgba(11,11,12,.9)}
   .act2-beats,.stage-copy{position:static}
   /* Act II's fourteen panes are sized for a desktop stage; at 390px they
      land as a scatter of small grey rectangles rather than reading as depth.
@@ -303,6 +272,9 @@ img{display:block;max-width:100%}
      flow to nothing for stretches of the act — while each still reads as a
      pane passing the camera. */
   .pane{--plate-scale:1.5}
+  /* Unpinned, Act I's two background plates land on the copy at phone
+     width. They are scenery; drop them. */
+  .seamless > .depth .plate{display:none}
   /* The panes fly to z:700, and the perspective divide multiplies their
      offset from centre by 1100/(1100-z) — nearly 3x at the end. In a narrow
      frame that throws them off screen while the act still has half to run
@@ -347,9 +319,7 @@ img{display:block;max-width:100%}
   font-size:min(24vh,min(23vw,calc((100vw - 2*var(--edge))/3.4)));
   line-height:.9;letter-spacing:-.055em;font-weight:900}
 .glyph-z{display:inline-block}
-.glyph{display:inline-block;background-image:var(--plate);background-size:cover;
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-  filter:brightness(1.5) contrast(1.25) saturate(1.15)}
+.glyph{display:inline-block;color:#F5F5F7}
 
 /* One act has to be bright, or "dark" stops meaning anything: every tone on
    this half otherwise sits in the bottom 7% of the luminance scale, and the
@@ -544,21 +514,8 @@ footer{padding:26px 0 44px;display:flex;gap:20px;justify-content:space-between;f
 footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--accent)}
 
 @media (prefers-reduced-motion: reduce){
-  .readout,.topbar{animation-name:none !important}
-  /* The clock only interpolates colour and grain, but the countdown is a
-     number ticking on scroll — that is motion, and it has to stop. */
-  :root{animation-name:none !important}
+  .topbar{animation-name:none !important}
   /* count parks on --dolly-count-to, which is 0 — no override needed */
-  [data-dolly-pin]{min-height:70svh}
-  /* the beat that would have cleared Act V's copy before the photograph
-     landed never runs, so stack the copy above it instead of on it */
-  .act5-copy{position:static;padding-top:clamp(64px,11vh,120px)}
-}
-/* The library releases pins with no timeline; give each act a screen's worth
-   of room, the same as under reduced motion. */
-@supports not (animation-timeline: view()){
-  [data-dolly-pin]{min-height:70svh}
-  .act5-copy{position:static;padding-top:clamp(64px,11vh,120px)}
 }
 </style>
 </head>
@@ -581,7 +538,6 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
   provenance.
 -->
 
-<div class="grain" aria-hidden="true"></div>
 <div class="topbar" data-dolly="progress"></div>
 <header class="mast">
   <div class="wrap mast-in">
@@ -593,7 +549,6 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
         </svg><span>Dolly</span></a>
     <span class="m mast-spec">34 moves · 0 kB of JavaScript</span>
     <div class="mast-right">
-      <div class="readout" title="Your scroll position, counted in CSS"><span class="label readout-label">scroll</span></div>
       <a class="label" href="moves.html">Moves</a>
       <a class="label mast-agents" href="agents.md">agents.md</a>
       <a class="label" href="https://github.com/eakbulut/dolly">GitHub</a>
@@ -604,95 +559,51 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
 <main id="top">
 
   <!-- ===== ACT I — one subject, centred, on seamless ground ===== -->
-  <div class="film" data-dolly-scene style="--dolly-scene:420vh">
-    <div data-dolly-pin>
+  <div class="film">
+    <div class="act">
       <div class="stage seamless">
         <div class="depth" style="--lens:1100px">
-          <figure class="plate" data-dolly-plate data-dolly-depth="far"
+          <figure class="plate" data-dolly-plate
                   style="--w:30vw;--px:-72vw;--py:-12vh;translate:0 0 -2000px">
-            <img src="https://images.unsplash.com/photo-1516961642265-531546e84af2?w=1200&q=74&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1516961642265-531546e84af2?w=480&q=74&auto=format&fit=crop 480w, https://images.unsplash.com/photo-1516961642265-531546e84af2?w=800&q=74&auto=format&fit=crop 800w, https://images.unsplash.com/photo-1516961642265-531546e84af2?w=1200&q=74&auto=format&fit=crop 1200w" sizes="(max-width: 820px) 92vw, 46vw" alt="" decoding="async" fetchpriority="low">
+            <img src="https://images.unsplash.com/photo-1516961642265-531546e84af2?w=800&q=74&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1516961642265-531546e84af2?w=480&q=74&auto=format&fit=crop 480w, https://images.unsplash.com/photo-1516961642265-531546e84af2?w=800&q=74&auto=format&fit=crop 800w" sizes="(max-width: 820px) 24vw, 12vw" alt="" decoding="async" fetchpriority="low">
           </figure>
-          <figure class="plate" data-dolly-plate data-dolly-depth="far"
+          <figure class="plate" data-dolly-plate
                   style="--w:28vw;--px:70vw;--py:15vh;translate:0 0 -2150px">
-            <img src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1200&q=74&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=480&q=74&auto=format&fit=crop 480w, https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=800&q=74&auto=format&fit=crop 800w, https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1200&q=74&auto=format&fit=crop 1200w" sizes="(max-width: 820px) 92vw, 46vw" alt="" decoding="async" fetchpriority="low">
+            <img src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=800&q=74&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=480&q=74&auto=format&fit=crop 480w, https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=800&q=74&auto=format&fit=crop 800w" sizes="(max-width: 820px) 24vw, 12vw" alt="" decoding="async" fetchpriority="low">
           </figure>
           <div class="haze"></div>
-          <figure class="plate" data-dolly-plate data-dolly="fly" data-dolly-on="scene" data-dolly-depth="near"
-                  style="--w:46vw;--px:-62vw;--py:-4vh;--dolly-z-from:-1050px;--dolly-z-to:480px;--dolly-x-to:-105vw;--dolly-range: contain 0% contain 78%">
-            <img src="https://images.unsplash.com/photo-1568876694728-451bbf694b83?w=1200&q=74&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1568876694728-451bbf694b83?w=480&q=74&auto=format&fit=crop 480w, https://images.unsplash.com/photo-1568876694728-451bbf694b83?w=800&q=74&auto=format&fit=crop 800w, https://images.unsplash.com/photo-1568876694728-451bbf694b83?w=1200&q=74&auto=format&fit=crop 1200w" sizes="(max-width: 820px) 92vw, 46vw" alt="" decoding="async" fetchpriority="low">
-          </figure>
-          <figure class="plate" data-dolly-plate data-dolly="fly" data-dolly-on="scene" data-dolly-depth="near"
-                  style="--w:46vw;--px:58vw;--py:-16vh;--dolly-z-from:-1250px;--dolly-z-to:450px;--dolly-x-to:100vw;--dolly-range: contain 6% contain 88%">
-            <img src="https://images.unsplash.com/photo-1774619755413-7c31ab3aabc3?w=1200&q=74&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1774619755413-7c31ab3aabc3?w=480&q=74&auto=format&fit=crop 480w, https://images.unsplash.com/photo-1774619755413-7c31ab3aabc3?w=800&q=74&auto=format&fit=crop 800w, https://images.unsplash.com/photo-1774619755413-7c31ab3aabc3?w=1200&q=74&auto=format&fit=crop 1200w" sizes="(max-width: 820px) 92vw, 46vw" alt="" decoding="async" fetchpriority="low">
-          </figure>
-          <figure class="plate" data-dolly-plate data-dolly="fly" data-dolly-on="scene" data-dolly-depth="near"
-                  style="--w:46vw;--px:-56vw;--py:18vh;--dolly-z-from:-1400px;--dolly-z-to:430px;--dolly-x-to:-98vw;--dolly-range: contain 14% contain 96%">
-            <img src="https://images.unsplash.com/photo-1516961642265-531546e84af2?w=1200&q=74&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1516961642265-531546e84af2?w=480&q=74&auto=format&fit=crop 480w, https://images.unsplash.com/photo-1516961642265-531546e84af2?w=800&q=74&auto=format&fit=crop 800w, https://images.unsplash.com/photo-1516961642265-531546e84af2?w=1200&q=74&auto=format&fit=crop 1200w" sizes="(max-width: 820px) 92vw, 46vw" alt="" decoding="async" fetchpriority="low">
-          </figure>
-          <figure class="plate" data-dolly-plate data-dolly="fly" data-dolly-on="scene" data-dolly-depth="near"
-                  style="--w:46vw;--px:66vw;--py:8vh;--dolly-z-from:-950px;--dolly-z-to:500px;--dolly-x-to:112vw;--dolly-range: contain 22% contain 100%">
-            <img src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1200&q=74&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=480&q=74&auto=format&fit=crop 480w, https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=800&q=74&auto=format&fit=crop 800w, https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1200&q=74&auto=format&fit=crop 1200w" sizes="(max-width: 820px) 92vw, 46vw" alt="" decoding="async" fetchpriority="low">
-          </figure>
         </div>
         <div class="stack">
           <div class="quiet">
             <h1>Scroll animations, <span class="lit">in&nbsp;plain&nbsp;CSS.</span></h1>
             <p>Put <code>data-dolly="tilt-up"</code> on a heading and it rises into place as you scroll to it. Scroll back up and it plays in reverse.</p>
           </div>
-          <div class="subject" data-dolly="zoom" data-dolly-on="scene" style="--dolly-zoom:1.14">
-            <img src="https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=1200&q=78&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=480&q=78&auto=format&fit=crop 480w, https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=800&q=78&auto=format&fit=crop 800w, https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=1200&q=78&auto=format&fit=crop 1200w" sizes="(max-width: 820px) 92vw, 46vw"
+          <div class="subject" data-dolly="zoom" style="--dolly-zoom:1.14">
+            <img src="https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=800&q=78&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=480&q=78&auto=format&fit=crop 480w, https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=800&q=78&auto=format&fit=crop 800w" sizes="(max-width: 820px) 92vw, 46vw"
                  alt="An audience seated in a dark cinema facing a bright screen">
             <div class="subject-frame"></div>
           </div>
         </div>
-        <span class="m credit">zoom · pinned scene</span>
+        <span class="m credit">zoom</span>
       </div>
     </div>
   </div>
 
   <!-- ===== ACT II — what a runtime costs ===== -->
-  <div class="film" data-dolly-scene style="--dolly-scene:320vh">
-    <div data-dolly-pin>
+  <div class="film">
+    <div class="act">
       <div class="stage lit-stage">
         <div class="depth" style="--lens:1100px;perspective-origin:50% 50%">
           <div class="haze"></div>
-          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
-                  style="--w:26vw;--dolly-angle:16deg;--px:-38vw;--py:-15.0vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 1.0% contain 35.0%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
-                  style="--w:33vw;--dolly-angle:23deg;--px:-25vw;--py:-3.5vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 6.29% contain 40.29%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
-                  style="--w:40vw;--dolly-angle:30deg;--px:-12vw;--py:7.9vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 11.58% contain 45.58%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
-                  style="--w:26vw;--dolly-angle:37deg;--px:1vw;--py:-10.6vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 16.87% contain 50.87%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
-                  style="--w:33vw;--dolly-angle:22deg;--px:14vw;--py:0.8vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 22.16% contain 56.16%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
-                  style="--w:40vw;--dolly-angle:29deg;--px:27vw;--py:12.3vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 27.45% contain 61.45%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
-                  style="--w:26vw;--dolly-angle:36deg;--px:40vw;--py:-6.2vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 32.74% contain 66.74%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
-                  style="--w:33vw;--dolly-angle:21deg;--px:-27vw;--py:5.2vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 38.03% contain 72.03%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
-                  style="--w:40vw;--dolly-angle:28deg;--px:-14vw;--py:-13.3vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 43.32% contain 77.32%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
-                  style="--w:26vw;--dolly-angle:35deg;--px:-1vw;--py:-1.9vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 48.61% contain 82.61%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
-                  style="--w:33vw;--dolly-angle:20deg;--px:12vw;--py:9.6vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 53.9% contain 87.9%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
-                  style="--w:40vw;--dolly-angle:27deg;--px:25vw;--py:-9.0vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 59.19% contain 93.19%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
-                  style="--w:26vw;--dolly-angle:34deg;--px:38vw;--py:2.5vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 64.48% contain 98.48%"></figure>
-          <figure class="plate pane" data-dolly-plate data-dolly="drop" data-dolly-on="scene"
-                  style="--w:33vw;--dolly-angle:19deg;--px:-29vw;--py:14.0vh;--dolly-z-from:-2600px;--dolly-z-to:700px;--dolly-range: contain 69.77% contain 103.77%"></figure>
         </div>
         <div class="stack">
           <div class="quiet">
             <h2>AOS is 14 kB <span class="lit">of JavaScript.</span></h2>
             <p>That buys a script that watches the scrollbar and toggles classes. Dolly hands the same job to the browser. The number below counts down to how much JavaScript Dolly ships.</p>
           </div>
-          <p class="figure"><span class="kb" data-dolly="count" data-dolly-on="scene"
+          <p class="figure"><span class="kb" data-dolly="count"
                  role="img" aria-label="14 kilobytes, counting down to zero"
-                 style="--dolly-count-from:14;--dolly-count-to:0;--dolly-range: contain 10% contain 84%"></span><span class="unit">kB</span></p>
+                 style="--dolly-count-from:14;--dolly-count-to:0"></span><span class="unit">kB</span></p>
         </div>
         <span class="m credit">count · @property + counter()</span>
       </div>
@@ -700,31 +611,21 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
   </div>
 
   <!-- ===== ACT III — the camera flies through the name ===== -->
-  <div class="film" data-dolly-scene style="--dolly-scene:340vh">
-    <div data-dolly-pin>
+  <div class="film">
+    <div class="act">
       <div class="stage seamless" data-dolly-space style="--dolly-perspective:1500px">
         <div class="stack">
-          <p class="wordmark" style="--plate:url('https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1600&q=78&auto=format&fit=crop')">
-            <span class="glyph-z" data-dolly="push" data-dolly-on="scene" data-dolly-range
-                  style="--dolly-z-from:-1600px;--dolly-z-to:0px;--dolly-range: contain 0% contain 58%"><span class="glyph" data-dolly="mask"
-                  data-dolly-on="scene" data-dolly-range
-                  style="background-position:8% 50%;--dolly-mask-from:130%;--dolly-mask-to:215%;--dolly-range: contain 0% contain 100%">D</span></span>
-            <span class="glyph-z" data-dolly="push" data-dolly-on="scene" data-dolly-range
-                  style="--dolly-z-from:-1150px;--dolly-z-to:0px;--dolly-range: contain 8% contain 62%"><span class="glyph" data-dolly="mask"
-                  data-dolly-on="scene" data-dolly-range
-                  style="background-position:28% 50%;--dolly-mask-from:130%;--dolly-mask-to:215%;--dolly-range: contain 0% contain 100%">O</span></span>
-            <span class="glyph-z" data-dolly="push" data-dolly-on="scene" data-dolly-range
-                  style="--dolly-z-from:-760px;--dolly-z-to:0px;--dolly-range: contain 16% contain 66%"><span class="glyph" data-dolly="mask"
-                  data-dolly-on="scene" data-dolly-range
-                  style="background-position:48% 50%;--dolly-mask-from:130%;--dolly-mask-to:215%;--dolly-range: contain 0% contain 100%">L</span></span>
-            <span class="glyph-z" data-dolly="push" data-dolly-on="scene" data-dolly-range
-                  style="--dolly-z-from:-430px;--dolly-z-to:0px;--dolly-range: contain 24% contain 70%"><span class="glyph" data-dolly="mask"
-                  data-dolly-on="scene" data-dolly-range
-                  style="background-position:68% 50%;--dolly-mask-from:130%;--dolly-mask-to:215%;--dolly-range: contain 0% contain 100%">L</span></span>
-            <span class="glyph-z" data-dolly="push" data-dolly-on="scene" data-dolly-range
-                  style="--dolly-z-from:-150px;--dolly-z-to:0px;--dolly-range: contain 32% contain 74%"><span class="glyph" data-dolly="mask"
-                  data-dolly-on="scene" data-dolly-range
-                  style="background-position:88% 50%;--dolly-mask-from:130%;--dolly-mask-to:215%;--dolly-range: contain 0% contain 100%">Y</span></span>
+          <p class="wordmark">
+            <span class="glyph-z" data-dolly="push"
+                  style="--dolly-z-from:-1600px;--dolly-z-to:0px"><span class="glyph" data-dolly="fade">D</span></span>
+            <span class="glyph-z" data-dolly="push"
+                  style="--dolly-z-from:-1150px;--dolly-z-to:0px"><span class="glyph" data-dolly="fade">O</span></span>
+            <span class="glyph-z" data-dolly="push"
+                  style="--dolly-z-from:-760px;--dolly-z-to:0px"><span class="glyph" data-dolly="fade">L</span></span>
+            <span class="glyph-z" data-dolly="push"
+                  style="--dolly-z-from:-430px;--dolly-z-to:0px"><span class="glyph" data-dolly="fade">L</span></span>
+            <span class="glyph-z" data-dolly="push"
+                  style="--dolly-z-from:-150px;--dolly-z-to:0px"><span class="glyph" data-dolly="fade">Y</span></span>
           </p>
           <div class="quiet">
             <p>Named after the camera dolly, the cart a camera rides on during a shot. Its sibling, <a href="https://usefoley.dev">Foley</a>, handles the sound.</p>
@@ -736,32 +637,12 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
   </div>
 
   <!-- ===== ACT IV — the vocabulary, carried past on a track ===== -->
-  <div class="film" data-dolly-scene style="--dolly-scene:460vh">
-    <div data-dolly-pin>
+  <div class="film">
+    <div class="act">
       <div class="stage seamless">
         <!-- one lateral delta shared by five plates: only z differs, so the
              perspective divide alone produces five speeds moving together -->
         <div class="depth" style="--lens:1400px;perspective-origin:50% 52%">
-          <figure class="plate" data-dolly-plate data-dolly="pass" data-dolly-on="scene" data-dolly-depth="far"
-                  style="--w:30vw;--px:0;--py:-13vh;--dolly-z-from:-3000px;--dolly-z-to:-3000px;--dolly-x-from:42vw;--dolly-x-to:-42vw;--dolly-range: contain 0% contain 100%">
-            <img src="https://images.unsplash.com/photo-1516961642265-531546e84af2?w=1200&q=74&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1516961642265-531546e84af2?w=480&q=74&auto=format&fit=crop 480w, https://images.unsplash.com/photo-1516961642265-531546e84af2?w=800&q=74&auto=format&fit=crop 800w, https://images.unsplash.com/photo-1516961642265-531546e84af2?w=1200&q=74&auto=format&fit=crop 1200w" sizes="(max-width: 820px) 92vw, 46vw" alt="" decoding="async" fetchpriority="low">
-          </figure>
-          <figure class="plate" data-dolly-plate data-dolly="pass" data-dolly-on="scene" data-dolly-depth="mid"
-                  style="--w:34vw;--px:0;--py:11vh;--dolly-z-from:-1900px;--dolly-z-to:-1900px;--dolly-x-from:42vw;--dolly-x-to:-42vw;--dolly-range: contain 0% contain 100%">
-            <img src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1200&q=74&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=480&q=74&auto=format&fit=crop 480w, https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=800&q=74&auto=format&fit=crop 800w, https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1200&q=74&auto=format&fit=crop 1200w" sizes="(max-width: 820px) 92vw, 46vw" alt="" decoding="async" fetchpriority="low">
-          </figure>
-          <figure class="plate" data-dolly-plate data-dolly="pass" data-dolly-on="scene"
-                  style="--w:44vw;--px:0;--py:-3vh;--dolly-z-from:-1000px;--dolly-z-to:-1000px;--dolly-x-from:42vw;--dolly-x-to:-42vw;--dolly-range: contain 0% contain 100%">
-            <img src="https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=1200&q=74&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=480&q=74&auto=format&fit=crop 480w, https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=800&q=74&auto=format&fit=crop 800w, https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=1200&q=74&auto=format&fit=crop 1200w" sizes="(max-width: 820px) 92vw, 46vw" alt="" decoding="async" fetchpriority="low">
-          </figure>
-          <figure class="plate" data-dolly-plate data-dolly="pass" data-dolly-on="scene" data-dolly-depth="near"
-                  style="--w:38vw;--px:0;--py:15vh;--dolly-z-from:-300px;--dolly-z-to:-300px;--dolly-x-from:42vw;--dolly-x-to:-42vw;--dolly-range: contain 0% contain 100%">
-            <img src="https://images.unsplash.com/photo-1774619755413-7c31ab3aabc3?w=1200&q=74&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1774619755413-7c31ab3aabc3?w=480&q=74&auto=format&fit=crop 480w, https://images.unsplash.com/photo-1774619755413-7c31ab3aabc3?w=800&q=74&auto=format&fit=crop 800w, https://images.unsplash.com/photo-1774619755413-7c31ab3aabc3?w=1200&q=74&auto=format&fit=crop 1200w" sizes="(max-width: 820px) 92vw, 46vw" alt="" decoding="async" fetchpriority="low">
-          </figure>
-          <figure class="plate" data-dolly-plate data-dolly="pass" data-dolly-on="scene" data-dolly-depth="far"
-                  style="--w:44vw;--px:0;--py:-22vh;--dolly-z-from:260px;--dolly-z-to:260px;--dolly-x-from:42vw;--dolly-x-to:-42vw;--dolly-range: contain 0% contain 100%">
-            <img src="https://images.unsplash.com/photo-1568876694728-451bbf694b83?w=1200&q=74&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1568876694728-451bbf694b83?w=480&q=74&auto=format&fit=crop 480w, https://images.unsplash.com/photo-1568876694728-451bbf694b83?w=800&q=74&auto=format&fit=crop 800w, https://images.unsplash.com/photo-1568876694728-451bbf694b83?w=1200&q=74&auto=format&fit=crop 1200w" sizes="(max-width: 820px) 92vw, 46vw" alt="" decoding="async" fetchpriority="low">
-          </figure>
           <div class="haze"></div>
         </div>
         <div class="stack">
@@ -772,48 +653,38 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
         </div>
         <!-- one line of names, carried sideways by scrolling down -->
         <div class="marquee">
-          <div class="rail" data-dolly="track" data-dolly-on="scene"
-               style="--dolly-track-from:12vw;--dolly-track-to:calc(-100% + 88vw)">
+          <div class="rail" data-dolly="pan-left">
             <span>tilt</span><span>pan</span><span>crane</span><span>rack</span><span>whip</span>
             <span>roll</span><span>iris</span><span>track</span><span>matte</span><span>zoom</span>
             <span>parallax</span><span>dolly in</span><span>dolly out</span><span>wipe</span>
           </div>
         </div>
-        <span class="m credit">track · vertical scroll, horizontal travel</span>
+        <span class="m credit">pan-left</span>
       </div>
     </div>
   </div>
 
   <!-- ===== ACT V — the leader counts the page into its documentation ===== -->
-  <div class="film" data-dolly-scene style="--dolly-scene:360vh">
-    <div data-dolly-pin>
-      <div class="stage">
-        <!-- copy arrives, holds, and is gone before the photograph lands -->
+  <div class="film">
+    <div class="act">
+      <div class="stage stage-act5">
         <div class="act5-copy">
-          <!-- starts in `entry`, not `contain`: contain 0% is the moment the
-               act's top reaches the top of the viewport, so a beat that begins
-               there leaves the whole first screen of the act blank. -->
-          <div class="quiet" data-dolly="beat" data-dolly-on="scene"
-               style="--dolly-range: entry 0% contain 42%">
+          <div class="quiet" data-dolly="tilt-up">
             <h2>A flipbook, <span class="lit">turned by scrolling.</span></h2>
             <p>The countdown coming up is 36 frames on one image. As you scroll, CSS shifts the background along by one frame at a time. It doesn&rsquo;t use canvas or video.</p>
           </div>
         </div>
-        <!-- three moves, three elements, one scene timeline: the gate pushes
+        <!-- three moves on the gate's own trip across the screen: it pushes
              in, the frames step, and the iris opens on what it counted to -->
-        <figure class="act5-shot" data-dolly="fade" data-dolly-on="scene"
-                style="--dolly-range: contain 26% contain 42%">
-          <div class="gate" data-dolly="zoom" data-dolly-on="scene"
-               style="--dolly-zoom:1.08;--dolly-range: contain 26% contain 100%">
-            <div class="leader" data-dolly="sequence" data-dolly-on="scene"
-                 style="--dolly-cols:12;--dolly-rows:3;--dolly-range: contain 40% contain 76%"
+        <figure class="act5-shot" data-dolly="fade">
+          <div class="gate" data-dolly="zoom" style="--dolly-zoom:1.08;--dolly-range:cover 20% cover 80%">
+            <div class="leader" data-dolly="sequence"
+                 style="--dolly-cols:12;--dolly-rows:3;--dolly-range:cover 15% cover 55%"
                  role="img" aria-label="A countdown leader: three, two, one"></div>
             <img class="parton" src="assets/parton.webp" alt="Dolly Parton"
-                 decoding="async" data-dolly="iris" data-dolly-on="scene"
-                 style="--dolly-range: contain 74% contain 92%">
+                 decoding="async" data-dolly="iris" style="--dolly-range:cover 55% cover 70%">
           </div>
-          <figcaption class="parton-card m" data-dolly="fade" data-dolly-on="scene"
-                      style="--dolly-range: contain 84% contain 98%">Dolly Parton</figcaption>
+          <figcaption class="parton-card m" data-dolly="fade">Dolly Parton</figcaption>
         </figure>
         <!-- the file itself, whole: thirty-six cells on one sheet. The gate
              above is a window onto exactly this. -->
@@ -842,11 +713,11 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
           </div>
           <div class="card" data-dolly="tumble" style="--dolly-angle:7deg">
             <h3>There&rsquo;s no script to load.</h3>
-            <p>Dolly doesn&rsquo;t use IntersectionObserver or scroll listeners, and you never call an init function. The browser runs every animation itself, including the pinned sections you scrolled through above.</p>
+            <p>Dolly doesn&rsquo;t use IntersectionObserver or scroll listeners, and you never call an init function. The browser runs every animation itself.</p>
           </div>
           <div class="card" data-dolly="tumble" style="--dolly-angle:7deg">
             <h3>Reduced motion turns it off.</h3>
-            <p>When someone has <code>prefers-reduced-motion</code> set, every move stops and pinned sections scroll like normal content. The page looks the way you wrote it.</p>
+            <p>When someone has <code>prefers-reduced-motion</code> set, every move stops and the page sits still. The page looks the way you wrote it.</p>
           </div>
           <div class="card" data-dolly="tumble" style="--dolly-angle:7deg">
             <h3>Older browsers sit still.</h3>
@@ -906,14 +777,14 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
       <div class="wrap">
         <div class="head-row" style="border-color:transparent">
           <h2 data-dolly="tilt-up">How to use it.</h2>
-          <span class="label">one attribute, plus scenes</span>
+          <span class="label">one attribute</span>
         </div>
         <svg class="rule-draw" viewBox="0 0 1200 10" aria-hidden="true" focusable="false">
           <path data-dolly="draw" pathLength="1" fill="none" stroke="currentColor"
                 stroke-width="2.5" stroke-linecap="round"
                 d="M3 7 C 280 2, 620 9.5, 1197 3.5"/>
         </svg>
-        <p class="note" data-dolly="fade">Link the stylesheet and add <code>data-dolly</code> to any element you already have. For a pinned section like the ones above, wrap it in <code>data-dolly-scene</code> and <code>data-dolly-pin</code>.</p>
+        <p class="note" data-dolly="fade">Link the stylesheet and add <code>data-dolly</code> to any element you already have.</p>
 <figure class="editor" data-dolly="reveal">
   <figcaption class="editor-bar">
     <span class="m">index.html</span>
@@ -924,7 +795,7 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
 <span class="k">&lt;h1</span> data-dolly=<span class="s">"tilt-up"</span><span class="k">&gt;</span>Arrives as you reach it<span class="k">&lt;/h1&gt;</span>
 <span class="k">&lt;img</span> data-dolly=<span class="s">"rack"</span> src=<span class="s">"still.jpg"</span> alt=<span class="s">""</span><span class="k">&gt;</span>
 
-<span class="c">&lt;!-- a pinned scene, like the sections above --&gt;</span>
+<span class="c">&lt;!-- a pinned scene, if you want one --&gt;</span>
 <span class="k">&lt;div</span> data-dolly-scene<span class="k">&gt;</span>
   <span class="k">&lt;div</span> data-dolly-pin<span class="k">&gt;</span>
     <span class="k">&lt;img</span> data-dolly=<span class="s">"zoom"</span> data-dolly-on=<span class="s">"scene"</span> src=<span class="s">"shot.jpg"</span> alt=<span class="s">""</span><span class="k">&gt;</span>
@@ -938,13 +809,13 @@ footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--acc
         <code class="install">
           <span class="dim" aria-hidden="true">$</span><span class="cmd">npm i @dollyjs/core</span>
         </code>
-        <p class="install-alt label">or one file, no build step: <a href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.min.css">https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.min.css</a></p>
+        <p class="install-alt label">or one file, no build step: <a href="https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.css">https://cdn.jsdelivr.net/npm/@dollyjs/core@0/src/dolly.css</a></p>
       </div>
     </div>
     <div class="wrap">
 
       <div class="sign-off">
-        <p class="sign-off-line" data-dolly="letter" style="--dolly-letter-from:.14em;--dolly-letter-to:-.02em">now go delete some JavaScript</p>
+        <p class="sign-off-line" data-dolly="tilt-up">now go delete some JavaScript</p>
         <span class="m">34 moves · 0 kB of JavaScript · one attribute</span>
       </div>
 

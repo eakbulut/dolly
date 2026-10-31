@@ -273,17 +273,16 @@ runs from the top of the document to the bottom instead.
 </svg>
 ```
 
-That is the ribbon on this project's own site: one unbroken stroke that
-writes the word `dolly` in cursive as you scroll from the top of the page to
-the bottom. Handwriting is what `draw` is for — a single pen line, never
-lifted. Note that a font would not work here: glyphs are filled outlines, not
-strokes, so they have no path to draw along.
+A ribbon like this can write a word in cursive as the reader scrolls from the
+top of the page to the bottom: one unbroken stroke, never lifted, which is
+what `draw` is for. A font would not work here: glyphs are filled outlines,
+not strokes, so they have no path to draw along.
 
-The artwork lives at `assets/dolly-word.svg` and must be a **centerline**: one
-open path, `fill="none"`, drawn in writing order, with the weight coming from
-`stroke-width`. Text converted to outlines gives the *contour* of each letter,
-so drawing it traces the rim instead of writing the word — and that cannot be
-fixed downstream. `scripts/make-ribbon.py` refits a replacement in one command.
+The artwork has to be a **centerline**: one open path, `fill="none"`, drawn in
+writing order, with the weight coming from `stroke-width`.
+`assets/dolly-word.svg` is an example. Text converted to outlines gives the
+*contour* of each letter, so drawing it traces the rim instead of writing the
+word — and that cannot be fixed downstream.
 
 **Do not put `vector-effect="non-scaling-stroke"` on a path you are drawing.**
 It makes the browser compute the dash pattern in screen space, which fights
